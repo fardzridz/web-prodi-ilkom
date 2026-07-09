@@ -1707,15 +1707,6 @@ a {
   background: var(--white);
 }
 
-.documents-list-section .document-icon {
-  width: auto;
-  height: auto;
-  display: inline-block;
-  color: var(--blue-mid);
-  font-size: 32px;
-  background: transparent;
-}
-
 .documents-list-section .document-actions {
   margin-top: auto;
 }

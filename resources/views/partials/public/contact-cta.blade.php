@@ -12,7 +12,7 @@
         <div class="min-w-0">
             <h2 class="contact-title internal-heading m-0 text-white font-display text-[clamp(24px,2vw,30px)] font-medium leading-[1.05] tracking-normal whitespace-nowrap max-[560px]:whitespace-normal max-[560px]:text-[24px]">{{ $title }}</h2>
         </div>
-        <div class="contact-actions flex flex-nowrap gap-3 justify-end max-[1024px]:justify-start max-[560px]:flex-wrap max-[560px]:gap-2.5">
+        <div class="contact-actions flex flex-nowrap items-center gap-3 justify-end max-[1024px]:justify-start max-[560px]:flex-wrap max-[560px]:gap-2.5">
             <a class="contact-button contact-button-primary inline-flex h-11 items-center justify-center px-6 text-blue-dark text-[13px] font-bold leading-none tracking-[0.03em] uppercase bg-yellow max-[560px]:w-full" href="{{ $primaryHref }}">{{ $primaryLabel }}</a>
             <a class="contact-button contact-button-secondary inline-flex h-11 items-center justify-center px-6 text-yellow text-[13px] font-bold leading-none tracking-[0.03em] uppercase border-2 border-yellow bg-transparent max-[560px]:w-full" href="{{ $secondaryHref }}">{{ $secondaryLabel }}</a>
         </div>

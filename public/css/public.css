@@ -781,10 +781,6 @@ a {
   white-space: nowrap;
 }
 
-.contact-actions {
-  align-items: center;
-}
-
 .contact-button {
   min-height: 44px;
   padding: 0 24px;

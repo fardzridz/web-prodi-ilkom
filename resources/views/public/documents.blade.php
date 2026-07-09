@@ -46,7 +46,7 @@
                             <span class="document-file-type"><i class="fa-solid {{ $document['file_icon'] }}" aria-hidden="true"></i> {{ $document['file_type'] }}</span>
                             <span class="document-file-size"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i> {{ $document['file_size'] }}</span>
                         </div>
-                        <div class="document-actions flex flex-wrap gap-2.5 items-center mt-1">
+                        <div class="flex flex-wrap gap-2.5 items-center mt-auto">
                             <a class="document-link inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid" href="#" aria-label="Unduh {{ $document['title'] }}"><i class="fa-solid fa-download" aria-hidden="true"></i> Unduh</a>
                             <a class="document-link secondary inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid text-blue-dark bg-grey-5" href="#" aria-label="Lihat {{ $document['title'] }}"><i class="fa-regular fa-eye" aria-hidden="true"></i> Lihat</a>
                         </div>

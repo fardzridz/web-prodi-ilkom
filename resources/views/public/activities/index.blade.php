@@ -45,7 +45,7 @@
                 @endforeach
             </div>
 
-            <div class="load-more-row flex justify-center mt-[42px]">
+            <div class="flex justify-center mt-[42px]">
                 <button class="button button-blue load-more-button inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase bg-blue-mid" type="button" data-load-more-target="#kegiatan-grid" data-load-more-initial="6" data-load-more-step="3">
                     Muat Lebih Banyak
                 </button>

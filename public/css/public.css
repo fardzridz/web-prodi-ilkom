@@ -782,8 +782,6 @@ a {
 }
 
 .contact-button {
-  min-height: 44px;
-  padding: 0 24px;
   transition:
     color 180ms ease,
     background-color 180ms ease,

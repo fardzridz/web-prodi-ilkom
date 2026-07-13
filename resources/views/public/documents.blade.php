@@ -28,7 +28,7 @@
             <h2 class="internal-heading m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-normal">Berkas yang Tersedia</h2>
             <div class="filter-row flex flex-wrap gap-3 mt-7" aria-label="Kategori dokumen">
                 @foreach (['Semua', 'Kurikulum', 'Akademik', 'SOP', 'Akreditasi', 'Kegiatan', 'Alumni'] as $filter)
-                    <span class="filter-pill{{ $loop->first ? ' is-active' : '' }} inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease]">{{ $filter }}</span>
+                    <span class="filter-pill{{ $loop->first ? ' is-active' : '' }} inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease] focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]">{{ $filter }}</span>
                 @endforeach
             </div>
 

@@ -1333,11 +1333,6 @@ a {
   line-height: 1.02;
 }
 
-.filter-pill:focus-visible {
-  outline: 3px solid rgba(253, 185, 19, 0.72);
-  outline-offset: 3px;
-}
-
 .filter-pill.is-active {
   color: var(--white);
   border-color: var(--blue-mid);

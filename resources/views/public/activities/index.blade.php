@@ -30,7 +30,7 @@
             <div id="kegiatan-grid" class="visit-grid activities-page-grid grid grid-cols-3 gap-[34px] max-[1024px]:grid-cols-1 mt-9">
                 @foreach ($activities as $activity)
                     <article class="visit-card activities-page-card load-more-item{{ $loop->iteration > 6 ? ' is-hidden' : '' }} [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-blue-dark [&_h3]:font-display [&_h3]:text-[34px] [&_h3]:font-medium [&_h3]:leading-none [&_h3]:tracking-[-0.035em] [&_p]:text-grey-2" data-activity-date="{{ $activity['date'] }}" data-activity-location="{{ $activity['location'] }}" data-activity-category="{{ $activity['category'] }}" data-activity-slug="{{ $activity['slug'] }}" data-activity-image="{{ asset($activity['image']) }}">
-                        <a href="{{ route('activities.show', $activity['slug']) }}" class="block focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[5px]" aria-label="Baca detail {{ $activity['title'] }}">
+                        <a href="{{ route('activities.show', $activity['slug']) }}" class="group block focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[5px]" aria-label="Baca detail {{ $activity['title'] }}">
                             <div class="image-frame {{ $activity['image_class'] }} relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)]" aria-hidden="true"></div>
                             <h3>{{ $activity['title'] }}</h3>
                             <p>{{ $activity['excerpt'] }}</p>
@@ -39,7 +39,7 @@
                                 <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ $activity['location'] }}</span>
                                 <span><i class="fa-solid fa-tag" aria-hidden="true"></i> {{ $activity['category'] }}</span>
                             </div>
-                            <span class="activity-detail-link inline-flex items-center gap-2 mt-[18px] text-red text-[13px] font-extrabold uppercase tracking-[0.04em] [&_i]:w-auto [&_i]:text-[12px] [&_i]:transition-transform [&_i]:duration-[180ms] [&_i]:ease-[ease]">Baca Detail <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                            <span class="activity-detail-link inline-flex items-center gap-2 mt-[18px] text-red text-[13px] font-extrabold uppercase tracking-[0.04em] [&_i]:w-auto [&_i]:text-[12px] [&_i]:transition-transform [&_i]:duration-[180ms] [&_i]:ease-[ease]">Baca Detail <i class="fa-solid fa-arrow-right group-hover:translate-x-[3px] group-focus-visible:translate-x-[3px]" aria-hidden="true"></i></span>
                         </a>
                     </article>
                 @endforeach

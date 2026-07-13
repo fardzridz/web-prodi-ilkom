@@ -1403,11 +1403,6 @@ a {
   box-shadow: none;
 }
 
-.activities-page-card>a:hover .activity-detail-link i,
-.activities-page-card>a:focus-visible .activity-detail-link i {
-  transform: translateX(3px);
-}
-
 .activity-detail-image {
   background:
     linear-gradient(rgba(0, 36, 58, 0.16), rgba(0, 36, 58, 0.16)),

@@ -1645,10 +1645,6 @@ a {
   opacity: 0.12;
 }
 
-.documents-list-section .document-card:nth-child(2n) {
-  background: var(--white);
-}
-
 .site-footer {
   border-top: 0;
   box-shadow: inset 0 1px 0 #f8f9fa;

@@ -34,7 +34,7 @@
 
             <div class="document-grid grid grid-cols-3 gap-6 mt-9 max-[1024px]:grid-cols-1">
                 @foreach ($documents as $document)
-                    <article class="document-card grid gap-[18px] min-h-[280px] p-7 bg-[rgba(0,36,58,0.035)] border-0 shadow-none [&_h3]:m-0 [&_h3]:text-blue-dark [&_h3]:font-body [&_h3]:text-xl [&_h3]:font-bold [&_h3]:leading-[1.15] [&_p]:m-0 [&_p]:text-grey-2 [&_p]:leading-[1.6]" data-document-status="published" data-document-category="{{ $document['category'] }}" data-document-file="{{ $document['file'] }}" data-document-file-type="{{ $document['file_type'] }}" data-document-file-size="{{ $document['file_size'] }}" data-document-updated-at="{{ $document['updated_at'] }}">
+                    <article class="document-card grid gap-[18px] min-h-[280px] p-7 {{ $loop->even ? 'bg-white' : 'bg-[rgba(0,36,58,0.035)]' }} border-0 shadow-none [&_h3]:m-0 [&_h3]:text-blue-dark [&_h3]:font-body [&_h3]:text-xl [&_h3]:font-bold [&_h3]:leading-[1.15] [&_p]:m-0 [&_p]:text-grey-2 [&_p]:leading-[1.6]" data-document-status="published" data-document-category="{{ $document['category'] }}" data-document-file="{{ $document['file'] }}" data-document-file-type="{{ $document['file_type'] }}" data-document-file-size="{{ $document['file_size'] }}" data-document-updated-at="{{ $document['updated_at'] }}">
                         <i class="fa-solid {{ $document['icon'] }} inline-block w-auto h-auto text-blue-mid text-[32px] bg-transparent" aria-hidden="true"></i>
                         <div>
                             <span class="document-type inline-block text-red text-xs font-bold tracking-[0.06em] uppercase">{{ $document['category'] }}</span>

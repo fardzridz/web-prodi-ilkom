@@ -774,13 +774,6 @@ a {
   padding-bottom: 0;
 }
 
-.contact-title {
-  color: var(--white);
-  font-size: clamp(24px, 2vw, 30px);
-  line-height: 1.05;
-  white-space: nowrap;
-}
-
 .contact-button {
   transition:
     color 180ms ease,
@@ -812,18 +805,11 @@ a {
     height: 220px;
   }
 
-  .contact-title {
-    white-space: normal;
-  }
 }
 
 @media (max-width: 560px) {
   .contact-section {
     height: 256px;
-  }
-
-  .contact-title {
-    font-size: 24px;
   }
 
   .contact-actions,

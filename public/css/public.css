@@ -954,8 +954,7 @@ a {
   height: 100%;
 }
 
-#kegiatan-section .visit-card > a,
-.activities-list-section .activities-page-card > a {
+#kegiatan-section .visit-card > a {
   display: flex;
   height: 100%;
   flex-direction: column;

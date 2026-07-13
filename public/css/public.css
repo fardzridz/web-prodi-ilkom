@@ -960,8 +960,7 @@ a {
   flex-direction: column;
 }
 
-#kegiatan-section .visit-card h3,
-.activities-list-section .activities-page-card h3 {
+#kegiatan-section .visit-card h3 {
   display: -webkit-box;
   min-height: 2.1em;
   margin-bottom: 0.5rem;

@@ -794,21 +794,10 @@ a {
   transform: translateY(-1px);
 }
 
-.contact-button-primary {
-  color: var(--blue-dark);
-  background: var(--yellow);
-}
-
 .contact-button-primary:hover,
 .contact-button-primary:focus-visible {
   color: var(--blue-dark);
   background: #ffd04f;
-}
-
-.contact-button-secondary {
-  color: var(--yellow);
-  border: 2px solid currentColor;
-  background: transparent;
 }
 
 .contact-button-secondary:hover,

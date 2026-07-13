@@ -21,9 +21,9 @@
             <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Daftar Kegiatan</p>
             <h2 class="internal-heading m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-normal">Kegiatan Prodi Ilmu Komputer</h2>
             <div class="filter-row flex flex-wrap gap-3 mt-7" aria-label="Kategori kegiatan">
-                <button class="filter-pill is-active inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)]" type="button" data-filter-target="#kegiatan-grid" data-filter-category="*" aria-pressed="true">Semua</button>
+                <button class="filter-pill is-active inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease]" type="button" data-filter-target="#kegiatan-grid" data-filter-category="*" aria-pressed="true">Semua</button>
                 @foreach ($activityFilters as $filter)
-                    <button class="filter-pill inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)]" type="button" data-filter-target="#kegiatan-grid" data-filter-category="{{ $filter }}" aria-pressed="false">{{ $filter }}</button>
+                    <button class="filter-pill inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease]" type="button" data-filter-target="#kegiatan-grid" data-filter-category="{{ $filter }}" aria-pressed="false">{{ $filter }}</button>
                 @endforeach
             </div>
 

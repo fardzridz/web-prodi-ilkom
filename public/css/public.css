@@ -1380,14 +1380,6 @@ a {
   line-height: 1.02;
 }
 
-.filter-pill {
-  cursor: pointer;
-  transition:
-    color 180ms ease,
-    background-color 180ms ease,
-    border-color 180ms ease;
-}
-
 .filter-pill:focus-visible {
   outline: 3px solid rgba(253, 185, 19, 0.72);
   outline-offset: 3px;

@@ -767,11 +767,6 @@ a {
   background: rgba(150, 26, 38, 0.92);
 }
 
-.contact-button:hover,
-.contact-button:focus-visible {
-  transform: translateY(-1px);
-}
-
 .contact-button-primary:hover,
 .contact-button-primary:focus-visible {
   color: var(--blue-dark);

@@ -1485,12 +1485,6 @@ a {
   outline-offset: 5px;
 }
 
-.activity-detail-link i {
-  width: auto;
-  font-size: 12px;
-  transition: transform 180ms ease;
-}
-
 .activities-page-card>a:hover .activity-detail-link i,
 .activities-page-card>a:focus-visible .activity-detail-link i {
   transform: translateX(3px);

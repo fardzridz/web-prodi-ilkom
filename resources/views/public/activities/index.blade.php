@@ -39,7 +39,7 @@
                                 <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ $activity['location'] }}</span>
                                 <span><i class="fa-solid fa-tag" aria-hidden="true"></i> {{ $activity['category'] }}</span>
                             </div>
-                            <span class="activity-detail-link inline-flex items-center gap-2 mt-[18px] text-red text-[13px] font-extrabold uppercase tracking-[0.04em]">Baca Detail <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                            <span class="activity-detail-link inline-flex items-center gap-2 mt-[18px] text-red text-[13px] font-extrabold uppercase tracking-[0.04em] [&_i]:w-auto [&_i]:text-[12px] [&_i]:transition-transform [&_i]:duration-[180ms] [&_i]:ease-[ease]">Baca Detail <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
                         </a>
                     </article>
                 @endforeach

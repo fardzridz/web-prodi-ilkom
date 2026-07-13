@@ -950,8 +950,7 @@ a {
   color: var(--grey-2);
 }
 
-#kegiatan-section .visit-card,
-.activities-list-section .activities-page-card {
+#kegiatan-section .visit-card {
   height: 100%;
 }
 

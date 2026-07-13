@@ -950,16 +950,6 @@ a {
   color: var(--grey-2);
 }
 
-#kegiatan-section .visit-card h3 {
-  display: -webkit-box;
-  min-height: 2.1em;
-  margin-bottom: 0.5rem;
-  overflow: hidden;
-  line-height: 1.05;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
 #kegiatan-section .visit-card p {
   display: -webkit-box;
   min-height: 3.1em;

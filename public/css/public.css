@@ -767,14 +767,6 @@ a {
   background: rgba(150, 26, 38, 0.92);
 }
 
-.contact-button {
-  transition:
-    color 180ms ease,
-    background-color 180ms ease,
-    border-color 180ms ease,
-    transform 180ms ease;
-}
-
 .contact-button:hover,
 .contact-button:focus-visible {
   transform: translateY(-1px);

@@ -73,7 +73,7 @@
             <div class="visit-grid grid grid-cols-3 gap-[34px] mt-[42px] max-[1024px]:grid-cols-1">
                 @foreach ($activities as $activity)
                     <article class="visit-card h-full [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-blue-dark [&_h3]:font-display [&_h3]:text-[34px] [&_h3]:font-medium [&_h3]:leading-none [&_h3]:tracking-[-0.035em] [&_p]:text-grey-2">
-                        <a href="{{ route('activities.show', $activity['slug']) }}" class="block">
+                        <a href="{{ route('activities.show', $activity['slug']) }}" class="flex h-full flex-col">
                             <div class="image-frame placeholder-visit relative min-h-[250px] overflow-hidden bg-center bg-cover" style="background-image: linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)), url('{{ asset($activity['image']) }}');"></div>
                             <h3>{{ $activity['title'] }}</h3>
                             <p>{{ $activity['excerpt'] }}</p>

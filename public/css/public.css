@@ -950,10 +950,6 @@ a {
   color: var(--grey-2);
 }
 
-#kegiatan-section .visit-card {
-  height: 100%;
-}
-
 #kegiatan-section .visit-card > a {
   display: flex;
   height: 100%;

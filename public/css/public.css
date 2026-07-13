@@ -1398,8 +1398,7 @@ a {
 .documents-flow-section .timeline-item,
 .activities-list-section .activity-card,
 .alumni-list-section .alumni-card,
-.lecturer-list-section .lecturer-card,
-.documents-list-section .document-card {
+.lecturer-list-section .lecturer-card {
   box-shadow: none;
 }
 

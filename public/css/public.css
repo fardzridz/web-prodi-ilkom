@@ -1403,11 +1403,6 @@ a {
   box-shadow: none;
 }
 
-.activities-page-card>a:focus-visible {
-  outline: 3px solid rgba(253, 185, 19, 0.72);
-  outline-offset: 5px;
-}
-
 .activities-page-card>a:hover .activity-detail-link i,
 .activities-page-card>a:focus-visible .activity-detail-link i {
   transform: translateX(3px);

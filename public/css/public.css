@@ -767,19 +767,6 @@ a {
   background: rgba(150, 26, 38, 0.92);
 }
 
-.contact-button-primary:hover,
-.contact-button-primary:focus-visible {
-  color: var(--blue-dark);
-  background: #ffd04f;
-}
-
-.contact-button-secondary:hover,
-.contact-button-secondary:focus-visible {
-  color: var(--blue-dark);
-  border-color: var(--yellow);
-  background: var(--yellow);
-}
-
 @media (max-width: 1024px) {
   .contact-section {
     height: 220px;

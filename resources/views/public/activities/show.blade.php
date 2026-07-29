@@ -19,26 +19,32 @@
                 <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Informasi Kegiatan</p>
                 <h2>{{ $activity['title'] }}</h2>
                 <div class="activity-detail-meta grid gap-2.5 mt-6 text-grey-2 text-[15px] leading-[1.45]" aria-label="Informasi utama kegiatan">
-                    <div class="flex items-center gap-3 flex-wrap">
-                        <time datetime="{{ $activity['date'] }}" class="flex items-center gap-2">
-                            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                            <span>{{ $activity['date_label'] }}</span>
-                        </time>
-                        <span class="flex items-center gap-2">
-                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                            <span>{{ $activity['location'] }}</span>
-                        </span>
-                        <span class="activity-share-buttons flex items-center gap-1">
-                            <button type="button" class="share-button share-button-copy" data-share-copy="{{ route('activities.show', $activity['slug']) }}" title="Salin tautan">
-                                <i class="fa-regular fa-copy"></i>
-                            </button>
-                            <a class="share-button share-button-wa" href="https://wa.me/?text={{ urlencode($activity['title'].' - '.route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke WhatsApp">
-                                <i class="fa-brands fa-whatsapp"></i>
-                            </a>
-                            <a class="share-button share-button-fb" href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke Facebook">
-                                <i class="fa-brands fa-facebook-f"></i>
-                            </a>
-                        </span>
+                    <time datetime="{{ $activity['date'] }}" class="flex items-center gap-2">
+                        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                        <span>{{ $activity['date_label'] }}</span>
+                    </time>
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        <span>{{ $activity['location'] }}</span>
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                        <span>{{ $activity['category'] ?: 'Umum' }}</span>
+                    </span>
+                    <div class="activity-share-buttons flex items-center gap-1 mt-1">
+                        <button type="button" class="share-button share-button-copy" data-share-copy="{{ route('activities.show', $activity['slug']) }}" title="Salin tautan">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <a class="share-button share-button-wa" href="https://wa.me/?text={{ urlencode($activity['title'].' - '.route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a class="share-button share-button-ig" href="https://www.instagram.com/share?url={{ urlencode(route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a class="share-button share-button-fb" href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                    </div>
                 </div>
                 <p class="lead-copy mt-[22px] mb-0 text-[17px] font-light">{{ $activity['excerpt'] }}</p>
                 <div class="contact-actions activity-detail-actions flex flex-wrap items-center gap-3.5 justify-end max-[1024px]:justify-start max-[560px]:grid max-[560px]:w-full max-[560px]:justify-items-start justify-start mt-[30px]">

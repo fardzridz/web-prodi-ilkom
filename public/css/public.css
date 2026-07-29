@@ -1429,6 +1429,10 @@ a {
     color: #25d366;
 }
 
+.share-button-ig:hover {
+    color: #e4405f;
+}
+
 .share-button-fb:hover {
     color: #1877f2;
 }

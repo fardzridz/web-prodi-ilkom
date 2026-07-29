@@ -1,11 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
     <title>Masuk Pengelola - Program Studi Ilmu Komputer</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app/app.css') }}?v={{ filemtime(public_path('css/app/app.css')) }}">
 </head>
+
 <body class="login-shell">
     <main class="login-panel">
         <a class="brand login-brand" href="{{ route('home') }}" aria-label="Kembali ke situs">
@@ -16,29 +19,59 @@
             </span>
         </a>
 
-        <section class="content-panel">
-            <p class="eyebrow">Admin CMS</p>
-            <h1>Masuk Pengelola</h1>
-            <p>Gunakan akun pengelola untuk memperbarui konten Program Studi Ilmu Komputer.</p>
+        <section class="content-panel login-card" aria-labelledby="login-heading">
+            <div class="login-heading">
+                <p class="eyebrow">Situs Prodi</p>
+                <h1 id="login-heading">Masuk Pengelola</h1>
+                <p>Gunakan akun pengelola untuk memperbarui konten Program Studi Ilmu Komputer.</p>
+            </div>
 
-            <form class="login-form" action="#" method="post">
+            @if (session('status'))
+            <div class="login-alert login-alert-success" role="status">
+                {{ session('status') }}
+            </div>
+            @endif
+
+            <form class="login-form" action="{{ route('admin.login.store') }}" method="post" novalidate>
                 @csrf
                 <label>
-                    <span>Email</span>
-                    <input type="email" name="email" value="admin@prodi.test" autocomplete="email">
+                    <span>Alamat surel</span>
+                    <input
+                        class="@error('email') is-invalid @enderror"
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        autocomplete="email"
+                        inputmode="email"
+                        required
+                        autofocus
+                        @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+                    @error('email')
+                    <small id="email-error" class="field-error">{{ $message }}</small>
+                    @enderror
                 </label>
                 <label>
-                    <span>Password</span>
-                    <input type="password" name="password" value="password" autocomplete="current-password">
+                    <span>Kata sandi</span>
+                    <input
+                        class="@error('password') is-invalid @enderror"
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                        @error('password') aria-invalid="true" aria-describedby="password-error" @enderror>
+                    @error('password')
+                    <small id="password-error" class="field-error">{{ $message }}</small>
+                    @enderror
                 </label>
                 <label class="checkbox-row">
-                    <input type="checkbox" name="remember">
-                    <span>Ingat saya</span>
+                    <input type="checkbox" name="remember" value="1" @checked(old('remember'))>
+                    <span>Ingat perangkat ini</span>
                 </label>
-                <a class="button button-primary" href="{{ route('admin.dashboard') }}">Masuk</a>
+                <button class="button button-login" type="submit">Masuk</button>
                 <a class="button button-outline" href="{{ route('home') }}">Kembali ke situs</a>
             </form>
         </section>
     </main>
 </body>
+
 </html>

@@ -1,22 +1,24 @@
 @extends('layouts.admin')
 
 @section('title', $title.' - Pengelola Situs Prodi')
+@section('page-section', $section)
+@section('page-heading', $title)
+@section('page-helper', $helper)
 
 @section('content')
-    <section class="admin-heading">
-        <p class="eyebrow">{{ $section }}</p>
-        <h1>{{ $title }}</h1>
-        <p>{{ $helper }}</p>
-    </section>
+    <section class="admin-panel">
+        <div class="admin-panel-heading">
+            <div>
+                <p class="admin-panel-kicker">Rujukan prototipe</p>
+                <h2>Area Modul Siap Digunakan</h2>
+            </div>
+            <code>prototipe/admin/{{ $prototype }}</code>
+        </div>
 
-    <section class="content-panel">
-        <h2>Route Planning Siap</h2>
-        <p>
-            Halaman ini adalah placeholder route untuk menyesuaikan struktur Laravel dengan prototype
-            <code>prototipe/admin/{{ $prototype }}</code>.
-        </p>
-        <p>
-            Implementasi form, tabel, validasi, dan aksi CRUD akan dikerjakan pada task modul terkait.
-        </p>
+        <x-admin.empty-state
+            title="Modul {{ $title }} belum berisi data"
+            message="Layout dan route sudah siap. Form, tabel, validasi, serta aksi data akan dikerjakan pada task P0 modul ini."
+            icon="fa-layer-group"
+        />
     </section>
 @endsection

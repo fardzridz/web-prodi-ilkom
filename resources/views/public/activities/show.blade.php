@@ -14,7 +14,7 @@
 
     <section class="activity-detail-section internal-section section-space bg-white bg-[#f8f9fa] py-20 max-[560px]:py-16">
         <div class="container split-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-center max-[1024px]:grid-cols-1">
-            <div class="image-frame image-frame-large activity-detail-image relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] min-h-[520px] max-[1024px]:min-h-[360px]" style="background-image: linear-gradient(rgba(0, 36, 58, 0.16), rgba(0, 36, 58, 0.16)), url('{{ asset($activity['image']) }}');" aria-label="Gambar kegiatan {{ $activity['title'] }}"></div>
+            <div class="image-frame image-frame-large activity-detail-image relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] min-h-[520px] max-[1024px]:min-h-[360px]" style="background-image: linear-gradient(rgba(0, 36, 58, 0.16), rgba(0, 36, 58, 0.16)), url('{{ $activity['image'] }}'); background-size: cover; background-position: center;" aria-label="Gambar kegiatan {{ $activity['title'] }}"></div>
             <div class="activity-detail-summary relative z-[1] max-w-[640px] pt-2 [&_h2]:m-0 [&_h2]:text-blue-dark [&_h2]:font-display [&_h2]:text-[length:var(--hero-heading-size)] [&_h2]:font-medium [&_h2]:leading-[0.95] [&_h2]:tracking-normal">
                 <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Informasi Kegiatan</p>
                 <h2>{{ $activity['title'] }}</h2>

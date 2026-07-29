@@ -31,9 +31,9 @@
                         <i class="fa-solid fa-tag" aria-hidden="true"></i>
                         <span>{{ $activity['category'] ?: 'Umum' }}</span>
                     </span>
-                    <div class="activity-share-buttons flex items-center gap-1 mt-1">
+                    <div class="activity-share-buttons flex items-center gap-2 mt-2">
                         <button type="button" class="share-button share-button-copy" data-share-copy="{{ route('activities.show', $activity['slug']) }}" title="Salin tautan">
-                            <i class="fa-regular fa-copy"></i>
+                            <i class="fa-regular fa-share-from-square"></i>
                         </button>
                         <a class="share-button share-button-wa" href="https://wa.me/?text={{ urlencode($activity['title'].' - '.route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke WhatsApp">
                             <i class="fa-brands fa-whatsapp"></i>

@@ -3,17 +3,33 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ManageAccountRequest;
+use App\Http\Requests\Admin\UpdateAccountRequest;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class AccountController extends Controller
 {
-    public function index(): View
+    public function index(ManageAccountRequest $request): View
     {
-        return view('admin.placeholder', [
-            'title' => 'Akun Pengelola',
-            'section' => 'Pengaturan',
-            'helper' => 'Atur nama, surel, dan kata sandi akun pengelola situs.',
-            'prototype' => 'akun-admin.html',
+        return view('admin.account.index', [
+            'admin' => $request->user(),
         ]);
+    }
+
+    public function update(UpdateAccountRequest $request): RedirectResponse
+    {
+        $data = $request->safe()->only(['name', 'email', 'password']);
+
+        if (blank($data['password'] ?? null)) {
+            unset($data['password']);
+        }
+
+        $request->user()->update($data);
+        $request->session()->regenerate();
+
+        return redirect()
+            ->route('admin.akun-admin')
+            ->with('success', 'Akun pengelola berhasil diperbarui.');
     }
 }

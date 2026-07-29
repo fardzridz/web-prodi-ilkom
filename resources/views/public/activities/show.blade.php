@@ -19,31 +19,26 @@
                 <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Informasi Kegiatan</p>
                 <h2>{{ $activity['title'] }}</h2>
                 <div class="activity-detail-meta grid gap-2.5 mt-6 text-grey-2 text-[15px] leading-[1.45]" aria-label="Informasi utama kegiatan">
-                    <time datetime="{{ $activity['date'] }}">
-                        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                        <span>{{ $activity['date_label'] }}</span>
-                    </time>
-                    <span>
-                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                        <span>{{ $activity['location'] }}</span>
-                    </span>
-                    <span>
-                        <i class="fa-solid fa-link" aria-hidden="true"></i>
-                        <span class="activity-share-buttons">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <time datetime="{{ $activity['date'] }}" class="flex items-center gap-2">
+                            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                            <span>{{ $activity['date_label'] }}</span>
+                        </time>
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <span>{{ $activity['location'] }}</span>
+                        </span>
+                        <span class="activity-share-buttons flex items-center gap-1">
                             <button type="button" class="share-button share-button-copy" data-share-copy="{{ route('activities.show', $activity['slug']) }}" title="Salin tautan">
-                                <i class="fa-regular fa-copy" aria-hidden="true"></i>
-                                <span>Salin</span>
+                                <i class="fa-regular fa-copy"></i>
                             </button>
                             <a class="share-button share-button-wa" href="https://wa.me/?text={{ urlencode($activity['title'].' - '.route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke WhatsApp">
-                                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-                                <span>WhatsApp</span>
+                                <i class="fa-brands fa-whatsapp"></i>
                             </a>
                             <a class="share-button share-button-fb" href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke Facebook">
-                                <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
-                                <span>Facebook</span>
+                                <i class="fa-brands fa-facebook-f"></i>
                             </a>
                         </span>
-                    </span>
                 </div>
                 <p class="lead-copy mt-[22px] mb-0 text-[17px] font-light">{{ $activity['excerpt'] }}</p>
                 <div class="contact-actions activity-detail-actions flex flex-wrap items-center gap-3.5 justify-end max-[1024px]:justify-start max-[560px]:grid max-[560px]:w-full max-[560px]:justify-items-start justify-start mt-[30px]">
@@ -57,8 +52,6 @@
     <section class="activity-content-section section-space relative overflow-hidden bg-[#f8f9fa] py-20 max-[560px]:py-16">
         <div class="container activity-content-layout w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] relative z-[1]">
             <div class="profile-rich-copy activity-content-copy relative z-[1] max-w-[760px] pt-2 max-w-[820px] [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>h2]:tracking-normal">
-                <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Konten Kegiatan</p>
-                <h2>Deskripsi Lengkap</h2>
                 <div class="rich-text-content activity-rich-text grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 max-w-[760px] [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold">
                     @foreach ($activity['content_blocks'] as $block)
                         @if ($block['type'] === 'html')

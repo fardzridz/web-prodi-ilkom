@@ -84,9 +84,13 @@
                         @foreach ($activities as $activity)
                             <tr>
                                 <td>
-                                    <span class="activity-thumbnail" title="{{ $activity->image ? basename($activity->image) : 'Belum ada gambar' }}">
-                                        <i class="fa-regular fa-image" aria-hidden="true"></i>
-                                    </span>
+                                    @if ($activity->image)
+                                        <img class="activity-thumbnail" src="{{ asset('storage/'.$activity->image) }}" alt="Gambar {{ $activity->title }}" loading="lazy">
+                                    @else
+                                        <span class="activity-thumbnail" title="Belum ada gambar">
+                                            <i class="fa-regular fa-image" aria-hidden="true"></i>
+                                        </span>
+                                    @endif
                                 </td>
                                 <td>
                                     <a class="activity-title-link" href="{{ route('admin.kegiatan.edit', $activity) }}">

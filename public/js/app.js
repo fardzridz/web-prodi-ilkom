@@ -1151,16 +1151,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const upload = input.closest("[data-image-upload]");
         const preview = upload?.querySelector("[data-image-preview]");
-        const fileName = upload?.querySelector("[data-image-file-name]");
-        const placeholder = preview?.querySelector("[data-image-preview-placeholder]");
+        const fileName = document.querySelector("[data-image-file-name]");
+        const overlayLabel = upload?.querySelector("[data-image-overlay-label]");
 
         if (fileName) fileName.textContent = file.name;
 
         if (file.size > 2_097_152) {
-            const existing = upload.querySelector(".activity-field-error");
+            const existing = document.querySelector(".activity-field-error[id^='activity-image']");
             if (!existing) {
                 const error = document.createElement("small");
                 error.className = "activity-field-error";
+                error.id = "activity-image-error";
                 error.textContent = "Ukuran gambar maksimal 2 MB.";
                 input.insertAdjacentElement("afterend", error);
             }
@@ -1175,13 +1176,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 URL.revokeObjectURL(existingImg.src);
                 existingImg.remove();
             }
-            if (placeholder) placeholder.remove();
             const img = document.createElement("img");
             img.src = objectUrl;
             img.alt = "Pratinjau gambar terpilih";
             img.dataset.objectUrl = objectUrl;
             preview.appendChild(img);
             preview.removeAttribute("data-empty");
+            if (overlayLabel) overlayLabel.textContent = "Ganti gambar";
         }
     });
 })();

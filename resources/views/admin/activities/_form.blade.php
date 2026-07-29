@@ -86,22 +86,16 @@
         <section class="admin-panel activity-publish-panel">
             <div class="activity-field">
                 <label for="activity-image">Gambar kegiatan</label>
-                <div class="activity-image-upload" data-image-upload>
+                <label class="activity-image-upload" for="activity-image" data-image-upload>
                     <div class="activity-image-preview" data-image-preview @if (! $activity->image) data-empty @endif>
                         @if ($activity->image)
                             <img src="{{ asset('storage/'.$activity->image) }}" alt="Gambar kegiatan saat ini" data-image-preview-img>
-                        @else
-                            <span data-image-preview-placeholder>
-                                <i class="fa-solid fa-image" aria-hidden="true"></i>
-                                <span>Pratinjau gambar</span>
-                            </span>
                         @endif
+                        <div class="activity-image-overlay">
+                            <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                            <strong data-image-overlay-label>{{ $activity->image ? 'Ganti gambar' : 'Pilih gambar' }}</strong>
+                        </div>
                     </div>
-                    <label class="activity-image-pick" for="activity-image">
-                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
-                        <strong>Pilih gambar</strong>
-                        <span data-image-file-name>JPG, PNG, atau WebP · maksimal 2 MB</span>
-                    </label>
                     <input
                         id="activity-image"
                         class="sr-only"
@@ -112,7 +106,8 @@
                         @error('image') aria-invalid="true" aria-describedby="activity-image-error" @enderror
                     >
                     @error('image')<small id="activity-image-error" class="activity-field-error">{{ $message }}</small>@enderror
-                </div>
+                </label>
+                <small data-image-file-name>Format JPG, PNG, atau WebP · maksimal 2 MB</small>
             </div>
 
             <div class="activity-field">

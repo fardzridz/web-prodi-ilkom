@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\UpdateActivityRequest;
 use App\Models\Activity;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -49,6 +50,10 @@ class ActivityController extends Controller
         $data = $this->normalizePublication($request->validated());
         $data['user_id'] = $request->user()->getAuthIdentifier();
 
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('activities', 'public');
+        }
+
         Activity::query()->create($data);
 
         return redirect()
@@ -65,7 +70,16 @@ class ActivityController extends Controller
 
     public function update(UpdateActivityRequest $request, Activity $activity): RedirectResponse
     {
-        $activity->update($this->normalizePublication($request->validated(), $activity));
+        $data = $this->normalizePublication($request->validated(), $activity);
+
+        if ($request->hasFile('image')) {
+            if ($activity->image) {
+                Storage::disk('public')->delete($activity->image);
+            }
+            $data['image'] = $request->file('image')->store('activities', 'public');
+        }
+
+        $activity->update($data);
 
         return redirect()
             ->route('admin.kegiatan.index')

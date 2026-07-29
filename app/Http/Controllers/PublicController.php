@@ -189,6 +189,12 @@ class PublicController extends Controller
             return [];
         }
 
+        if (str_starts_with(ltrim((string) $content), '<')) {
+            return [
+                ['type' => 'html', 'html' => $content],
+            ];
+        }
+
         return [
             ['type' => 'paragraph', 'text' => $content],
         ];

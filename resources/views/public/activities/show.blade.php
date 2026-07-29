@@ -48,7 +48,9 @@
                 <h2>Deskripsi Lengkap</h2>
                 <div class="rich-text-content activity-rich-text grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 max-w-[760px] [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold">
                     @foreach ($activity['content_blocks'] as $block)
-                        @if ($block['type'] === 'paragraph')
+                        @if ($block['type'] === 'html')
+                            {!! $block['html'] !!}
+                        @elseif ($block['type'] === 'paragraph')
                             <p>{{ $block['text'] }}</p>
                         @elseif ($block['type'] === 'heading')
                             <h3>{{ $block['text'] }}</h3>

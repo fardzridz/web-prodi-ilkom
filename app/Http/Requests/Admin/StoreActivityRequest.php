@@ -35,6 +35,8 @@ class StoreActivityRequest extends FormRequest
             'activity_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:2000-01-01', 'before_or_equal:2100-12-31'],
             'location' => ['required', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:100'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
             'status' => ['required', Rule::in(Activity::STATUSES)],
             'published_at' => [
                 Rule::requiredIf(fn (): bool => $this->input('status') === Activity::STATUS_SCHEDULED),
@@ -55,6 +57,9 @@ class StoreActivityRequest extends FormRequest
             'published_at.required' => 'Jadwal tayang wajib diisi untuk kegiatan terjadwal.',
             'published_at.after' => 'Jadwal tayang harus berada di masa depan.',
             'published_at.prohibited' => 'Jadwal tayang hanya boleh diisi untuk status terjadwal.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran gambar maksimal 2 MB.',
         ];
     }
 
@@ -64,7 +69,7 @@ class StoreActivityRequest extends FormRequest
             'title' => trim((string) $this->input('title')),
             'slug' => Str::slug($this->input('slug') ?: $this->input('title')),
             'excerpt' => trim((string) $this->input('excerpt')) ?: null,
-            'content' => trim((string) $this->input('content')),
+            'content' => (string) $this->input('content'),
             'location' => trim((string) $this->input('location')),
             'category' => trim((string) $this->input('category')) ?: null,
             'status' => strtolower(trim((string) $this->input('status'))),

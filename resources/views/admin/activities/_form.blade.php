@@ -8,6 +8,7 @@
     class="activity-form-layout"
     action="{{ $isEditing ? route('admin.kegiatan.update', $activity) : route('admin.kegiatan.store') }}"
     method="post"
+    enctype="multipart/form-data"
     data-activity-form
 >
     @csrf
@@ -75,30 +76,28 @@
 
         <div class="activity-field">
             <label for="activity-content">Isi kegiatan <span aria-hidden="true">*</span></label>
-            <textarea
-                id="activity-content"
-                name="content"
-                rows="15"
-                maxlength="100000"
-                required
-                @error('content') aria-invalid="true" aria-describedby="activity-content-error" @enderror
-            >{{ old('content', $activity->content) }}</textarea>
-            <small>Editor rich text visual akan ditingkatkan pada tahap integrasi editor; data saat ini tersimpan aman sebagai teks.</small>
+            <input id="activity-content" type="hidden" name="content" value="{{ old('content', $activity->content) }}">
+            <trix-editor input="activity-content" class="trix-editor"></trix-editor>
             @error('content')<small id="activity-content-error" class="activity-field-error">{{ $message }}</small>@enderror
         </div>
     </section>
 
     <aside class="activity-form-aside">
         <section class="admin-panel activity-publish-panel">
-            <div class="activity-deferred-upload">
-                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
-                <div>
-                    <strong>Gambar kegiatan</strong>
-                    <p>Upload gambar diaktifkan pada Task 22 dan batas file diaudit pada Task 23.</p>
-                    @if ($activity->image)
-                        <small>Path saat ini: {{ $activity->image }}</small>
-                    @endif
-                </div>
+            <div class="activity-field">
+                <label for="activity-image">Gambar kegiatan</label>
+                <input
+                    id="activity-image"
+                    name="image"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    @error('image') aria-invalid="true" aria-describedby="activity-image-error" @enderror
+                >
+                <small>Format JPG, PNG, atau WebP. Maksimal 2 MB.</small>
+                @if ($activity->image)
+                    <small class="activity-current-image">Gambar saat ini: {{ basename($activity->image) }}</small>
+                @endif
+                @error('image')<small id="activity-image-error" class="activity-field-error">{{ $message }}</small>@enderror
             </div>
 
             <div class="activity-field">

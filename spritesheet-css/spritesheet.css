@@ -1,0 +1,32 @@
+.sprite {
+  display: inline-block;
+  background: url('spritesheet.png') no-repeat;
+  width: 149px;
+  height: 167px;
+}
+.sprite-0 { background-position: -0px -0px; }
+.sprite-1 { background-position: -149px -0px; }
+.sprite-2 { background-position: -298px -0px; }
+.sprite-3 { background-position: -447px -0px; }
+.sprite-4 { background-position: -0px -167px; }
+.sprite-5 { background-position: -149px -167px; }
+.sprite-6 { background-position: -298px -167px; }
+.sprite-7 { background-position: -447px -167px; }
+.sprite-8 { background-position: -0px -334px; }
+.sprite-9 { background-position: -149px -334px; }
+.sprite-10 { background-position: -298px -334px; }
+.sprite-11 { background-position: -447px -334px; }
+.sprite-12 { background-position: -0px -501px; }
+.sprite-13 { background-position: -149px -501px; }
+.sprite-14 { background-position: -298px -501px; }
+.sprite-15 { background-position: -447px -501px; }
+.sprite-16 { background-position: -0px -668px; }
+.sprite-17 { background-position: -149px -668px; }
+.sprite-18 { background-position: -298px -668px; }
+.sprite-19 { background-position: -447px -668px; }
+.sprite-20 { background-position: -0px -835px; }
+.sprite-21 { background-position: -149px -835px; }
+.sprite-22 { background-position: -298px -835px; }
+.sprite-23 { background-position: -447px -835px; }
+.sprite-24 { background-position: -0px -1002px; }
+.sprite-25 { background-position: -149px -1002px; }

@@ -29,7 +29,20 @@
                     </span>
                     <span>
                         <i class="fa-solid fa-link" aria-hidden="true"></i>
-                        <span>{{ route('activities.show', $activity['slug']) }}</span>
+                        <span class="activity-share-buttons">
+                            <button type="button" class="share-button share-button-copy" data-share-copy="{{ route('activities.show', $activity['slug']) }}" title="Salin tautan">
+                                <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                                <span>Salin</span>
+                            </button>
+                            <a class="share-button share-button-wa" href="https://wa.me/?text={{ urlencode($activity['title'].' - '.route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke WhatsApp">
+                                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                                <span>WhatsApp</span>
+                            </a>
+                            <a class="share-button share-button-fb" href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('activities.show', $activity['slug'])) }}" target="_blank" rel="noopener" title="Bagikan ke Facebook">
+                                <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                                <span>Facebook</span>
+                            </a>
+                        </span>
                     </span>
                 </div>
                 <p class="lead-copy mt-[22px] mb-0 text-[17px] font-light">{{ $activity['excerpt'] }}</p>
@@ -87,3 +100,19 @@
         'secondaryHref' => 'mailto:univ.pgriwiranegara@gmail.com',
     ])
 @endsection
+
+<script>
+(function () {
+    document.addEventListener('click', function (event) {
+        var btn = event.target.closest('[data-share-copy]');
+        if (!btn) return;
+        var url = btn.getAttribute('data-share-copy');
+        navigator.clipboard.writeText(url).then(function () {
+            var span = btn.querySelector('span');
+            var orig = span.textContent;
+            span.textContent = 'Tersalin!';
+            setTimeout(function () { span.textContent = orig; }, 2000);
+        });
+    });
+})();
+</script>

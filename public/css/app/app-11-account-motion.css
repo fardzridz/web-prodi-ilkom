@@ -1,0 +1,210 @@
+.account-editor-form {
+    display: grid;
+    gap: 20px;
+}
+
+.account-profile-card {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+}
+
+.account-profile-avatar {
+    display: grid;
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
+    place-items: center;
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: linear-gradient(145deg, var(--blue-mid), var(--blue-dark));
+    border: 3px solid rgba(255, 255, 255, 0.72);
+    border-radius: 50%;
+}
+
+.account-profile-card > div {
+    min-width: 0;
+    flex: 1;
+}
+
+.account-profile-card p,
+.account-profile-card h2 {
+    margin: 0;
+}
+
+.account-profile-card p {
+    color: var(--red-dark);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.account-profile-card h2 {
+    margin-top: 3px;
+    color: var(--blue-dark);
+    font-family: var(--font-heading);
+    font-size: 18px;
+}
+
+.account-profile-card > div > span {
+    display: block;
+    margin-top: 2px;
+    overflow: hidden;
+    color: var(--grey-2);
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account-profile-card > strong {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 11px;
+    color: var(--blue-dark);
+    font-size: 10px;
+    background: rgba(41, 85, 123, 0.09);
+    border: 1px solid rgba(41, 85, 123, 0.17);
+    border-radius: 999px;
+}
+
+.account-editor-grid {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+    gap: 20px;
+}
+
+.account-editor-main {
+    display: grid;
+    min-width: 0;
+    gap: 20px;
+}
+
+.account-role-field {
+    position: relative;
+}
+
+.account-role-field > i {
+    position: absolute;
+    top: 50%;
+    left: 13px;
+    color: var(--blue-mid);
+    font-size: 12px;
+    transform: translateY(-50%);
+}
+
+.account-role-field input {
+    padding-left: 38px;
+    color: var(--grey-2);
+    cursor: not-allowed;
+    background: var(--grey-6);
+}
+
+.account-security-panel {
+    display: grid;
+    position: sticky;
+    top: 90px;
+    gap: 14px;
+}
+
+.account-confirm-card {
+    padding: 22px;
+}
+
+.account-confirm-icon {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 13px;
+    place-items: center;
+    color: var(--white);
+    background: linear-gradient(145deg, var(--red), var(--red-dark));
+    border-radius: 10px;
+    box-shadow: 0 7px 16px rgba(140, 39, 51, 0.2);
+}
+
+.account-confirm-card h2 {
+    margin: 0;
+    color: var(--blue-dark);
+    font-family: var(--font-heading);
+    font-size: 16px;
+}
+
+.account-confirm-card > p {
+    margin: 7px 0 18px;
+    color: var(--grey-2);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.account-confirm-card .admin-button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 17px;
+}
+
+.account-security-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    color: var(--blue-dark);
+    background: rgba(41, 85, 123, 0.08);
+    border: 1px solid rgba(41, 85, 123, 0.15);
+    border-radius: 8px;
+}
+
+.account-security-note i {
+    margin-top: 2px;
+    color: var(--blue-mid);
+}
+
+.account-security-note p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+@media (max-width: 1100px) {
+    .account-editor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .account-security-panel {
+        position: static;
+    }
+}
+
+@media (max-width: 700px) {
+    .account-profile-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .account-profile-card > div {
+        flex-basis: calc(100% - 70px);
+    }
+
+    .account-profile-card > strong {
+        margin-left: 70px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

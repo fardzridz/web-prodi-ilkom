@@ -1,0 +1,122 @@
+.lecturer-table {
+    min-width: 1080px;
+}
+
+.lecturer-table td:nth-child(2) {
+    min-width: 220px;
+}
+
+.lecturer-table td:nth-child(4),
+.lecturer-table td:nth-child(5) {
+    min-width: 150px;
+}
+
+.lecturer-avatar,
+.lecturer-photo-preview {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    object-fit: cover;
+    color: var(--blue-dark);
+    background: rgba(253, 185, 19, 0.32);
+    border: 1px solid rgba(253, 185, 19, 0.65);
+    font-weight: 700;
+}
+
+.lecturer-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 11px;
+}
+
+.lecturer-identity > small {
+    display: block;
+    max-width: 240px;
+    margin-top: 5px;
+    overflow: hidden;
+    color: var(--grey-3);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.activity-row-actions form {
+    margin: 0;
+}
+
+.lecturer-toggle-button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    color: #8a6200;
+    background: rgba(253, 185, 19, 0.13);
+    border: 1px solid rgba(253, 185, 19, 0.5);
+}
+
+.lecturer-toggle-button:hover {
+    color: var(--blue-dark);
+    background: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.lecturer-form {
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+}
+
+.lecturer-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.lecturer-photo-panel {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    padding: 17px;
+    color: var(--blue-mid);
+    background: #edf4f8;
+    border: 1px dashed #b9cedb;
+}
+
+.lecturer-photo-preview {
+    width: 88px;
+    height: 88px;
+    font-size: 26px;
+}
+
+.lecturer-photo-panel strong,
+.lecturer-photo-panel small {
+    display: block;
+}
+
+.lecturer-photo-panel p {
+    max-width: 680px;
+    margin: 5px 0 0;
+    color: var(--grey-2);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.lecturer-photo-panel small {
+    margin-top: 7px;
+    overflow-wrap: anywhere;
+    color: var(--grey-3);
+    font-size: 10px;
+}
+
+.lecturer-bio-field textarea {
+    min-height: 150px;
+}
+
+.lecturer-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--grey-5);
+}
+

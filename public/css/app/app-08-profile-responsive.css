@@ -1,0 +1,366 @@
+.profile-editor-form {
+    display: grid;
+    gap: 22px;
+}
+
+.profile-editor-intro {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 22px;
+}
+
+.profile-editor-intro > span,
+.profile-field-heading > span {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    color: var(--blue-mid);
+    background: #edf4f8;
+    border-radius: 8px;
+}
+
+.profile-editor-intro > span {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+}
+
+.profile-editor-intro h2,
+.profile-editor-intro p,
+.profile-field-heading h2,
+.profile-field-heading p {
+    margin: 0;
+}
+
+.profile-editor-intro h2,
+.profile-field-heading h2 {
+    color: var(--blue-dark);
+    font-family: var(--font-heading);
+}
+
+.profile-editor-intro h2 {
+    font-size: 18px;
+}
+
+.profile-editor-intro p {
+    max-width: 680px;
+    margin-top: 5px;
+    color: var(--grey-2);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.profile-editor-intro small {
+    margin-left: auto;
+    color: var(--grey-3);
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.profile-editor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.profile-field-card {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: 18px;
+    padding: 22px;
+}
+
+.profile-field-vision {
+    grid-column: 1 / -1;
+}
+
+.profile-field-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--grey-5);
+}
+
+.profile-field-heading > span {
+    width: 42px;
+    height: 42px;
+}
+
+.profile-field-heading p {
+    color: var(--red-dark);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.profile-field-heading h2 {
+    margin-top: 3px;
+    font-size: 17px;
+}
+
+.profile-field-card textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.profile-field-vision textarea {
+    min-height: 125px;
+    color: var(--blue-dark);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.7;
+}
+
+.profile-editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 0 4px;
+    border-top: 1px solid var(--grey-5);
+}
+
+@media (max-width: 1180px) {
+    .admin-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1023px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .admin-sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    .admin-sidebar-close,
+    .admin-menu-button {
+        display: inline-grid;
+    }
+
+    .admin-main {
+        margin-left: 0;
+    }
+
+    .admin-menu-open {
+        overflow: hidden;
+    }
+
+    .admin-dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dashboard-aside {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .activity-toolbar {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .activity-toolbar > .admin-button {
+        align-self: flex-start;
+    }
+
+    .activity-form-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .document-form,
+    .document-category-layout,
+    .profile-editor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-field-vision {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 680px) {
+    .admin-topbar {
+        min-height: 66px;
+        padding-inline: 14px;
+    }
+
+    .admin-topbar-context strong,
+    .admin-topbar-context small,
+    .admin-view-site span,
+    .admin-profile-copy {
+        display: none;
+    }
+
+    .admin-view-site {
+        width: 42px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .admin-profile-toggle {
+        padding-right: 8px;
+    }
+
+    .admin-content-inner {
+        padding: 20px 14px 40px;
+    }
+
+    .admin-grid,
+    .admin-status-grid,
+    .admin-dashboard-aside {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-panel-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-empty-state {
+        min-height: 280px;
+        padding-inline: 18px;
+    }
+
+    .activity-filter-form,
+    .activity-filter-form label,
+    .activity-filter-select,
+    .activity-filter-date,
+    .activity-filter-search,
+    .activity-toolbar > .admin-button {
+        width: 100%;
+    }
+
+    .activity-filter-form .admin-button {
+        flex: 1;
+    }
+
+    .activity-pagination,
+    .activity-pagination > div {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .activity-pagination > div {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        text-align: center;
+    }
+
+    .activity-pagination strong {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    .activity-form-main,
+    .activity-publish-panel {
+        padding: 17px;
+    }
+
+    .admin-delete-dialog form {
+        padding: 23px 18px;
+    }
+
+    .lecturer-form {
+        padding: 17px;
+    }
+
+    .lecturer-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lecturer-photo-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .lecturer-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .lecturer-form-actions .admin-button {
+        width: 100%;
+    }
+
+    .document-filter-form select {
+        min-width: 0;
+    }
+
+    .document-form-main,
+    .document-publish-panel,
+    .document-category-form-panel {
+        padding: 17px;
+    }
+
+    .document-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .document-current-file,
+    .document-category-list-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .document-category-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .document-category-form-actions .admin-button {
+        width: 100%;
+    }
+
+    .alumni-filter-form select {
+        min-width: 0;
+    }
+
+    .alumni-form {
+        padding: 17px;
+    }
+
+    .alumni-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .alumni-photo-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .alumni-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .alumni-form-actions .admin-button {
+        width: 100%;
+    }
+
+    .profile-editor-intro {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 17px;
+    }
+
+    .profile-editor-intro small {
+        margin-left: 0;
+        white-space: normal;
+    }
+
+    .profile-field-card {
+        padding: 17px;
+    }
+
+    .profile-editor-actions {
+        flex-direction: column-reverse;
+    }
+
+    .profile-editor-actions .admin-button {
+        width: 100%;
+    }
+}
+

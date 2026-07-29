@@ -1,0 +1,98 @@
+@font-face {
+    font-family: "Fakt Local";
+    src: url("../../assets/fonts/FaktPro-Normal.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Fakt Local";
+    src: url("../../assets/fonts/FaktPro-SemiBold.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Grold Local";
+    src: url("../../assets/fonts/Grold-SemiLight.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+:root {
+    --blue-dark: #00243a;
+    --blue-deep: #001d2e;
+    --blue-mid: #29557b;
+    --blue-section: #153d5b;
+    --red: #e91b2f;
+    --red-dark: #961a26;
+    --yellow: #fdb913;
+    --grey-1: #343638;
+    --grey-2: #5b5c5e;
+    --grey-3: #898a8c;
+    --grey-4: #a7a9ac;
+    --grey-5: #e6e9ec;
+    --grey-6: #f5f7f9;
+    --white: #ffffff;
+    --green: #16794c;
+    --green-soft: #e9f7f0;
+    --font-body: "Fakt Local", Aptos, "Segoe UI", Arial, sans-serif;
+    --font-heading: "Grold Local", "Aptos Display", "Segoe UI", Arial, sans-serif;
+    --sidebar-width: 288px;
+    --shadow-soft: 0 18px 46px rgba(0, 29, 46, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+    background: var(--grey-6);
+}
+
+body {
+    margin: 0;
+    color: var(--grey-1);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    border: 0;
+}
+
+button:not(:disabled),
+a {
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 3px solid rgba(253, 185, 19, 0.55);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+

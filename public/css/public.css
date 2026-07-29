@@ -385,23 +385,46 @@ a {
   will-change: opacity, transform;
 }
 
+.hero-slide-static {
+  animation: none;
+  opacity: 1;
+  transform: scale(1.04) translate3d(0, 0, 0);
+}
+
+.hero-slide-delay-0 {
+  animation-delay: -1.28s;
+}
+
+.hero-slide-delay-1 {
+  animation-delay: 8s;
+}
+
+.hero-slide-delay-2 {
+  animation-delay: 16s;
+}
+
+.hero-slide-delay-3 {
+  animation-delay: 24s;
+}
+
+.hero-slide-delay-4 {
+  animation-delay: 32s;
+}
+
+/* Fallback class names kept for older markup / reduced-motion rules */
 .hero-slide-one {
-  background-image: url("../assets/images/hero/hero-1.jpeg");
   animation-delay: -1.28s;
 }
 
 .hero-slide-two {
-  background-image: url("../assets/images/hero/hero-2.jpeg");
   animation-delay: 8s;
 }
 
 .hero-slide-three {
-  background-image: url("../assets/images/hero/hero-3.jpeg");
   animation-delay: 16s;
 }
 
 .hero-slide-four {
-  background-image: url("../assets/images/hero/hero-4.jpeg");
   animation-delay: 24s;
 }
 
@@ -511,6 +534,8 @@ a {
     transition: none;
   }
 
+  .hero-slide-static,
+  .hero-slide-delay-0,
   .hero-slide-one {
     opacity: 1;
   }

@@ -86,18 +86,33 @@
         <section class="admin-panel activity-publish-panel">
             <div class="activity-field">
                 <label for="activity-image">Gambar kegiatan</label>
-                <input
-                    id="activity-image"
-                    name="image"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    @error('image') aria-invalid="true" aria-describedby="activity-image-error" @enderror
-                >
-                <small>Format JPG, PNG, atau WebP. Maksimal 2 MB.</small>
-                @if ($activity->image)
-                    <small class="activity-current-image">Gambar saat ini: {{ basename($activity->image) }}</small>
-                @endif
-                @error('image')<small id="activity-image-error" class="activity-field-error">{{ $message }}</small>@enderror
+                <div class="activity-image-upload" data-image-upload>
+                    <div class="activity-image-preview" data-image-preview @if (! $activity->image) data-empty @endif>
+                        @if ($activity->image)
+                            <img src="{{ asset('storage/'.$activity->image) }}" alt="Gambar kegiatan saat ini" data-image-preview-img>
+                        @else
+                            <span data-image-preview-placeholder>
+                                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                                <span>Pratinjau gambar</span>
+                            </span>
+                        @endif
+                    </div>
+                    <label class="activity-image-pick" for="activity-image">
+                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                        <strong>Pilih gambar</strong>
+                        <span data-image-file-name>JPG, PNG, atau WebP · maksimal 2 MB</span>
+                    </label>
+                    <input
+                        id="activity-image"
+                        class="sr-only"
+                        name="image"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        data-image-input
+                        @error('image') aria-invalid="true" aria-describedby="activity-image-error" @enderror
+                    >
+                    @error('image')<small id="activity-image-error" class="activity-field-error">{{ $message }}</small>@enderror
+                </div>
             </div>
 
             <div class="activity-field">

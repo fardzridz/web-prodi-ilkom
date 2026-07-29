@@ -26,27 +26,45 @@ Route::get('/dokumen', [PublicController::class, 'documents'])->name('documents'
 Route::get('/alumni', [PublicController::class, 'alumni'])->name('alumni');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 
-Route::prefix('admin')->name('admin.')->group(function (): void {
+// Route::prefix('admin')->name('admin.')->group(function (): void {
+Route::prefix('komi-panel')->name('admin.')->group(function (): void {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
-    Route::get('/', fn () => redirect()->route('admin.dashboard'))->name('home');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/beranda', [HomeSectionController::class, 'index'])->name('beranda');
-    Route::get('/profil', [ProgramProfileController::class, 'index'])->name('profil');
-    Route::get('/dosen', [LecturerController::class, 'index'])->name('dosen.index');
-    Route::get('/dosen/create', [LecturerController::class, 'create'])->name('dosen.create');
-    Route::get('/dosen/{lecturer}/edit', [LecturerController::class, 'edit'])->name('dosen.edit');
-    Route::get('/kegiatan', [ActivityController::class, 'index'])->name('kegiatan.index');
-    Route::get('/kegiatan/create', [ActivityController::class, 'create'])->name('kegiatan.create');
-    Route::get('/kegiatan/{activity}/edit', [ActivityController::class, 'edit'])->name('kegiatan.edit');
-    Route::get('/dokumen', [DocumentController::class, 'index'])->name('dokumen.index');
-    Route::get('/dokumen/create', [DocumentController::class, 'create'])->name('dokumen.create');
-    Route::get('/dokumen/{document}/edit', [DocumentController::class, 'edit'])->name('dokumen.edit');
-    Route::get('/kategori-dokumen', [DocumentCategoryController::class, 'index'])->name('kategori-dokumen');
-    Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
-    Route::get('/alumni/create', [AlumniController::class, 'create'])->name('alumni.create');
-    Route::get('/alumni/{alumni}/edit', [AlumniController::class, 'edit'])->name('alumni.edit');
-    Route::get('/jurnal', [SiteSettingController::class, 'journal'])->name('jurnal');
-    Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
-    Route::get('/pengaturan', [SiteSettingController::class, 'index'])->name('pengaturan');
-    Route::get('/akun-admin', [AccountController::class, 'index'])->name('akun-admin');
+    Route::post('/login', [AuthController::class, 'authenticate'])->name('login.store');
+
+    Route::middleware('auth')->group(function (): void {
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/', fn () => redirect()->route('admin.dashboard'))->name('home');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/beranda', [HomeSectionController::class, 'index'])->name('beranda');
+        Route::put('/beranda', [HomeSectionController::class, 'update'])->name('beranda.update');
+        Route::get('/profil', [ProgramProfileController::class, 'index'])->name('profil');
+        Route::put('/profil', [ProgramProfileController::class, 'update'])->name('profil.update');
+        Route::patch('/dosen/{lecturer}/status', [LecturerController::class, 'toggleStatus'])->name('dosen.status');
+        Route::resource('dosen', LecturerController::class)
+            ->except(['show'])
+            ->parameters(['dosen' => 'lecturer']);
+        Route::resource('kegiatan', ActivityController::class)
+            ->except(['show'])
+            ->parameters(['kegiatan' => 'activity']);
+        Route::get('/dokumen/{document}/download', [DocumentController::class, 'download'])->name('dokumen.download');
+        Route::patch('/dokumen/{document}/status', [DocumentController::class, 'toggleStatus'])->name('dokumen.status');
+        Route::resource('dokumen', DocumentController::class)
+            ->except(['show'])
+            ->parameters(['dokumen' => 'document']);
+        Route::resource('kategori-dokumen', DocumentCategoryController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->parameters(['kategori-dokumen' => 'documentCategory']);
+        Route::patch('/alumni/{alumni}/status', [AlumniController::class, 'toggleStatus'])->name('alumni.status');
+        Route::resource('alumni', AlumniController::class)
+            ->except(['show'])
+            ->parameters(['alumni' => 'alumni']);
+        Route::get('/jurnal', [SiteSettingController::class, 'journal'])->name('jurnal');
+        Route::put('/jurnal', [SiteSettingController::class, 'updateJournal'])->name('jurnal.update');
+        Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
+        Route::put('/kontak', [ContactController::class, 'update'])->name('kontak.update');
+        Route::get('/pengaturan', [SiteSettingController::class, 'index'])->name('pengaturan');
+        Route::put('/pengaturan', [SiteSettingController::class, 'update'])->name('pengaturan.update');
+        Route::get('/akun-admin', [AccountController::class, 'index'])->name('akun-admin');
+        Route::put('/akun-admin', [AccountController::class, 'update'])->name('akun-admin.update');
+    });
 });

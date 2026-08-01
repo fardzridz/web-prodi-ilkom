@@ -9,6 +9,7 @@
     class="admin-panel alumni-form"
     action="{{ $isEditing ? route('admin.alumni.update', $alumni) : route('admin.alumni.store') }}"
     method="post"
+    enctype="multipart/form-data"
 >
     @csrf
     @if ($isEditing)
@@ -118,11 +119,24 @@
         @endif
         <div>
             <strong>Foto alumni</strong>
-            <p>Slot foto sudah tersedia. Upload fisik diaktifkan pada Task 22 dan aturan MIME/ukuran diaudit pada Task 23.</p>
+            <p>Slot foto sudah tersedia. Upload fisik diaktifkan.</p>
             @if ($alumni->photo)
                 <small>Path saat ini: {{ $alumni->photo }}</small>
             @endif
         </div>
+    </div>
+
+    <div class="activity-field alumni-photo-field">
+        <label for="alumni-photo">{{ $isEditing ? 'Ganti foto alumni' : 'Unggah foto alumni' }}</label>
+        <input
+            id="alumni-photo"
+            name="photo"
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            @error('photo') aria-invalid="true" aria-describedby="alumni-photo-error" @enderror
+        >
+        <small>Format gambar (JPG, PNG, GIF, WebP), maksimal 2 MB. Disimpan ke storage/app/public/uploads/alumni/.</small>
+        @error('photo')<small id="alumni-photo-error" class="activity-field-error">{{ $message }}</small>@enderror
     </div>
 
     <div class="activity-field alumni-testimonial-field">

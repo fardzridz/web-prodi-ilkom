@@ -47,6 +47,7 @@ class UpdateLecturerRequest extends FormRequest
             'bio' => ['nullable', 'string', 'max:5000'],
             'status' => ['required', Rule::in(Lecturer::STATUSES)],
             'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
+            'photo' => ['nullable', 'sometimes', 'image', 'mimes:jpeg,png,gif,webp', 'max:2048'],
         ];
     }
 
@@ -58,6 +59,9 @@ class UpdateLecturerRequest extends FormRequest
             'nidn.unique' => 'NIDN sudah digunakan dosen lain.',
             'email.unique' => 'Alamat surel sudah digunakan dosen lain.',
             'sort_order.max' => 'Urutan tampil maksimal 9.999.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus JPEG, PNG, GIF, atau WebP.',
+            'photo.max' => 'Ukuran foto maksimal 2 MB.',
         ];
     }
 

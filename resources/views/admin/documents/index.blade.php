@@ -39,8 +39,8 @@
                 <label class="sr-only" for="document-filter-status">Filter status dokumen</label>
                 <select id="document-filter-status" name="status">
                     <option value="">Semua status</option>
-                    <option value="draft" @selected(($filters['status'] ?? '') === 'draft')>Draft</option>
-                    <option value="published" @selected(($filters['status'] ?? '') === 'published')>Published</option>
+                    <option value="draft" @selected(($filters['status'] ?? '') === 'draft')>Draf</option>
+                    <option value="published" @selected(($filters['status'] ?? '') === 'published')>Terbit</option>
                 </select>
             </div>
 

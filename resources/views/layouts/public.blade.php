@@ -37,6 +37,7 @@
         };
     </script>
     <link rel="stylesheet" href="{{ asset('css/public.css') }}">
+    @stack('head')
 </head>
 <body class="m-0 overflow-x-clip bg-[#f8f9fa] text-grey-1 font-body text-base font-normal leading-[1.55] tracking-normal antialiased">
     @include('partials.public.header')
@@ -48,5 +49,6 @@
     @include('partials.public.footer')
     @include('partials.public.sticky-actions')
     <script src="{{ asset('js/public.js') }}"></script>
+    @stack('scripts')
 </body>
 </html>

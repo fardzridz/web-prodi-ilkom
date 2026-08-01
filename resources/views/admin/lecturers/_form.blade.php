@@ -8,6 +8,7 @@
     class="admin-panel lecturer-form"
     action="{{ $isEditing ? route('admin.dosen.update', $lecturer) : route('admin.dosen.store') }}"
     method="post"
+    enctype="multipart/form-data"
 >
     @csrf
     @if ($isEditing)
@@ -145,11 +146,25 @@
         @endif
         <div>
             <strong>Foto dosen</strong>
-            <p>Slot foto sudah tersedia. Upload fisik diaktifkan pada Task 22 dan aturan MIME/ukuran diaudit pada Task 23.</p>
+            <p>Slot foto sudah tersedia. Upload fisik diaktifkan.</p>
+            <small>Task 22 (unggah foto) &middot; Task 23 (penyimpanan file fisik)</small>
             @if ($lecturer->photo)
                 <small>Path saat ini: {{ $lecturer->photo }}</small>
             @endif
         </div>
+    </div>
+
+    <div class="activity-field lecturer-photo-field">
+        <label for="lecturer-photo">{{ $isEditing ? 'Ganti foto dosen' : 'Unggah foto dosen' }}</label>
+        <input
+            id="lecturer-photo"
+            name="photo"
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            @error('photo') aria-invalid="true" aria-describedby="lecturer-photo-error" @enderror
+        >
+        <small>Format gambar (JPG, PNG, GIF, WebP), maksimal 2 MB. Disimpan ke storage/app/public/uploads/lecturers/.</small>
+        @error('photo')<small id="lecturer-photo-error" class="activity-field-error">{{ $message }}</small>@enderror
     </div>
 
     <div class="activity-field lecturer-bio-field">

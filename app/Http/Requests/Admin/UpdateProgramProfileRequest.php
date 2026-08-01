@@ -17,13 +17,13 @@ class UpdateProgramProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'history' => ['required', 'string', 'max:20000'],
-            'description' => ['required', 'string', 'max:20000'],
+            'history' => ['required', 'string', 'max:50000'],
+            'description' => ['required', 'string', 'max:50000'],
             'vision' => ['required', 'string', 'max:5000'],
-            'mission' => ['required', 'string', 'max:20000'],
-            'goals' => ['required', 'string', 'max:20000'],
+            'mission' => ['required', 'string', 'max:50000'],
+            'goals' => ['required', 'string', 'max:50000'],
             'accreditation' => ['required', 'string', 'max:255'],
-            'advantages' => ['required', 'string', 'max:20000'],
+            'advantages' => ['required', 'string', 'max:50000'],
         ];
     }
 

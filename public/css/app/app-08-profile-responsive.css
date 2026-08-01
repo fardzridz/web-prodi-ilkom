@@ -60,7 +60,7 @@
 
 .profile-editor-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .profile-field-vision {
-    grid-column: 1 / -1;
+    grid-column: auto;
 }
 
 .profile-field-heading {
@@ -105,14 +105,6 @@
 .profile-field-card textarea {
     min-height: 150px;
     resize: vertical;
-}
-
-.profile-field-vision textarea {
-    min-height: 125px;
-    color: var(--blue-dark);
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.7;
 }
 
 .profile-editor-actions {
@@ -175,10 +167,6 @@
 
     .document-form,
     .document-category-layout,
-    .profile-editor-grid {
-        grid-template-columns: 1fr;
-    }
-
     .profile-field-vision {
         grid-column: auto;
     }

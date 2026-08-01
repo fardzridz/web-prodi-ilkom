@@ -7,6 +7,7 @@ use App\Models\Alumni;
 use App\Models\Document;
 use App\Models\HomeSection;
 use App\Models\Lecturer;
+use App\Models\ProgramProfile;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
@@ -38,7 +39,9 @@ class PublicController extends Controller
 
     public function profile(): View
     {
-        return view('public.profile');
+        return view('public.profile', [
+            'programProfile' => ProgramProfile::query()->first() ?? new ProgramProfile,
+        ]);
     }
 
     public function visionMission(): RedirectResponse
@@ -148,11 +151,21 @@ class PublicController extends Controller
             return $fallback;
         }
 
-        if (str_starts_with($link, '/')) {
+        // Relative app path only (block protocol-relative //evil.com).
+        if (str_starts_with($link, '/') && ! str_starts_with($link, '//')) {
             return url($link);
         }
 
-        return $link;
+        // Absolute https only — blocks http:, javascript:, data:, etc.
+        if (filter_var($link, FILTER_VALIDATE_URL) !== false) {
+            $scheme = strtolower((string) parse_url($link, PHP_URL_SCHEME));
+
+            if ($scheme === 'https') {
+                return $link;
+            }
+        }
+
+        return $fallback;
     }
 
     /**
@@ -191,13 +204,40 @@ class PublicController extends Controller
 
         if (str_starts_with(ltrim((string) $content), '<')) {
             return [
-                ['type' => 'html', 'html' => $content],
+                ['type' => 'html', 'html' => $this->sanitizeActivityHtml((string) $content)],
             ];
         }
 
         return [
             ['type' => 'paragraph', 'text' => $content],
         ];
+    }
+
+    private function sanitizeActivityHtml(string $html): string
+    {
+        $allowedTags = '<p><br><strong><b><em><i><ul><ol><li><h2><h3><h4><a><span>';
+        $html = strip_tags($html, $allowedTags);
+
+        // Drop event-handler attributes (onclick, onerror, …).
+        $html = preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html) ?? $html;
+
+        // Neutralize javascript: / data: / vbscript: in href (and similar URL attrs).
+        $html = preg_replace_callback(
+            '/\s(href|src|xlink:href)\s*=\s*(["\'])(.*?)\2/i',
+            function (array $matches): string {
+                $url = trim(html_entity_decode($matches[3], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+                $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+
+                if (in_array($scheme, ['javascript', 'data', 'vbscript'], true)) {
+                    return '';
+                }
+
+                return ' '.$matches[1].'='.$matches[2].$matches[3].$matches[2];
+            },
+            $html
+        ) ?? $html;
+
+        return $html;
     }
 
     /**

@@ -123,8 +123,8 @@
             <div class="activity-field">
                 <label for="document-status">Status <span aria-hidden="true">*</span></label>
                 <select id="document-status" name="status" required>
-                    <option value="draft" @selected($selectedStatus === 'draft')>Draft</option>
-                    <option value="published" @selected($selectedStatus === 'published')>Published</option>
+                    <option value="draft" @selected($selectedStatus === 'draft')>Draf</option>
+                    <option value="published" @selected($selectedStatus === 'published')>Terbit</option>
                 </select>
                 <small>Hanya dokumen published yang akan tampil pada halaman publik.</small>
                 @error('status')<small class="activity-field-error">{{ $message }}</small>@enderror

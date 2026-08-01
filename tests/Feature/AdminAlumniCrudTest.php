@@ -3,6 +3,8 @@
 use App\Models\Alumni;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 $configuredDatabase = getenv('DB_CONNECTION');
 $databaseDriverIsAvailable = $configuredDatabase !== 'sqlite'
@@ -50,14 +52,16 @@ test('admin can open alumni index and both real forms', function () use ($alumni
         ->assertSee('Tambah Alumni')
         ->assertSee('name="batch_year"', escape: false)
         ->assertSee('name="testimonial"', escape: false)
-        ->assertSee('Task 22')
-        ->assertSee('Task 23');
+        ->assertSee('enctype="multipart/form-data"', escape: false)
+        ->assertSee('name="photo"', escape: false);
 
     $this->get(route('admin.alumni.edit', $alumni))
         ->assertOk()
         ->assertSee('Edit Alumni')
         ->assertSee('value="Raka Maulana"', escape: false)
-        ->assertSee('name="_method" value="PUT"', escape: false);
+        ->assertSee('name="_method" value="PUT"', escape: false)
+        ->assertSee('enctype="multipart/form-data"', escape: false)
+        ->assertSee('name="photo"', escape: false);
 });
 
 test('admin can create alumni with normalized optional values', function () use ($alumniPayload) {
@@ -68,9 +72,15 @@ test('admin can create alumni with normalized optional values', function () use 
         'job_position' => '  Intelligent System Specialist  ',
         'company' => '',
         'testimonial' => '  Pengalaman riset membantu pekerjaan saya.  ',
-    ]))
+    ]) + ['photo' => UploadedFile::fake()->image('nadia.jpg', 600, 600)])
         ->assertRedirect(route('admin.alumni.index'))
         ->assertSessionHas('success', 'Data alumni berhasil ditambahkan.');
+
+    $stored = Alumni::query()->where('name', 'Nadia Putri')->first();
+
+    expect($stored)->not->toBeNull()
+        ->and($stored->photo)->toStartWith('uploads/alumni/')
+        ->and(Storage::disk('public')->exists($stored->photo))->toBeTrue();
 
     $this->assertDatabaseHas('alumni', [
         'name' => 'Nadia Putri',
@@ -172,13 +182,19 @@ test('admin can toggle alumni visibility', function () use ($alumniPayload) {
 });
 
 test('admin can permanently delete alumni', function () use ($alumniPayload) {
-    $alumni = Alumni::query()->create($alumniPayload());
+    $alumni = Alumni::query()->create([
+        ...$alumniPayload(),
+        'photo' => 'uploads/alumni/raka.webp',
+    ]);
+
+    Storage::disk('public')->put($alumni->photo, 'fake');
 
     $this->delete(route('admin.alumni.destroy', $alumni))
         ->assertRedirect(route('admin.alumni.index'))
         ->assertSessionHas('success', 'Data alumni berhasil dihapus.');
 
     $this->assertDatabaseMissing('alumni', ['id' => $alumni->id]);
+    Storage::disk('public')->assertMissing($alumni->photo);
 });
 
 test('authenticated users without admin role cannot manage alumni', function () use ($alumniPayload) {

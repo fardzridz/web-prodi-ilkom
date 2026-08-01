@@ -59,8 +59,8 @@ class Document extends Model
     public function statusLabel(): string
     {
         return match ($this->status) {
-            self::STATUS_PUBLISHED => 'Published',
-            default => 'Draft',
+            self::STATUS_PUBLISHED => 'Terbit',
+            default => 'Draf',
         };
     }
 

@@ -74,12 +74,12 @@
             @error('category')<small id="activity-category-error" class="activity-field-error">{{ $message }}</small>@enderror
         </div>
 
-        <div class="activity-field">
-            <label for="activity-content">Isi kegiatan <span aria-hidden="true">*</span></label>
-            <input id="activity-content" type="hidden" name="content" value="{{ old('content', $activity->content) }}">
-            <trix-editor input="activity-content" class="trix-editor"></trix-editor>
-            @error('content')<small id="activity-content-error" class="activity-field-error">{{ $message }}</small>@enderror
-        </div>
+            <div class="activity-field">
+                <label for="activity-content">Isi kegiatan <span aria-hidden="true">*</span></label>
+                <div id="activity-content" class="quill-editor"></div>
+                <input id="activity-content-hidden" type="hidden" name="content" value="{{ old('content', $activity->content) }}">
+                @error('content')<small id="activity-content-error" class="activity-field-error">{{ $message }}</small>@enderror
+            </div>
     </section>
 
     <aside class="activity-form-aside">

@@ -49,7 +49,10 @@ class LecturerSeeder extends Seeder
         ];
 
         foreach ($lecturers as $lecturer) {
-            Lecturer::query()->create([...$lecturer, 'status' => Lecturer::STATUS_ACTIVE]);
+            Lecturer::query()->firstOrCreate(
+                ['nidn' => $lecturer['nidn']],
+                [...$lecturer, 'status' => Lecturer::STATUS_ACTIVE],
+            );
         }
     }
 }

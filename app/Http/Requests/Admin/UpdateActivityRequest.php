@@ -38,7 +38,6 @@ class UpdateActivityRequest extends FormRequest
             'location' => ['required', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:100'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
             'status' => ['required', Rule::in(Activity::STATUSES)],
             'published_at' => [
                 Rule::requiredIf(fn (): bool => $this->input('status') === Activity::STATUS_SCHEDULED),

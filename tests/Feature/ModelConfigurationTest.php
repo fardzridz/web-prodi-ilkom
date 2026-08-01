@@ -33,7 +33,7 @@ test('core models expose only their documented mass assignable attributes', func
         ],
         Activity::class => [
             'user_id', 'title', 'slug', 'excerpt', 'content', 'image', 'activity_date',
-            'location', 'status', 'published_at',
+            'location', 'category', 'status', 'published_at',
         ],
         DocumentCategory::class => ['name', 'slug'],
         Document::class => [

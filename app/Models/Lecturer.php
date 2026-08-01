@@ -28,6 +28,9 @@ class Lecturer extends Model
         self::STATUS_INACTIVE,
     ];
 
+    /**
+     * Get a human-readable label for the lecturer's status.
+     */
     public function statusLabel(): string
     {
         return $this->status === self::STATUS_ACTIVE ? 'Aktif' : 'Nonaktif';

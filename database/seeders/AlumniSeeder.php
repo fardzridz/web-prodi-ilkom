@@ -43,7 +43,13 @@ class AlumniSeeder extends Seeder
         ];
 
         foreach ($alumni as $data) {
-            Alumni::query()->create([...$data, 'status' => Alumni::STATUS_ACTIVE]);
+            Alumni::query()->firstOrCreate(
+                [
+                    'name' => $data['name'],
+                    'batch_year' => $data['batch_year'],
+                ],
+                [...$data, 'status' => Alumni::STATUS_ACTIVE],
+            );
         }
     }
 }

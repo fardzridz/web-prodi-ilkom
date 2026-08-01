@@ -9,6 +9,8 @@ use App\Http\Requests\Admin\UpdateAlumniRequest;
 use App\Models\Alumni;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class AlumniController extends Controller
 {
@@ -58,7 +60,15 @@ class AlumniController extends Controller
 
     public function store(StoreAlumniRequest $request): RedirectResponse
     {
-        Alumni::query()->create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('uploads/alumni', 'public');
+        } else {
+            unset($data['photo']);
+        }
+
+        Alumni::query()->create($data);
 
         return redirect()
             ->route('admin.alumni.index')
@@ -74,7 +84,30 @@ class AlumniController extends Controller
 
     public function update(UpdateAlumniRequest $request, Alumni $alumni): RedirectResponse
     {
-        $alumni->update($request->validated());
+        $data = $request->validated();
+        $oldPhoto = $alumni->photo;
+        $storedPhoto = null;
+
+        if ($request->hasFile('photo')) {
+            $storedPhoto = $request->file('photo')->store('uploads/alumni', 'public');
+            $data['photo'] = $storedPhoto;
+        } else {
+            unset($data['photo']);
+        }
+
+        try {
+            $alumni->update($data);
+        } catch (Throwable $exception) {
+            if ($storedPhoto !== null) {
+                Storage::disk('public')->delete($storedPhoto);
+            }
+
+            throw $exception;
+        }
+
+        if ($storedPhoto !== null && $oldPhoto !== null && $oldPhoto !== $storedPhoto) {
+            Storage::disk('public')->delete($oldPhoto);
+        }
 
         return redirect()
             ->route('admin.alumni.index')
@@ -96,7 +129,12 @@ class AlumniController extends Controller
 
     public function destroy(IndexAlumniRequest $request, Alumni $alumni): RedirectResponse
     {
+        $photo = $alumni->photo;
         $alumni->delete();
+
+        if ($photo) {
+            Storage::disk('public')->delete($photo);
+        }
 
         return redirect()
             ->route('admin.alumni.index')

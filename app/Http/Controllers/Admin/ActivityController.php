@@ -10,6 +10,7 @@ use App\Models\Activity;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ActivityController extends Controller
 {
@@ -71,15 +72,27 @@ class ActivityController extends Controller
     public function update(UpdateActivityRequest $request, Activity $activity): RedirectResponse
     {
         $data = $this->normalizePublication($request->validated(), $activity);
+        $oldImage = $activity->image;
+        $storedImage = null;
 
         if ($request->hasFile('image')) {
-            if ($activity->image) {
-                Storage::disk('public')->delete($activity->image);
-            }
-            $data['image'] = $request->file('image')->store('activities', 'public');
+            $storedImage = $request->file('image')->store('activities', 'public');
+            $data['image'] = $storedImage;
         }
 
-        $activity->update($data);
+        try {
+            $activity->update($data);
+        } catch (Throwable $exception) {
+            if ($storedImage !== null) {
+                Storage::disk('public')->delete($storedImage);
+            }
+
+            throw $exception;
+        }
+
+        if ($storedImage !== null && $oldImage !== null && $oldImage !== $storedImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
 
         return redirect()
             ->route('admin.kegiatan.index')
@@ -88,7 +101,12 @@ class ActivityController extends Controller
 
     public function destroy(IndexActivityRequest $request, Activity $activity): RedirectResponse
     {
+        $image = $activity->image;
         $activity->delete();
+
+        if ($image) {
+            Storage::disk('public')->delete($image);
+        }
 
         return redirect()
             ->route('admin.kegiatan.index')

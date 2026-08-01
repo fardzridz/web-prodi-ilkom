@@ -41,7 +41,7 @@ test('task 07 creates every core table with the documented columns', function ()
         ],
         'activities' => [
             'id', 'user_id', 'title', 'slug', 'excerpt', 'content', 'image', 'activity_date',
-            'location', 'status', 'published_at', 'created_at', 'updated_at',
+            'location', 'category', 'status', 'published_at', 'created_at', 'updated_at',
         ],
         'document_categories' => [
             'id', 'name', 'slug', 'created_at', 'updated_at',

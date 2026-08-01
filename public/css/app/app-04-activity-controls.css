@@ -848,3 +848,17 @@ trix-editor.trix-editor:focus-within {
     margin-top: 4px;
 }
 
+.profile-field-card .trix-field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--grey-2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.profile-field-card trix-editor.trix-editor {
+    min-height: 320px;
+}
+

@@ -3,6 +3,8 @@
 use App\Models\Lecturer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 $configuredDatabase = getenv('DB_CONNECTION');
 $databaseDriverIsAvailable = $configuredDatabase !== 'sqlite'
@@ -72,9 +74,15 @@ test('admin can create a lecturer with normalized optional values', function () 
         'email' => ' ARIF.WIBISONO@UNIWARA.AC.ID ',
         'bio' => '',
         'sort_order' => 2,
-    ]))
+    ]) + ['photo' => UploadedFile::fake()->image('arif.jpg', 600, 600)])
         ->assertRedirect(route('admin.dosen.index'))
         ->assertSessionHas('success', 'Data dosen berhasil ditambahkan.');
+
+    $stored = Lecturer::query()->where('nidn', '0709088802')->first();
+
+    expect($stored)->not->toBeNull()
+        ->and($stored->photo)->toStartWith('uploads/lecturers/')
+        ->and(Storage::disk('public')->exists($stored->photo))->toBeTrue();
 
     $this->assertDatabaseHas('lecturers', [
         'name' => 'Arif Wibisono, M.Kom.',

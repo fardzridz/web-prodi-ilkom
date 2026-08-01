@@ -34,6 +34,7 @@ class StoreAlumniRequest extends FormRequest
             'company' => ['nullable', 'string', 'max:255'],
             'testimonial' => ['nullable', 'string', 'max:5000'],
             'status' => ['required', Rule::in(Alumni::STATUSES)],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,gif,webp', 'max:2048'],
         ];
     }
 
@@ -47,6 +48,9 @@ class StoreAlumniRequest extends FormRequest
             'graduation_year.gte' => 'Tahun lulus tidak boleh sebelum tahun angkatan.',
             'graduation_year.max' => 'Tahun lulus tidak boleh melebihi tahun depan.',
             'testimonial.max' => 'Testimoni maksimal 5.000 karakter.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus JPEG, PNG, GIF, atau WebP.',
+            'photo.max' => 'Ukuran foto maksimal 2 MB.',
         ];
     }
 

@@ -9,6 +9,8 @@ use App\Http\Requests\Admin\UpdateLecturerRequest;
 use App\Models\Lecturer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class LecturerController extends Controller
 {
@@ -50,7 +52,15 @@ class LecturerController extends Controller
 
     public function store(StoreLecturerRequest $request): RedirectResponse
     {
-        Lecturer::query()->create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('uploads/lecturers', 'public');
+        } else {
+            unset($data['photo']);
+        }
+
+        Lecturer::query()->create($data);
 
         return redirect()
             ->route('admin.dosen.index')
@@ -66,7 +76,30 @@ class LecturerController extends Controller
 
     public function update(UpdateLecturerRequest $request, Lecturer $lecturer): RedirectResponse
     {
-        $lecturer->update($request->validated());
+        $data = $request->validated();
+        $oldPhoto = $lecturer->photo;
+        $storedPhoto = null;
+
+        if ($request->hasFile('photo')) {
+            $storedPhoto = $request->file('photo')->store('uploads/lecturers', 'public');
+            $data['photo'] = $storedPhoto;
+        } else {
+            unset($data['photo']);
+        }
+
+        try {
+            $lecturer->update($data);
+        } catch (Throwable $exception) {
+            if ($storedPhoto !== null) {
+                Storage::disk('public')->delete($storedPhoto);
+            }
+
+            throw $exception;
+        }
+
+        if ($storedPhoto !== null && $oldPhoto !== null && $oldPhoto !== $storedPhoto) {
+            Storage::disk('public')->delete($oldPhoto);
+        }
 
         return redirect()
             ->route('admin.dosen.index')
@@ -88,7 +121,12 @@ class LecturerController extends Controller
 
     public function destroy(IndexLecturerRequest $request, Lecturer $lecturer): RedirectResponse
     {
+        $photo = $lecturer->photo;
         $lecturer->delete();
+
+        if ($photo) {
+            Storage::disk('public')->delete($photo);
+        }
 
         return redirect()
             ->route('admin.dosen.index')

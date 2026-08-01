@@ -61,8 +61,8 @@ test('admin can open the activity index and both real forms', function () {
         ->assertSee('name="content"', escape: false)
         ->assertSee('id="activity-date"', escape: false)
         ->assertSee('id="activity-published-at"', escape: false)
-        ->assertSee('Task 22')
-        ->assertSee('Task 23');
+        ->assertSee('name="image"', escape: false)
+        ->assertSee('accept="image/jpeg,image/png,image/webp"', escape: false);
 
     $this->get(route('admin.kegiatan.edit', $activity))
         ->assertOk()

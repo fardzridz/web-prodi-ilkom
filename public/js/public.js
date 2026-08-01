@@ -178,3 +178,77 @@ document.querySelectorAll("[data-filter-target]").forEach((button) => {
     target.syncLoadMore?.(true);
   });
 });
+
+(function renderQuillDeltas() {
+  function run() {
+    const nodes = document.querySelectorAll("[data-quill-delta]");
+    nodes.forEach((node) => {
+      if (node.dataset.quillRendered === "1") return;
+      if (typeof window.Quill === "undefined") {
+        return;
+      }
+      const raw = node.getAttribute("data-quill-delta");
+      if (!raw) return;
+      let parsedString;
+      try {
+        parsedString = window.atob(raw);
+      } catch (error) {
+        node.dataset.quillRendered = "1";
+        return;
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(parsedString);
+      } catch (error) {
+        node.dataset.quillRendered = "1";
+        return;
+      }
+
+      const host = document.createElement("div");
+      host.style.cssText = "position:absolute;left:-99999px;top:0;width:1px;height:1px;overflow:hidden;visibility:hidden;pointer-events:none;";
+      document.body.appendChild(host);
+      const probe = document.createElement("div");
+      host.appendChild(probe);
+
+      let html = "";
+      try {
+        const quill = new window.Quill(probe, {
+          readOnly: true,
+          modules: { toolbar: false }
+        });
+        quill.setContents(parsed);
+        html = quill.getSemanticHTML();
+        html = html.replace(/&nbsp;/g, " ");
+      } catch (error) {
+        node.dataset.quillRendered = "1";
+        host.remove();
+        return;
+      }
+
+      host.remove();
+
+      if (html) {
+        node.innerHTML = html;
+      }
+      node.dataset.quillRendered = "1";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+
+  if (typeof window.Quill === "undefined") {
+    let attempts = 0;
+    const interval = window.setInterval(() => {
+      attempts += 1;
+      if (typeof window.Quill !== "undefined" || attempts > 40) {
+        window.clearInterval(interval);
+        if (typeof window.Quill !== "undefined") run();
+      }
+    }, 100);
+  }
+})();
+

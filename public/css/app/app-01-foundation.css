@@ -22,6 +22,30 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: "Grold Slim Local";
+    src: url("../../assets/fonts/GroldSlim-Light.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 200;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Grold Rounded Local";
+    src: url("../../assets/fonts/GroldRounded-Bold.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Gotcha Local";
+    src: url("../../assets/fonts/GotchaRegular.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
 :root {
     --blue-dark: #00243a;
     --blue-deep: #001d2e;
@@ -39,8 +63,14 @@
     --white: #ffffff;
     --green: #16794c;
     --green-soft: #e9f7f0;
-    --font-body: "Fakt Local", Aptos, "Segoe UI", Arial, sans-serif;
-    --font-heading: "Grold Local", "Aptos Display", "Segoe UI", Arial, sans-serif;
+    --font-body: "Fakt Local", Fakt, "Fakt Pro", "Aptos", "Segoe UI", Arial, sans-serif;
+    --font-heading:
+        "Grold Local", Grold, "Aptos Display", "Segoe UI", Arial, sans-serif;
+    --font-slim:
+        "Grold Slim Local", GroldSlim, "Grold Local", "Aptos", "Segoe UI", Arial, sans-serif;
+    --font-rounded:
+        "Grold Rounded Local", "Grold Local", "Aptos Display", "Segoe UI", Arial, sans-serif;
+    --font-script: "Gotcha Local", "Brush Script MT", cursive;
     --sidebar-width: 288px;
     --shadow-soft: 0 18px 46px rgba(0, 29, 46, 0.08);
 }
@@ -95,4 +125,63 @@ a {
 [hidden] {
     display: none !important;
 }
+/* Quill Font Custom - Override */
+.ql-editor .ql-font-Fakt {
+    font-family: "Fakt Local", Fakt, "Fakt Pro", "Aptos", "Segoe UI", Arial, sans-serif;
+}
+.ql-editor .ql-font-Grold {
+    font-family: "Grold Local", Grold, "Aptos Display", "Segoe UI", Arial, sans-serif;
+}
+.ql-editor .ql-font-GroldSlim {
+    font-family: "Grold Slim Local", GroldSlim, "Grold Local", "Aptos", "Segoe UI", Arial, sans-serif;
+}
+.ql-editor .ql-font-GroldRounded {
+    font-family: "Grold Rounded Local", "Grold Local", "Aptos Display", "Segoe UI", Arial, sans-serif;
+}
+.ql-editor .ql-font-Gotcha {
+    font-family: "Gotcha Local", "Brush Script MT", cursive;
+}
+.ql-editor .ql-font-default {
+    font-family: var(--font-body);
+}
+.ql-container.ql-snow {
+    font-family: var(--font-body);
+}
 
+/* Tampilkan preview font family di dropdown toolbar Quill */
+.ql-snow .ql-font .ql-picker-label[data-value="Fakt"]::before,
+.ql-snow .ql-font .ql-picker-item[data-value="Fakt"]::before {
+    font-family: "Fakt Local", Fakt, sans-serif;
+}
+.ql-snow .ql-font .ql-picker-label[data-value="Grold"]::before,
+.ql-snow .ql-font .ql-picker-item[data-value="Grold"]::before {
+    font-family: "Grold Local", Grold, serif;
+}
+.ql-snow .ql-font .ql-picker-label[data-value="GroldSlim"]::before,
+.ql-snow .ql-font .ql-picker-item[data-value="GroldSlim"]::before {
+    font-family: "Grold Slim Local", GroldSlim, serif;
+}
+.ql-snow .ql-font .ql-picker-label[data-value="GroldRounded"]::before,
+.ql-snow .ql-font .ql-picker-item[data-value="GroldRounded"]::before {
+    font-family: "Grold Rounded Local", "Grold Local", serif;
+}
+.ql-snow .ql-font .ql-picker-label[data-value="Gotcha"]::before,
+.ql-snow .ql-font .ql-picker-item[data-value="Gotcha"]::before {
+    font-family: "Gotcha Local", cursive;
+}
+.ql-snow .ql-font .ql-picker-label[data-value="default"]::before,
+.ql-snow .ql-font .ql-picker-item[data-value="default"]::before {
+    font-family: var(--font-body);
+}
+
+.ql-toolbar .admin-select-toggle,
+.ql-toolbar .admin-select-menu,
+.ql-toolbar [data-admin-select-toggle],
+.ql-toolbar [data-admin-select-menu],
+.ql-container .admin-select-toggle,
+.ql-container .admin-select-menu {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}

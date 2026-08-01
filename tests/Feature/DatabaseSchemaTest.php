@@ -131,7 +131,7 @@ test('eloquent models persist and resolve the documented relationships', functio
         'name' => 'Pedoman Eloquent',
         'slug' => 'pedoman-eloquent',
     ]);
-    $document = $category->documents()->create([
+    $document = $category->documents()->forceCreate([
         'title' => 'Dokumen Eloquent',
         'slug' => 'dokumen-eloquent',
         'file' => 'documents/eloquent.pdf',

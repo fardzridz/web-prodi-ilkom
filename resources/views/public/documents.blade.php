@@ -49,7 +49,7 @@
                         </div>
                         <div class="flex flex-wrap gap-2.5 items-center mt-auto">
                             <a class="document-link inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid" href="{{ route('documents.download', ['document' => $document['id']]) }}" aria-label="Unduh {{ $document['title'] }}"><i class="fa-solid fa-download" aria-hidden="true"></i> Unduh</a>
-                            <a class="document-link secondary inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid text-blue-dark bg-grey-5" href="{{ asset('storage/'.$document['file']) }}" target="_blank" rel="noopener" aria-label="Lihat {{ $document['title'] }}"><i class="fa-regular fa-eye" aria-hidden="true"></i> Lihat</a>
+                            <a class="document-link secondary inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid text-blue-dark bg-grey-5" href="{{ route('documents.view', ['document' => $document['id']]) }}" data-preview-url="{{ route('documents.view', ['document' => $document['id']]) }}" data-preview-format="{{ strtolower($document['file_type']) }}" data-preview-title="{{ $document['title'] }}" data-preview-download="{{ route('documents.download', ['document' => $document['id']]) }}" target="_blank" rel="noopener" aria-label="Lihat {{ $document['title'] }}"><i class="fa-regular fa-eye" aria-hidden="true"></i> Lihat</a>
                         </div>
                     </article>
                 @endforeach
@@ -63,4 +63,21 @@
         'secondaryLabel' => 'Lihat Profil',
         'secondaryHref' => route('profile'),
     ])
+
+    {{-- Modal pratinjau dokumen (dibuka dari tombol "Lihat" pada kartu dokumen) --}}
+    <div id="document-preview-modal" class="hidden fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-labelledby="document-preview-title">
+        <div data-preview-backdrop class="fixed inset-0 overflow-y-auto bg-[rgba(0,29,46,0.78)]">
+            <div class="flex min-h-full items-center justify-center p-4 sm:p-6">
+                <div data-preview-panel class="relative w-full max-w-4xl overflow-hidden bg-white shadow-2xl">
+                    <div class="flex items-center justify-between gap-4 px-6 py-4 bg-blue-dark text-white">
+                        <h3 id="document-preview-title" class="m-0 min-w-0 font-display text-base font-medium leading-snug tracking-normal sm:text-lg"></h3>
+                        <button type="button" data-preview-close class="inline-flex shrink-0 items-center justify-center w-10 h-10 text-white bg-transparent cursor-pointer transition-colors duration-[180ms] ease-[ease] hover:bg-blue-mid focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]" aria-label="Tutup pratinjau">
+                            <i class="fa-solid fa-xmark text-lg leading-none" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div id="document-preview-body" class="h-[70vh] max-h-[75vh] overflow-y-auto overscroll-contain bg-white"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

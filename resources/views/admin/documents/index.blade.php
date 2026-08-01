@@ -79,7 +79,7 @@
                             <th scope="col" class="col-filetype">Tipe</th>
                             <th scope="col" class="col-filesize">Ukuran</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Diunggah</th>
+                            <th scope="col" class="col-uploaded">Diunggah</th>
                             <th scope="col">Aksi</th>
                         </tr>
                     </thead>
@@ -126,7 +126,7 @@
                                 </td>
                                 <td>
                                     <div class="activity-row-actions">
-                                        @if ($storedFileExists)
+                                        @if ($document->file_exists)
                                             <a href="{{ route('admin.dokumen.download', $document) }}" aria-label="Unduh {{ $document->title }}">
                                                 <i class="fa-solid fa-download" aria-hidden="true"></i>
                                             </a>

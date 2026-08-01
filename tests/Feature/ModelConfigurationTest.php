@@ -37,8 +37,8 @@ test('core models expose only their documented mass assignable attributes', func
         ],
         DocumentCategory::class => ['name', 'slug'],
         Document::class => [
-            'document_category_id', 'title', 'slug', 'description', 'file', 'file_type',
-            'file_size', 'status', 'uploaded_at',
+            'document_category_id', 'title', 'slug', 'description',
+            'status', 'uploaded_at',
         ],
         Alumni::class => [
             'name', 'batch_year', 'graduation_year', 'job_position', 'company',

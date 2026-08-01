@@ -51,7 +51,7 @@ test('dashboard summarizes content and status counts from the database', functio
     }
 
     foreach ([Document::STATUS_DRAFT, Document::STATUS_PUBLISHED] as $index => $status) {
-        Document::query()->create([
+        Document::forceCreate([
             'document_category_id' => $category->id,
             'title' => 'Dokumen '.($index + 1),
             'slug' => 'dokumen-'.($index + 1),

@@ -41,6 +41,10 @@ class DocumentController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        $documents->getCollection()->each(function (Document $document): void {
+            $document->file_exists = Storage::disk('local')->exists($document->file);
+        });
+
         return view('admin.documents.index', [
             'documents' => $documents,
             'categories' => DocumentCategory::query()->orderBy('name')->get(),
@@ -62,7 +66,9 @@ class DocumentController extends Controller
         $storedFile = $this->storeUploadedFile($request->file('document_file'));
 
         try {
-            Document::query()->create([
+            // Kolom berkas (file/file_type/file_size) sengaja di luar $fillable dan
+            // hanya boleh diisi dari hasil upload, bukan dari input request.
+            Document::forceCreate([
                 ...$data,
                 'file' => $storedFile['path'],
                 'file_type' => $storedFile['type'],
@@ -70,7 +76,7 @@ class DocumentController extends Controller
                 'uploaded_at' => now(),
             ]);
         } catch (Throwable $exception) {
-            Storage::disk('public')->delete($storedFile['path']);
+            Storage::disk('local')->delete($storedFile['path']);
 
             throw $exception;
         }
@@ -106,17 +112,18 @@ class DocumentController extends Controller
         }
 
         try {
-            $document->update($data);
+            // forceFill: kolom berkas hanya berasal dari hasil upload (bukan input request).
+            $document->forceFill($data)->save();
         } catch (Throwable $exception) {
             if ($storedFile !== null) {
-                Storage::disk('public')->delete($storedFile['path']);
+                Storage::disk('local')->delete($storedFile['path']);
             }
 
             throw $exception;
         }
 
         if ($storedFile !== null && $oldFile !== $storedFile['path']) {
-            Storage::disk('public')->delete($oldFile);
+            Storage::disk('local')->delete($oldFile);
         }
 
         return redirect()
@@ -139,11 +146,12 @@ class DocumentController extends Controller
 
     public function download(IndexDocumentRequest $request, Document $document): StreamedResponse
     {
-        abort_unless(Storage::disk('public')->exists($document->file), 404);
+        abort_unless(Storage::disk('local')->exists($document->file), 404);
 
-        return Storage::disk('public')->download(
+        return Storage::disk('local')->download(
             $document->file,
             $document->slug.'.'.$document->file_type,
+            ['X-Content-Type-Options' => 'nosniff'],
         );
     }
 
@@ -151,7 +159,7 @@ class DocumentController extends Controller
     {
         $file = $document->file;
         $document->delete();
-        Storage::disk('public')->delete($file);
+        Storage::disk('local')->delete($file);
 
         return redirect()
             ->route('admin.dokumen.index')
@@ -163,9 +171,9 @@ class DocumentController extends Controller
     {
         $type = strtolower($file->getClientOriginalExtension());
         $path = $file->storeAs(
-            'uploads/documents',
+            'documents',
             Str::uuid().'.'.$type,
-            'public',
+            'local',
         );
 
         return [

@@ -14,9 +14,11 @@ use App\Models\Message;
 use App\Models\ProgramProfile;
 use App\Models\SiteSetting;
 use Illuminate\Contracts\View\View;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PublicController extends Controller
 {
@@ -114,14 +116,35 @@ class PublicController extends Controller
         ]);
     }
 
-    public function documentDownload(Document $document): RedirectResponse
+    public function documentDownload(Document $document): StreamedResponse
     {
         abort_unless($document->status === Document::STATUS_PUBLISHED, 404);
-        abort_unless(Storage::disk('public')->exists($document->file), 404);
 
-        return Storage::disk('public')->download(
+        /** @var FilesystemAdapter $storage */
+        $storage = Storage::disk('local');
+
+        abort_unless($storage->exists($document->file), 404);
+
+        return $storage->download(
             $document->file,
             $document->slug.'.'.$document->file_type,
+            ['X-Content-Type-Options' => 'nosniff'],
+        );
+    }
+
+    public function documentView(Document $document): StreamedResponse
+    {
+        abort_unless($document->status === Document::STATUS_PUBLISHED, 404);
+
+        /** @var FilesystemAdapter $storage */
+        $storage = Storage::disk('local');
+
+        abort_unless($storage->exists($document->file), 404);
+
+        return $storage->response(
+            $document->file,
+            $document->slug.'.'.$document->file_type,
+            ['X-Content-Type-Options' => 'nosniff'],
         );
     }
 

@@ -15,7 +15,7 @@ if ($databaseDriverIsAvailable) {
     uses(RefreshDatabase::class);
 
     beforeEach(function () {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $this->admin = User::factory()->create([
             'role' => User::ROLE_ADMIN,
@@ -49,16 +49,16 @@ $createStoredDocument = function (DocumentCategory $category, array $overrides =
         'title' => 'Panduan Akademik 2026',
         'slug' => 'panduan-akademik-2026',
         'description' => 'Panduan akademik untuk mahasiswa.',
-        'file' => 'uploads/documents/panduan.pdf',
+        'file' => 'documents/panduan.pdf',
         'file_type' => 'pdf',
         'file_size' => 122880,
         'status' => Document::STATUS_DRAFT,
         'uploaded_at' => now(),
     ], $overrides);
 
-    Storage::disk('public')->put($attributes['file'], 'file-content');
+    Storage::disk('local')->put($attributes['file'], 'file-content');
 
-    return Document::query()->create($attributes);
+    return Document::forceCreate($attributes);
 };
 
 test('admin can manage document categories with automatic slugs', function () use ($categoryPayload) {
@@ -153,9 +153,9 @@ test('admin can upload a validated document with stored metadata', function () u
         ->and($document->uploaded_at)->not->toBeNull()
         ->and($document->status)->toBe(Document::STATUS_PUBLISHED);
 
-    expect($document->file)->toStartWith('uploads/documents/')
+    expect($document->file)->toStartWith('documents/')
         ->and(basename($document->file))->not->toBe('panduan.pdf');
-    Storage::disk('public')->assertExists($document->file);
+    Storage::disk('local')->assertExists($document->file);
 });
 
 test('document validation rejects unsafe files invalid references and duplicate slugs', function () use ($categoryPayload, $documentPayload, $createStoredDocument) {
@@ -192,11 +192,11 @@ test('updating document metadata without a file keeps the old file', function ()
 
     $document->refresh();
 
-    expect($document->file)->toBe('uploads/documents/panduan.pdf')
+    expect($document->file)->toBe('documents/panduan.pdf')
         ->and($document->file_type)->toBe('pdf')
         ->and($document->file_size)->toBe(122880)
         ->and($document->uploaded_at?->equalTo($oldUploadedAt))->toBeTrue();
-    Storage::disk('public')->assertExists('uploads/documents/panduan.pdf');
+    Storage::disk('local')->assertExists('documents/panduan.pdf');
 });
 
 test('uploading a replacement updates metadata and deletes the old file', function () use ($categoryPayload, $createStoredDocument) {
@@ -218,11 +218,11 @@ test('uploading a replacement updates metadata and deletes the old file', functi
 
     $document->refresh();
 
-    expect($document->file)->not->toBe('uploads/documents/panduan.pdf')
+    expect($document->file)->not->toBe('documents/panduan.pdf')
         ->and($document->file_type)->toBe('docx')
         ->and($document->file_size)->toBeGreaterThan(0);
-    Storage::disk('public')->assertMissing('uploads/documents/panduan.pdf');
-    Storage::disk('public')->assertExists($document->file);
+    Storage::disk('local')->assertMissing('documents/panduan.pdf');
+    Storage::disk('local')->assertExists($document->file);
 });
 
 test('document index filters category status and search with bounded pagination', function () use ($createStoredDocument) {
@@ -233,7 +233,7 @@ test('document index filters category status and search with bounded pagination'
         $createStoredDocument($index === 7 ? $forms : $guides, [
             'title' => $index === 7 ? 'Formulir Cuti Khusus' : 'Dokumen Reguler '.$index,
             'slug' => 'dokumen-filter-'.$index,
-            'file' => "uploads/documents/filter-{$index}.pdf",
+            'file' => "documents/filter-{$index}.pdf",
             'status' => $index === 7 ? Document::STATUS_PUBLISHED : Document::STATUS_DRAFT,
             'uploaded_at' => now()->subMinutes($index),
         ]);
@@ -273,7 +273,7 @@ test('admin can toggle download and permanently delete a document file', functio
         ->assertSessionHas('success', 'Dokumen dan berkasnya berhasil dihapus.');
 
     $this->assertDatabaseMissing('documents', ['id' => $document->id]);
-    Storage::disk('public')->assertMissing('uploads/documents/panduan.pdf');
+    Storage::disk('local')->assertMissing('documents/panduan.pdf');
 });
 
 test('authenticated users without admin role cannot manage documents or categories', function () use ($categoryPayload, $documentPayload, $createStoredDocument) {

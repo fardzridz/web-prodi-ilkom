@@ -23,7 +23,12 @@ Route::get('/kegiatan', [PublicController::class, 'activities'])->name('activiti
 Route::get('/kegiatan/{slug}', [PublicController::class, 'activityDetail'])->name('activities.show');
 Route::get('/jurnal', [PublicController::class, 'journalRedirect'])->name('journal');
 Route::get('/dokumen', [PublicController::class, 'documents'])->name('documents');
-Route::get('/dokumen/{document}/download', [PublicController::class, 'documentDownload'])->name('documents.download');
+Route::get('/dokumen/{document}/download', [PublicController::class, 'documentDownload'])
+    ->middleware('throttle:30,1')
+    ->name('documents.download');
+Route::get('/dokumen/{document}/view', [PublicController::class, 'documentView'])
+    ->middleware('throttle:30,1')
+    ->name('documents.view');
 Route::get('/alumni', [PublicController::class, 'alumni'])->name('alumni');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 Route::post('/kontak', [PublicController::class, 'contactStore'])->middleware('throttle:5,1')->name('contact.store');

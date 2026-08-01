@@ -11,9 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'title',
     'slug',
     'description',
-    'file',
-    'file_type',
-    'file_size',
     'status',
     'uploaded_at',
 ])]

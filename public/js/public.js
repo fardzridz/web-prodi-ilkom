@@ -253,3 +253,176 @@ document.querySelectorAll("[data-filter-target]").forEach((button) => {
   }
 })();
 
+(function initDocumentPreviewModal() {
+  const modal = document.querySelector("#document-preview-modal");
+  const titleElement = document.querySelector("#document-preview-title");
+  const bodyElement = document.querySelector("#document-preview-body");
+  const backdrop = document.querySelector("[data-preview-backdrop]");
+
+  if (!modal || !titleElement || !bodyElement) {
+    return;
+  }
+
+  // Pustaka di-self-host di public/js/vendor (tanpa NPM) agar tidak bergantung CDN eksternal.
+  const jszipSrc = "/js/vendor/jszip.min.js";
+  const docxPreviewSrc = "/js/vendor/docx-preview.min.js";
+  let docxPreviewPromise;
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Script gagal dimuat: " + src));
+      document.head.appendChild(script);
+    });
+  }
+
+  function waitForGlobal(name) {
+    return new Promise((resolve, reject) => {
+      if (typeof window[name] !== "undefined") {
+        resolve();
+        return;
+      }
+      const startedAt = Date.now();
+      const interval = window.setInterval(() => {
+        if (typeof window[name] !== "undefined") {
+          window.clearInterval(interval);
+          resolve();
+        } else if (Date.now() - startedAt > 8000) {
+          window.clearInterval(interval);
+          reject(new Error("Pustaka " + name + " tidak tersedia"));
+        }
+      }, 100);
+    });
+  }
+
+  function loadDocxPreview() {
+    if (typeof window.docx !== "undefined") {
+      return Promise.resolve(window.docx);
+    }
+    if (!docxPreviewPromise) {
+      docxPreviewPromise = (window.JSZip
+        ? Promise.resolve()
+        : loadScript(jszipSrc).then(() => waitForGlobal("JSZip")))
+        .then(() => loadScript(docxPreviewSrc))
+        .then(() => waitForGlobal("docx"))
+        .then(() => window.docx)
+        .catch((error) => {
+          docxPreviewPromise = null;
+          throw error;
+        });
+    }
+    return docxPreviewPromise;
+  }
+
+  function showLoadingState() {
+    const loading = document.createElement("p");
+    loading.style.cssText = "margin:0;padding:32px 16px;text-align:center;color:#5b5c5e;";
+    loading.textContent = "Memuat pratinjau…";
+    bodyElement.innerHTML = "";
+    bodyElement.appendChild(loading);
+  }
+
+  function showFallback(downloadUrl) {
+    const panel = document.createElement("div");
+    panel.style.cssText = "padding:32px 16px;text-align:center;color:#5b5c5e;";
+    const message = document.createElement("p");
+    message.style.cssText = "margin:0 0 18px;";
+    message.textContent = "Format ini tidak mendukung pratinjau langsung.";
+    panel.appendChild(message);
+    if (downloadUrl) {
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.textContent = "Unduh Dokumen";
+      link.style.cssText = "display:inline-flex;align-items:center;min-height:38px;padding:0 14px;color:#ffffff;background:#29557b;font-size:12px;font-weight:700;text-decoration:none;";
+      panel.appendChild(link);
+    }
+    bodyElement.innerHTML = "";
+    bodyElement.appendChild(panel);
+  }
+
+  function renderPdf(url) {
+    const iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframe.title = "Pratinjau dokumen PDF";
+    iframe.style.cssText = "display:block;width:100%;height:100%;border:0;";
+    bodyElement.innerHTML = "";
+    bodyElement.appendChild(iframe);
+  }
+
+  function renderDocx(url, downloadUrl) {
+    loadDocxPreview()
+      .then((docx) => fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+          }
+          return response.arrayBuffer();
+        })
+        .then((buffer) => {
+          bodyElement.innerHTML = "";
+          return docx.renderAsync(buffer, bodyElement);
+        }))
+      .catch(() => {
+        showFallback(downloadUrl);
+      });
+  }
+
+  function renderPreview(trigger) {
+    const url = trigger.dataset.previewUrl;
+    const downloadUrl = trigger.dataset.previewDownload || null;
+    const format = String(trigger.dataset.previewFormat || "").toLowerCase();
+
+    titleElement.textContent = trigger.dataset.previewTitle || "";
+    showLoadingState();
+
+    if (url && format === "pdf") {
+      renderPdf(url);
+    } else if (url && format === "docx") {
+      renderDocx(url, downloadUrl);
+    } else {
+      showFallback(downloadUrl);
+    }
+  }
+
+  function setModalOpen(open) {
+    modal.classList.toggle("hidden", !open);
+    modal.classList.toggle("is-open", open);
+    modal.hidden = !open;
+    document.body.classList.toggle("overflow-hidden", open);
+  }
+
+  function openPreview(trigger) {
+    renderPreview(trigger);
+    setModalOpen(true);
+  }
+
+  function closePreview() {
+    setModalOpen(false);
+  }
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-preview-url]");
+    if (trigger) {
+      event.preventDefault();
+      openPreview(trigger);
+      return;
+    }
+    if (modal.hidden || !backdrop) {
+      return;
+    }
+    const isBackdropClick = backdrop.contains(event.target) && !event.target.closest("[data-preview-panel]");
+    if (isBackdropClick || event.target.closest("[data-preview-close]")) {
+      closePreview();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) {
+      closePreview();
+    }
+  });
+})();
+

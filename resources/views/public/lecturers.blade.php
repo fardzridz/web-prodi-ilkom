@@ -25,7 +25,7 @@
         <div class="container w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))]">
             <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Data Dosen</p>
             <h2 class="internal-heading m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-normal">Dosen Aktif</h2>
-            <p class="lead-copy mt-[22px] mb-0 text-[17px] font-light">Prototype card berikut mewakili data lecturers.status active dan field dosen yang tampil pada halaman public.</p>
+            <p class="lead-copy mt-[22px] mb-0 text-[17px] font-light">Dosen aktif yang mengampu perkuliahan dan membimbing mahasiswa di Program Studi Ilmu Komputer.</p>
 
             <div class="lecturer-grid grid grid-cols-3 gap-6 mt-9 max-[1024px]:grid-cols-1">
                 @foreach ($lecturers as $lecturer)

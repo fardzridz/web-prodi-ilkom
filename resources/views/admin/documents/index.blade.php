@@ -76,8 +76,8 @@
                         <tr>
                             <th scope="col">Dokumen</th>
                             <th scope="col">Kategori</th>
-                            <th scope="col">Tipe</th>
-                            <th scope="col">Ukuran</th>
+                            <th scope="col" class="col-filetype">Tipe</th>
+                            <th scope="col" class="col-filesize">Ukuran</th>
                             <th scope="col">Status</th>
                             <th scope="col">Diunggah</th>
                             <th scope="col">Aksi</th>
@@ -104,8 +104,8 @@
                                     </div>
                                 </td>
                                 <td>{{ $document->documentCategory->name }}</td>
-                                <td><span class="document-type-badge">{{ $document->fileTypeLabel() }}</span></td>
-                                <td>{{ $document->formattedFileSize() }}</td>
+                                <td class="col-filetype"><span class="document-type-badge">{{ $document->fileTypeLabel() }}</span></td>
+                                <td class="col-filesize">{{ $document->formattedFileSize() }}</td>
                                 <td>
                                     <span @class([
                                         'admin-content-badge',

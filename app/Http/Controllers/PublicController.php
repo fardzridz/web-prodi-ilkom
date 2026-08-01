@@ -2,18 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Public\ContactMessageRequest;
 use App\Models\Activity;
 use App\Models\Alumni;
+use App\Models\Contact;
 use App\Models\Document;
+use App\Models\DocumentCategory;
 use App\Models\HomeSection;
 use App\Models\Lecturer;
+use App\Models\Message;
 use App\Models\ProgramProfile;
+use App\Models\SiteSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class PublicController extends Controller
 {
+    public function __construct()
+    {
+        view()->share('site', SiteSetting::query()->first() ?? new SiteSetting([
+            'site_name' => 'Program Studi Ilmu Komputer',
+            'university_name' => 'Universitas PGRI Wiranegara',
+            'faculty_name' => 'Fakultas Teknologi dan Sains',
+            'footer_text' => '© '.date('Y').' Program Studi Ilmu Komputer.',
+            'journal_url' => 'https://ejurnal.uniwara.ac.id',
+        ]));
+
+        view()->share('contactInfo', Contact::query()->first() ?? new Contact([
+            'address' => 'Jl. Ki Hajar Dewantara No. 27-29, Pasuruan, Jawa Timur',
+            'email' => 'univ.pgriwiranegara@gmail.com',
+            'phone' => '0821-4155-4377',
+            'instagram' => 'https://instagram.com/uniwara',
+            'youtube' => 'https://youtube.com/@uniwara',
+            'facebook' => 'https://facebook.com/uniwara',
+        ]));
+    }
+
     public function home(): View
     {
         $homeSection = HomeSection::query()
@@ -32,8 +58,8 @@ class PublicController extends Controller
             'homeSection' => $homeSection,
             'heroSlides' => $this->heroSlidesForPublic($homeSection),
             'heroCtaUrl' => $this->resolvePublicLink($homeSection->cta_link, route('profile')),
-            'activities' => array_slice($this->activitiesData(), 0, 3),
-            'alumni' => array_slice($this->alumniData(), 0, 4),
+            'activities' => $this->activitiesData(3),
+            'alumni' => $this->alumniData(4),
         ]);
     }
 
@@ -72,14 +98,31 @@ class PublicController extends Controller
 
     public function journalRedirect(): RedirectResponse
     {
-        return redirect()->away(config('app.journal_url', 'https://ejurnal.uniwara.ac.id'));
+        $journalUrl = SiteSetting::query()->value('journal_url');
+
+        return redirect()->away(trim((string) $journalUrl) !== '' ? $journalUrl : 'https://ejurnal.uniwara.ac.id');
     }
 
     public function documents(): View
     {
         return view('public.documents', [
             'documents' => $this->documentsData(),
+            'documentCategories' => DocumentCategory::query()
+                ->whereHas('documents', fn ($q) => $q->where('status', Document::STATUS_PUBLISHED))
+                ->orderBy('name')
+                ->pluck('name'),
         ]);
+    }
+
+    public function documentDownload(Document $document): RedirectResponse
+    {
+        abort_unless($document->status === Document::STATUS_PUBLISHED, 404);
+        abort_unless(Storage::disk('public')->exists($document->file), 404);
+
+        return Storage::disk('public')->download(
+            $document->file,
+            $document->slug.'.'.$document->file_type,
+        );
     }
 
     public function alumni(): View
@@ -89,9 +132,18 @@ class PublicController extends Controller
         ]);
     }
 
-    public function contact(): RedirectResponse
+    public function contact(): View
     {
-        return redirect('/#kontak-section');
+        return view('public.contact');
+    }
+
+    public function contactStore(ContactMessageRequest $request): RedirectResponse
+    {
+        Message::query()->create($request->validated());
+
+        return redirect()
+            ->route('contact')
+            ->with('success', 'Pesan Anda berhasil terkirim. Terima kasih atas masukannya.');
     }
 
     private function defaultHomeSection(): HomeSection
@@ -171,13 +223,18 @@ class PublicController extends Controller
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function activitiesData(): array
+    private function activitiesData(int $limit = 0): array
     {
-        return Activity::query()
+        $query = Activity::query()
             ->where('status', Activity::STATUS_PUBLISHED)
             ->orderByDesc('activity_date')
-            ->orderByDesc('id')
-            ->get()
+            ->orderByDesc('id');
+
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+
+        return $query->get()
             ->map(fn (Activity $activity): array => [
                 'title' => $activity->title,
                 'slug' => $activity->slug,
@@ -297,14 +354,19 @@ class PublicController extends Controller
     /**
      * @return array<int, array<string, string>>
      */
-    private function alumniData(): array
+    private function alumniData(int $limit = 0): array
     {
-        return Alumni::query()
+        $query = Alumni::query()
             ->where('status', Alumni::STATUS_ACTIVE)
             ->orderByDesc('batch_year')
             ->orderBy('name')
-            ->orderBy('id')
-            ->get()
+            ->orderBy('id');
+
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+
+        return $query->get()
             ->map(fn (Alumni $alumni): array => [
                 'name' => $alumni->name,
                 'role' => trim(implode(' ', array_filter([$alumni->job_position, 'di', $alumni->company]))),
@@ -332,6 +394,7 @@ class PublicController extends Controller
             ->orderByDesc('id')
             ->get()
             ->map(fn (Document $document): array => [
+                'id' => $document->id,
                 'title' => $document->title,
                 'category' => $document->documentCategory?->name ?? '',
                 'description' => $document->description ?? '',

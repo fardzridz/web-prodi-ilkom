@@ -49,35 +49,59 @@
                 <section class="admin-panel content-editor-card">
                     <div class="content-editor-heading"><span aria-hidden="true"><i class="fa-solid fa-palette"></i></span><div><p>Media Merek</p><h2>Logo dan Favicon</h2></div></div>
                     <div class="brand-upload-grid">
-                        <div class="brand-upload-card" data-file-field>
-                            <div class="brand-current-preview">
-                                @if ($siteSetting->logo)
-                                    <img src="{{ asset('storage/'.$siteSetting->logo) }}" alt="Logo situs saat ini">
-                                @else
-                                    <i class="fa-regular fa-image" aria-hidden="true"></i>
-                                @endif
-                            </div>
+                        <div class="brand-upload-card">
                             <div class="activity-field">
                                 <label for="setting-logo">Logo situs</label>
-                                <input id="setting-logo" name="logo" type="file" accept=".jpg,.jpeg,.png,.webp" data-file-input @error('logo') aria-invalid="true" @enderror>
-                                <small data-file-name-output>JPG, PNG, atau WebP · maksimal 2 MB</small>
-                                @error('logo')<small class="activity-field-error">{{ $message }}</small>@enderror
+                                <label class="activity-image-upload" for="setting-logo" data-image-upload>
+                                    <div class="activity-image-preview" data-image-preview @if (! $siteSetting->logo) data-empty @endif>
+                                        @if ($siteSetting->logo)
+                                            <img src="{{ asset('storage/'.$siteSetting->logo) }}" alt="Logo situs saat ini" data-image-preview-img>
+                                        @endif
+                                        <div class="activity-image-overlay">
+                                            <i class="fa-solid fa-image" aria-hidden="true"></i>
+                                            <strong data-image-overlay-label>{{ $siteSetting->logo ? 'Ganti logo' : 'Pilih logo' }}</strong>
+                                        </div>
+                                    </div>
+                                    <input
+                                        id="setting-logo"
+                                        class="sr-only"
+                                        name="logo"
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        data-image-input
+                                        @error('logo') aria-invalid="true" aria-describedby="setting-logo-error" @enderror
+                                    >
+                                    @error('logo')<small id="setting-logo-error" class="activity-field-error">{{ $message }}</small>@enderror
+                                </label>
+                                <small data-image-file-name>JPG, PNG, atau WebP · maksimal 2 MB</small>
                             </div>
                             @if ($siteSetting->logo)<label class="content-remove-check"><input name="remove_logo" type="checkbox" value="1" @checked(old('remove_logo'))> Hapus logo saat disimpan</label>@endif
                         </div>
-                        <div class="brand-upload-card" data-file-field>
-                            <div class="brand-current-preview is-favicon">
-                                @if ($siteSetting->favicon)
-                                    <img src="{{ asset('storage/'.$siteSetting->favicon) }}" alt="Favicon situs saat ini">
-                                @else
-                                    <i class="fa-solid fa-window-maximize" aria-hidden="true"></i>
-                                @endif
-                            </div>
+                        <div class="brand-upload-card">
                             <div class="activity-field">
                                 <label for="setting-favicon">Ikon situs</label>
-                                <input id="setting-favicon" name="favicon" type="file" accept=".ico,.png" data-file-input @error('favicon') aria-invalid="true" @enderror>
-                                <small data-file-name-output>ICO atau PNG · maksimal 512 KB</small>
-                                @error('favicon')<small class="activity-field-error">{{ $message }}</small>@enderror
+                                <label class="activity-image-upload" for="setting-favicon" data-image-upload>
+                                    <div class="activity-image-preview" data-image-preview @if (! $siteSetting->favicon) data-empty @endif>
+                                        @if ($siteSetting->favicon)
+                                            <img src="{{ asset('storage/'.$siteSetting->favicon) }}" alt="Favicon situs saat ini" data-image-preview-img>
+                                        @endif
+                                        <div class="activity-image-overlay">
+                                            <i class="fa-solid fa-window-maximize" aria-hidden="true"></i>
+                                            <strong data-image-overlay-label>{{ $siteSetting->favicon ? 'Ganti ikon' : 'Pilih ikon' }}</strong>
+                                        </div>
+                                    </div>
+                                    <input
+                                        id="setting-favicon"
+                                        class="sr-only"
+                                        name="favicon"
+                                        type="file"
+                                        accept="image/x-icon,image/png"
+                                        data-image-input
+                                        @error('favicon') aria-invalid="true" aria-describedby="setting-favicon-error" @enderror
+                                    >
+                                    @error('favicon')<small id="setting-favicon-error" class="activity-field-error">{{ $message }}</small>@enderror
+                                </label>
+                                <small data-image-file-name>ICO atau PNG · maksimal 512 KB</small>
                             </div>
                             @if ($siteSetting->favicon)<label class="content-remove-check"><input name="remove_favicon" type="checkbox" value="1" @checked(old('remove_favicon'))> Hapus favicon saat disimpan</label>@endif
                         </div>

@@ -262,11 +262,6 @@
         grid-template-columns: 1fr;
     }
 
-    .lecturer-photo-panel {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
     .lecturer-form-actions {
         flex-direction: column-reverse;
     }
@@ -313,11 +308,6 @@
 
     .alumni-form-grid {
         grid-template-columns: 1fr;
-    }
-
-    .alumni-photo-panel {
-        align-items: flex-start;
-        flex-direction: column;
     }
 
     .alumni-form-actions {

@@ -7,6 +7,7 @@
     <meta name="description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer Universitas PGRI Wiranegara.')">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CDN is used in development. In production, the Tailwind classes are compiled into public/css/public.css via the Laravel Boost pipeline. Do not remove the CDN script to preserve development convenience. -->
     <script>
         tailwind.config = {
             theme: {

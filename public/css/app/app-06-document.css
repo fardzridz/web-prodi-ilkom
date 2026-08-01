@@ -284,3 +284,10 @@
     margin: 0;
 }
 
+@media (max-width: 768px) {
+    .document-table .col-filetype,
+    .document-table .col-filesize {
+        display: none;
+    }
+}
+

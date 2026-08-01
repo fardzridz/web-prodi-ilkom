@@ -27,12 +27,13 @@
             <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Daftar Dokumen</p>
             <h2 class="internal-heading m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-normal">Berkas yang Tersedia</h2>
             <div class="filter-row flex flex-wrap gap-3 mt-7" aria-label="Kategori dokumen">
-                @foreach (['Semua', 'Kurikulum', 'Akademik', 'SOP', 'Akreditasi', 'Kegiatan', 'Alumni'] as $filter)
-                    <span class="filter-pill{{ $loop->first ? ' is-active' : '' }} inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease] focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]">{{ $filter }}</span>
+                <button class="filter-pill is-active inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease] focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]" type="button" data-filter-target="#dokumen-grid" data-filter-category="*" aria-pressed="true">Semua</button>
+                @foreach ($documentCategories as $filter)
+                    <button class="filter-pill inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease] focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]" type="button" data-filter-target="#dokumen-grid" data-filter-category="{{ $filter }}" aria-pressed="false">{{ $filter }}</button>
                 @endforeach
             </div>
 
-            <div class="document-grid grid grid-cols-3 gap-6 mt-9 max-[1024px]:grid-cols-1">
+            <div id="dokumen-grid" class="document-grid grid grid-cols-3 gap-6 mt-9 max-[1024px]:grid-cols-1">
                 @foreach ($documents as $document)
                     <article class="document-card grid gap-[18px] min-h-[280px] p-7 {{ $loop->even ? 'bg-white' : 'bg-[rgba(0,36,58,0.035)]' }} border-0 shadow-none [&_h3]:m-0 [&_h3]:text-blue-dark [&_h3]:font-body [&_h3]:text-xl [&_h3]:font-bold [&_h3]:leading-[1.15] [&_p]:m-0 [&_p]:text-grey-2 [&_p]:leading-[1.6]" data-document-status="published" data-document-category="{{ $document['category'] }}" data-document-file="{{ $document['file'] }}" data-document-file-type="{{ $document['file_type'] }}" data-document-file-size="{{ $document['file_size'] }}" data-document-updated-at="{{ $document['updated_at'] }}">
                         <i class="fa-solid {{ $document['icon'] }} inline-block w-auto h-auto text-blue-mid text-[32px] bg-transparent" aria-hidden="true"></i>
@@ -47,8 +48,8 @@
                             <span class="document-file-size"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i> {{ $document['file_size'] }}</span>
                         </div>
                         <div class="flex flex-wrap gap-2.5 items-center mt-auto">
-                            <a class="document-link inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid" href="#" aria-label="Unduh {{ $document['title'] }}"><i class="fa-solid fa-download" aria-hidden="true"></i> Unduh</a>
-                            <a class="document-link secondary inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid text-blue-dark bg-grey-5" href="#" aria-label="Lihat {{ $document['title'] }}"><i class="fa-regular fa-eye" aria-hidden="true"></i> Lihat</a>
+                            <a class="document-link inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid" href="{{ route('documents.download', ['document' => $document['id']]) }}" aria-label="Unduh {{ $document['title'] }}"><i class="fa-solid fa-download" aria-hidden="true"></i> Unduh</a>
+                            <a class="document-link secondary inline-flex items-center gap-2 min-h-[38px] px-3.5 text-white text-xs font-bold bg-blue-mid text-blue-dark bg-grey-5" href="{{ asset('storage/'.$document['file']) }}" target="_blank" rel="noopener" aria-label="Lihat {{ $document['title'] }}"><i class="fa-regular fa-eye" aria-hidden="true"></i> Lihat</a>
                         </div>
                     </article>
                 @endforeach

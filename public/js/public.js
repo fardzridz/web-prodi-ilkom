@@ -171,8 +171,9 @@ document.querySelectorAll("[data-filter-target]").forEach((button) => {
       filterButton.setAttribute("aria-pressed", String(isActive));
     });
 
-    target.querySelectorAll("[data-activity-category]").forEach((item) => {
-      item.classList.toggle("is-filtered-out", filterValue !== "*" && item.dataset.activityCategory !== filterValue);
+    target.querySelectorAll("[data-activity-category], [data-document-category]").forEach((item) => {
+      const matchKey = item.dataset.activityCategory ?? item.dataset.documentCategory;
+      item.classList.toggle("is-filtered-out", filterValue !== "*" && matchKey !== filterValue);
     });
 
     target.syncLoadMore?.(true);

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('file');
             $table->string('file_type');
-            $table->unsignedBigInteger('file_size');
+            $table->unsignedInteger('file_size');
             $table->string('status')->default('draft');
             $table->timestamp('uploaded_at')->nullable();
             $table->timestamps();

@@ -61,9 +61,9 @@
                         <tr>
                             <th scope="col">Foto</th>
                             <th scope="col">Nama</th>
-                            <th scope="col">NIDN</th>
+                            <th scope="col" class="col-nidn">NIDN</th>
                             <th scope="col">Jabatan</th>
-                            <th scope="col">Keahlian</th>
+                            <th scope="col" class="col-expertise">Keahlian</th>
                             <th scope="col">Status</th>
                             <th scope="col">Urutan</th>
                             <th scope="col">Aksi</th>
@@ -97,9 +97,9 @@
                                     </a>
                                     <small>{{ $lecturer->email ?: 'Surel belum diisi' }}</small>
                                 </td>
-                                <td>{{ $lecturer->nidn }}</td>
+                                <td class="col-nidn">{{ $lecturer->nidn }}</td>
                                 <td>{{ $lecturer->position ?: '-' }}</td>
-                                <td>{{ $lecturer->expertise ?: '-' }}</td>
+                                <td class="col-expertise">{{ $lecturer->expertise ?: '-' }}</td>
                                 <td>
                                     <span @class([
                                         'admin-content-badge',

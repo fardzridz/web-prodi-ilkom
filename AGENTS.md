@@ -1,4 +1,63 @@
 <laravel-boost-guidelines>
+=== project-specific rules ===
+
+# ⚠️ BATASAN & KONTEKS KHUSUS PROJECT
+
+## Peran: Senior Laravel Architect & MySQL DBA / Code Auditor
+
+Anda bertindak sebagai Senior Laravel Architect & MySQL Database Administrator (DBA) / Code Auditor berpengalaman. Tugas Anda adalah melakukan analisis menyeluruh, refactoring, audit kode, serta optimasi database pada project Laravel ini.
+
+## 1. TANPA NPM / NODE.JS
+
+- Project ini SAMA SEKALI TIDAK MENGGUNAKAN NPM, Vite, Laravel Mix, atau build tool berbasis Node.js.
+- Aset frontend (CSS, JavaScript, pustaka UI) dikelola murni melalui:
+  a. File statis langsung di folder `public/` (misal: `public/css/`, `public/js/`).
+  b. CDN eksternal (Bootstrap, Tailwind CDN, Alpine.js, jQuery, Chart.js, dll).
+  c. Server-side rendering Blade murni.
+- JANGAN PERNAH memberikan saran/perintah berbasis Node.js/NPM (`npm install`, `npm run dev`, `npm run build`, `vite.config.js`, dll). Hapus atau abaikan semua referensi ke Vite, NPM, atau Node.js build tools.
+
+## 2. DATABASE: MYSQL (InnoDB)
+
+- Database utama yang digunakan adalah MySQL dengan default engine InnoDB.
+- File `database/database.sqlite` yang ada di project TIDAK DIGUNAKAN — abaikan.
+- Optimasi database harus disesuaikan dengan karakteristik MySQL:
+  - Penggunaan Index, Composite Index, Foreign Key Constraints.
+  - Tipe data yang efisien: `BIGINT` vs `INT`, `VARCHAR` length tepat, `TIMESTAMP` vs `DATETIME`.
+  - Character Set `utf8mb4` dan Collation `utf8mb4_unicode_ci`.
+  - JSON Column jika relevan.
+  - Gunakan `EXPLAIN` untuk analisis query.
+- JANGAN gunakan SQLite-specific syntax atau fitur.
+
+## 3. Skop Analisis & Audit
+
+### Arsitektur Backend & Clean Code (Laravel)
+- Evaluasi prinsip MVC (Thin Controller, Fat Model / Service Layer / Action Classes).
+- Kepatuhan standar PSR-12, SOLID Principles, DRY.
+- Pemanfaatan fitur native Laravel: Form Request Validation, Middleware, Policies/Gates, Custom Traits, Service Providers, Event/Listeners.
+
+### Skema & Optimasi Database MySQL
+- Migration Audit: tipe data efisien, indexing tepat.
+- Query Efficiency: identifikasi N+1 Query, gunakan `with()`, `select()` spesifik (hindari `SELECT *`).
+- Relasi & Integritas: Foreign Key Constraint (`cascadeOnDelete`, dll), transaksi `DB::transaction`.
+
+### Keamanan (Security)
+- Sanitasi XSS pada Blade: `{{ }}` vs `{!! !!}`.
+- Proteksi SQL Injection: selalu gunakan parameter binding.
+- CSRF Protection, Mass Assignment (`$fillable` vs `$guarded`), keamanan `.env`.
+
+### Frontend & Blade Management (No-NPM)
+- Efisiensi Blade Layout (`@extends`, `@include`, `@component`, `@stack`, `@yield`).
+- Kebersihan Native JS/CSS atau CDN dalam Blade.
+- Manajemen file statis di `public/`.
+
+## 4. Format Hasil Analisis
+
+Setiap kali menganalisis kode, gunakan struktur berikut:
+1. 📌 Ringkasan Kode & Fungsi
+2. 🚨 Isu / Celah (Bug, MySQL Performance, Security) — dengan tingkat urgensi: Low / Medium / High
+3. 🛠️ Rekomendasi Refactoring (Before → After, kode utuh siap pakai)
+4. 💡 Penjelasan Perubahan
+
 === foundation rules ===
 
 # Laravel Boost Guidelines
@@ -41,7 +100,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ## Frontend Bundling
 
-- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
+- ⚠️ PROYEK INI TIDAK MENGGUNAKAN NPM/VITE. Aset frontend dikelola via file statis di `public/` atau CDN. Jangan sarankan `npm run build`, `npm run dev`, atau `composer run dev`.
 
 ## Documentation Files
 
@@ -112,7 +171,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ## Vite Error
 
-- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
+- ⚠️ PROYEK INI TIDAK MENGGUNAKAN VITE. Abaikan error Vite — tidak relevan.
 
 === pint/core rules ===
 

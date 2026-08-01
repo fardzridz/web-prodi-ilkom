@@ -74,9 +74,9 @@
                             <th scope="col">Gambar</th>
                             <th scope="col">Judul</th>
                             <th scope="col">Tanggal</th>
-                            <th scope="col">Lokasi</th>
+                            <th scope="col" class="col-location">Lokasi</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Jadwal Tayang</th>
+                            <th scope="col" class="col-schedule">Jadwal Tayang</th>
                             <th scope="col">Aksi</th>
                         </tr>
                     </thead>
@@ -99,7 +99,7 @@
                                     <small>{{ $activity->slug }}</small>
                                 </td>
                                 <td>{{ $activity->activity_date?->translatedFormat('d M Y') ?? '-' }}</td>
-                                <td>{{ $activity->location ?: '-' }}</td>
+                                <td class="col-location">{{ $activity->location ?: '-' }}</td>
                                 <td>
                                     <span @class([
                                         'admin-content-badge',
@@ -110,7 +110,7 @@
                                         {{ $activity->statusLabel() }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="col-schedule">
                                     {{ $activity->published_at?->locale('id')->translatedFormat('d M Y, H.i') ?? '-' }}
                                 </td>
                                 <td>

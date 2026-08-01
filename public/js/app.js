@@ -1151,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const upload = input.closest("[data-image-upload]");
         const preview = upload?.querySelector("[data-image-preview]");
-        const fileName = document.querySelector("[data-image-file-name]");
+        const fileName = input.closest(".activity-field")?.querySelector("[data-image-file-name]");
         const overlayLabel = upload?.querySelector("[data-image-overlay-label]");
 
         if (fileName) fileName.textContent = file.name;

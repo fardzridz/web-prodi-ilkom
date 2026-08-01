@@ -11,22 +11,18 @@
     min-width: 150px;
 }
 
-.lecturer-avatar,
-.lecturer-photo-preview {
+.lecturer-avatar {
     display: grid;
     flex: 0 0 auto;
     place-items: center;
     object-fit: cover;
+    width: 48px;
+    height: 48px;
     color: var(--blue-dark);
     background: rgba(253, 185, 19, 0.32);
     border: 1px solid rgba(253, 185, 19, 0.65);
-    font-weight: 700;
-}
-
-.lecturer-avatar {
-    width: 48px;
-    height: 48px;
     font-size: 11px;
+    font-weight: 700;
 }
 
 .lecturer-identity > small {
@@ -72,40 +68,76 @@
     gap: 20px;
 }
 
-.lecturer-photo-panel {
+.lecturer-photo-field .activity-image-upload {
+    display: inline-block;
+    align-self: start;
+    justify-self: start;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.lecturer-photo-field .activity-image-preview {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 17px;
-    padding: 17px;
-    color: var(--blue-mid);
-    background: #edf4f8;
-    border: 1px dashed #b9cedb;
+    justify-content: center;
+    width: 220px;
+    max-width: 100%;
+    height: 220px;
+    background: var(--grey-6);
+    border: 2px dashed var(--grey-5);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s ease;
 }
 
-.lecturer-photo-preview {
-    width: 88px;
-    height: 88px;
-    font-size: 26px;
+.lecturer-photo-field .activity-image-upload:hover .activity-image-preview {
+    border-color: var(--blue-mid);
 }
 
-.lecturer-photo-panel strong,
-.lecturer-photo-panel small {
-    display: block;
+.lecturer-photo-field .activity-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
 }
 
-.lecturer-photo-panel p {
-    max-width: 680px;
-    margin: 5px 0 0;
-    color: var(--grey-2);
-    font-size: 12px;
-    line-height: 1.6;
+.lecturer-photo-field .activity-image-preview[data-empty] img {
+    display: none;
 }
 
-.lecturer-photo-panel small {
-    margin-top: 7px;
-    overflow-wrap: anywhere;
+.lecturer-photo-field .activity-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(0, 36, 58, 0.45);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 6px;
+}
+
+.lecturer-photo-field .activity-image-preview[data-empty] .activity-image-overlay {
+    opacity: 1;
+    background: transparent;
     color: var(--grey-3);
-    font-size: 10px;
+}
+
+.lecturer-photo-field .activity-image-upload:hover .activity-image-overlay {
+    opacity: 1;
+}
+
+.lecturer-photo-field .activity-image-overlay i {
+    font-size: 28px;
+}
+
+.lecturer-photo-field .activity-image-overlay strong {
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .lecturer-bio-field textarea {
@@ -120,3 +152,9 @@
     border-top: 1px solid var(--grey-5);
 }
 
+@media (max-width: 768px) {
+    .lecturer-table .col-nidn,
+    .lecturer-table .col-expertise {
+        display: none;
+    }
+}

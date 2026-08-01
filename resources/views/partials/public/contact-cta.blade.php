@@ -1,9 +1,9 @@
 @php
     $title ??= 'Hubungi Program Studi Ilmu Komputer';
     $primaryLabel ??= 'Kirim Email';
-    $primaryHref ??= 'mailto:univ.pgriwiranegara@gmail.com';
+    $primaryHref ??= 'mailto:'.($contactInfo->email ?? 'univ.pgriwiranegara@gmail.com');
     $secondaryLabel ??= 'WhatsApp Prodi';
-    $secondaryHref ??= 'https://wa.me/6282141554377';
+    $secondaryHref ??= 'https://wa.me/'.($contactInfo->phone ? '62'.ltrim(preg_replace('/\D/', '', $contactInfo->phone), '0') : '6282141554377');
 @endphp
 
 <section id="{{ $id ?? 'kontak-section' }}" class="contact-section scholarship-section relative overflow-hidden h-[188px] min-h-0 my-16 text-white bg-[rgba(150,26,38,0.92)] max-[1024px]:h-[220px] max-[560px]:h-[256px]">

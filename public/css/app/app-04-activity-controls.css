@@ -132,6 +132,13 @@ img.activity-thumbnail {
     text-decoration: underline;
 }
 
+@media (max-width: 768px) {
+    .activity-table .col-location,
+    .activity-table .col-schedule {
+        display: none;
+    }
+}
+
 .activity-row-actions {
     display: flex;
     gap: 7px;
@@ -860,5 +867,12 @@ trix-editor.trix-editor:focus-within {
 
 .profile-field-card trix-editor.trix-editor {
     min-height: 320px;
+}
+
+@media (max-width: 768px) {
+    .activity-table .col-location,
+    .activity-table .col-schedule {
+        display: none;
+    }
 }
 

@@ -17,15 +17,15 @@
         </a>
 
         <div class="desktop-header absolute top-0 right-0 flex items-center h-10 pr-4 pl-[60px] gap-[30px] isolate max-[1024px]:hidden" aria-label="Tautan cepat">
-            <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="#" aria-label="Instagram">
+            <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="{{ $contactInfo->instagram ?? '#' }}" aria-label="Instagram">
                 <i class="fa-brands fa-instagram" aria-hidden="true"></i>
                 <span>Instagram</span>
             </a>
-            <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="#" aria-label="YouTube">
+            <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="{{ $contactInfo->youtube ?? '#' }}" aria-label="YouTube">
                 <i class="fa-brands fa-youtube" aria-hidden="true"></i>
                 <span>YouTube</span>
             </a>
-            <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="#" aria-label="Alamat kampus di Pasuruan">
+            <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="https://www.google.com/maps/search/?api=1&query={{ urlencode($contactInfo->address ?? 'Pasuruan') }}" aria-label="Alamat kampus di Pasuruan">
                 <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                 <span>Pasuruan</span>
             </a>
@@ -41,7 +41,7 @@
         </div>
 
         <nav class="desktop-nav flex justify-end items-center gap-[26px] pb-5 text-grey-4 font-body text-[15px] font-normal leading-[1.2] tracking-normal normal-case max-[1024px]:hidden [&_a]:inline-flex [&_a]:items-center [&_a]:gap-2 [&_a]:px-[5px] [&_a]:font-light [&_i]:text-[17px] [&_i]:leading-none" aria-label="Navigasi utama">
-            <a href="mailto:univ.pgriwiranegara@gmail.com">
+            <a href="mailto:{{ $contactInfo->email ?? 'univ.pgriwiranegara@gmail.com' }}">
                 <i class="fa-solid fa-envelope" aria-hidden="true"></i>
                 <span>univ.pgriwiranegara@gmail.com</span>
             </a>
@@ -59,16 +59,16 @@
     <nav class="mobile-nav fixed inset-0 z-[100] grid content-start gap-[22px] overflow-y-auto overscroll-contain pt-[84px] px-[26px] pb-[34px] text-blue-dark bg-white opacity-0 invisible pointer-events-none [transition:opacity_0.26s_ease_0.78s,visibility_0s_linear_1.04s] [-webkit-overflow-scrolling:touch]" aria-label="Navigasi seluler">
         <button class="mobile-close absolute top-[18px] right-[18px] w-11 h-11 border-0 bg-transparent" type="button" aria-label="Tutup menu"></button>
         <div class="mobile-nav-header flex items-center flex-wrap gap-3 pb-6 border-b border-[rgba(0,36,58,0.14)]" aria-label="Tautan cepat">
-            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="#" aria-label="Instagram">
+            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="{{ $contactInfo->instagram ?? '#' }}" aria-label="Instagram">
                 <i class="fa-brands fa-instagram" aria-hidden="true"></i>
             </a>
-            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="#" aria-label="YouTube">
+            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="{{ $contactInfo->youtube ?? '#' }}" aria-label="YouTube">
                 <i class="fa-brands fa-youtube" aria-hidden="true"></i>
             </a>
-            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="#" aria-label="Lokasi kampus di Pasuruan">
+            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="https://www.google.com/maps/search/?api=1&query={{ urlencode($contactInfo->address ?? 'Pasuruan') }}" aria-label="Lokasi kampus di Pasuruan">
                 <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
             </a>
-            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="mailto:univ.pgriwiranegara@gmail.com" aria-label="Email univ.pgriwiranegara@gmail.com">
+            <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="mailto:{{ $contactInfo->email ?? 'univ.pgriwiranegara@gmail.com' }}" aria-label="Email univ.pgriwiranegara@gmail.com">
                 <i class="fa-solid fa-envelope" aria-hidden="true"></i>
             </a>
             <a class="mobile-quick-link mobile-anim-item inline-flex w-11 h-11 items-center justify-center flex-none border border-[rgba(0,36,58,0.18)] rounded-full bg-[rgba(0,36,58,0.045)] opacity-0 translate-x-[52px] [transition:opacity_0.28s_ease,transform_0.48s_cubic-bezier(0.22,1,0.36,1)] [transition-delay:calc(var(--exit-order)*45ms)]" href="https://wa.me/6282141554377" aria-label="WhatsApp 0821-4155-4377">

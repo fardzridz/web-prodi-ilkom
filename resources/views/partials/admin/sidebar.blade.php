@@ -81,8 +81,8 @@
     <div class="admin-sidebar-footer">
         <span class="admin-environment-dot" aria-hidden="true"></span>
         <div>
-            <strong>Layout CMS siap</strong>
-            <small>Autentikasi pada Task 10–11</small>
+            <strong>Panel Pengelola Prodi</strong>
+            <small>Versi {{ config('app.version', '1.0') }}</small>
         </div>
     </div>
 </aside>

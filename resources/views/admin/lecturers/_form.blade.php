@@ -130,41 +130,30 @@
         </div>
     </div>
 
-    <div class="lecturer-photo-panel">
-        @if ($hasStoredPhoto)
-            <img
-                class="lecturer-photo-preview"
-                src="{{ Storage::disk('public')->url($lecturer->photo) }}"
-                alt="Foto {{ $lecturer->name }}"
-                width="88"
-                height="88"
-            >
-        @else
-            <span class="lecturer-photo-preview lecturer-avatar-placeholder" aria-hidden="true">
-                <i class="fa-solid fa-user" aria-hidden="true"></i>
-            </span>
-        @endif
-        <div>
-            <strong>Foto dosen</strong>
-            <p>Slot foto sudah tersedia. Upload fisik diaktifkan.</p>
-            <small>Task 22 (unggah foto) &middot; Task 23 (penyimpanan file fisik)</small>
-            @if ($lecturer->photo)
-                <small>Path saat ini: {{ $lecturer->photo }}</small>
-            @endif
-        </div>
-    </div>
-
     <div class="activity-field lecturer-photo-field">
-        <label for="lecturer-photo">{{ $isEditing ? 'Ganti foto dosen' : 'Unggah foto dosen' }}</label>
-        <input
-            id="lecturer-photo"
-            name="photo"
-            type="file"
-            accept="image/jpeg,image/png,image/gif,image/webp"
-            @error('photo') aria-invalid="true" aria-describedby="lecturer-photo-error" @enderror
-        >
-        <small>Format gambar (JPG, PNG, GIF, WebP), maksimal 2 MB. Disimpan ke storage/app/public/uploads/lecturers/.</small>
-        @error('photo')<small id="lecturer-photo-error" class="activity-field-error">{{ $message }}</small>@enderror
+        <label for="lecturer-photo">Foto dosen</label>
+        <label class="activity-image-upload" for="lecturer-photo" data-image-upload>
+            <div class="activity-image-preview" data-image-preview @if (! $hasStoredPhoto) data-empty @endif>
+                @if ($hasStoredPhoto)
+                    <img src="{{ Storage::disk('public')->url($lecturer->photo) }}" alt="Foto {{ $lecturer->name }}" data-image-preview-img>
+                @endif
+                <div class="activity-image-overlay">
+                    <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                    <strong data-image-overlay-label>{{ $hasStoredPhoto ? 'Ganti foto' : 'Pilih foto' }}</strong>
+                </div>
+            </div>
+            <input
+                id="lecturer-photo"
+                class="sr-only"
+                name="photo"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                data-image-input
+                @error('photo') aria-invalid="true" aria-describedby="lecturer-photo-error" @enderror
+            >
+            @error('photo')<small id="lecturer-photo-error" class="activity-field-error">{{ $message }}</small>@enderror
+        </label>
+        <small data-image-file-name>Format JPG, PNG, GIF, atau WebP · maksimal 2 MB</small>
     </div>
 
     <div class="activity-field lecturer-bio-field">

@@ -38,45 +38,76 @@
     gap: 20px;
 }
 
-.alumni-photo-panel {
+.alumni-photo-field .activity-image-upload {
+    display: inline-block;
+    align-self: start;
+    justify-self: start;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.alumni-photo-field .activity-image-preview {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 17px;
-    padding: 17px;
-    color: var(--blue-mid);
-    background: #edf4f8;
-    border: 1px dashed #b9cedb;
+    justify-content: center;
+    width: 220px;
+    max-width: 100%;
+    height: 220px;
+    background: var(--grey-6);
+    border: 2px dashed var(--grey-5);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s ease;
 }
 
-.alumni-photo-preview {
-    display: grid;
-    width: 88px;
-    height: 88px;
-    flex: 0 0 auto;
-    place-items: center;
+.alumni-photo-field .activity-image-upload:hover .activity-image-preview {
+    border-color: var(--blue-mid);
+}
+
+.alumni-photo-field .activity-image-preview img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    font-size: 26px;
-    border-radius: 50%;
+    border-radius: 6px;
 }
 
-.alumni-photo-panel strong,
-.alumni-photo-panel small {
-    display: block;
+.alumni-photo-field .activity-image-preview[data-empty] img {
+    display: none;
 }
 
-.alumni-photo-panel p {
-    max-width: 680px;
-    margin: 5px 0 0;
-    color: var(--grey-2);
-    font-size: 12px;
-    line-height: 1.6;
+.alumni-photo-field .activity-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(0, 36, 58, 0.45);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 6px;
 }
 
-.alumni-photo-panel small {
-    margin-top: 7px;
-    overflow-wrap: anywhere;
+.alumni-photo-field .activity-image-preview[data-empty] .activity-image-overlay {
+    opacity: 1;
+    background: transparent;
     color: var(--grey-3);
-    font-size: 10px;
+}
+
+.alumni-photo-field .activity-image-upload:hover .activity-image-overlay {
+    opacity: 1;
+}
+
+.alumni-photo-field .activity-image-overlay i {
+    font-size: 28px;
+}
+
+.alumni-photo-field .activity-image-overlay strong {
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .alumni-testimonial-field textarea {
@@ -91,3 +122,9 @@
     border-top: 1px solid var(--grey-5);
 }
 
+@media (max-width: 768px) {
+    .alumni-table .col-graduation,
+    .alumni-table .col-position {
+        display: none;
+    }
+}

@@ -5,24 +5,28 @@
             <a class="brand footer-brand inline-flex items-center self-center w-fit mb-[34px] max-[560px]:mb-7 [&_.brand-logo]:!h-[76px] [&_.brand-logo]:!max-w-[min(100%,250px)] max-[1024px]:[&_.brand-logo]:!h-16 max-[1024px]:[&_.brand-logo]:!max-w-[min(100%,240px)] max-[560px]:[&_.brand-logo]:!h-[60px] max-[560px]:[&_.brand-logo]:!max-w-[min(100%,220px)]" href="{{ route('home') }}" aria-label="Beranda">
                 <img class="brand-logo block w-auto max-w-none h-[70px] object-contain max-[1024px]:h-12 max-[1024px]:max-w-[calc(100vw_-_90px)]" src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo Program Studi">
             </a>
-            <a class="footer-phone w-fit text-[#9fb0be] text-[21px] font-extrabold leading-[1.1] max-[560px]:text-[19px]" href="tel:+6282141554377">0821-4155-4377</a>
-            <p class="footer-address my-0 mt-[26px] mb-4 text-[#9fb0be] text-[15px] font-normal leading-[1.55]">Jl. Ki Hajar Dewantara No. 27-29<br>Pasuruan, Jawa Timur</p>
-            <a class="footer-contact w-fit text-[#c7d1d9] text-[13px] underline underline-offset-[3px] hover:text-yellow" href="mailto:univ.pgriwiranegara@gmail.com">univ.pgriwiranegara@gmail.com</a>
+            <a class="footer-phone w-fit text-[#9fb0be] text-[21px] font-extrabold leading-[1.1] max-[560px]:text-[19px]" href="tel:+{{ $contactInfo->phone ? '62'.ltrim(preg_replace('/\D/', '', $contactInfo->phone), '0') : '6282141554377' }}">{{ $contactInfo->phone ?? '0821-4155-4377' }}</a>
+            <p class="footer-address my-0 mt-[26px] mb-4 text-[#9fb0be] text-[15px] font-normal leading-[1.55]">{!! nl2br(e($contactInfo->address ?? "Jl. Ki Hajar Dewantara No. 27-29\nPasuruan, Jawa Timur")) !!}</p>
+            <a class="footer-contact w-fit text-[#c7d1d9] text-[13px] underline underline-offset-[3px] hover:text-yellow" href="mailto:{{ $contactInfo->email ?? 'univ.pgriwiranegara@gmail.com' }}">{{ $contactInfo->email ?? 'univ.pgriwiranegara@gmail.com' }}</a>
             <div class="footer-social flex flex-wrap gap-7 mt-9 max-[560px]:gap-5 max-[560px]:mt-[30px] [&_a]:inline-flex [&_a]:w-[30px] [&_a]:h-[30px] [&_a]:items-center [&_a]:justify-center [&_a]:text-[#477599] [&_a]:text-[27px] [&_a]:leading-none [&_a]:transition [&_a]:duration-[180ms] [&_a:hover]:text-yellow [&_a:hover]:-translate-y-0.5" aria-label="Media sosial">
-                <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-                <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+                <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="{{ $contactInfo->instagram ?? '#' }}" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+                <a class="inline-flex items-center gap-1.5 text-[#eef4f8] text-[13px] font-light leading-none" href="{{ $contactInfo->youtube ?? '#' }}" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
                 <a href="https://wa.me/6282141554377" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
-                <a href="mailto:univ.pgriwiranegara@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>
-                <a href="#" aria-label="Lokasi"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></a>
+                <a href="mailto:{{ $contactInfo->email ?? 'univ.pgriwiranegara@gmail.com' }}" aria-label="Email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>
+                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($contactInfo->address ?? 'Pasuruan') }}" aria-label="Lokasi"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></a>
             </div>
         </div>
         <nav class="footer-column pt-[52px] max-[1024px]:pt-0 [&_a]:block [&_a]:text-[#c7d1d9] [&_a]:text-base max-[560px]:[&_a]:text-[15px] [&_a]:font-semibold [&_a]:leading-[1.3] [&_a:hover]:text-yellow [&_a+a]:mt-5 max-[560px]:[&_a+a]:mt-4" aria-label="Akademik">
             <h3>Akademik</h3>
-            <a href="https://wiraakademik.uniwara.ac.id" target="_blank" rel="noopener">Wiraakademik</a>
-            <a href="https://student.wiraakademik.uniwara.ac.id" target="_blank" rel="noopener">Student Wiraakademik</a>
-            <a href="https://wiramerdeka.uniwara.ac.id" target="_blank" rel="noopener">Wiramerdeka MBKM</a>
-            <a href="https://wiraakademik.uniwara.ac.id/kalender-akademik" target="_blank" rel="noopener">Calender Akademik</a>
-            <a href="https://wiralearning.uniwara.ac.id" target="_blank" rel="noopener">Wiralearning</a>
+            @forelse ($site->footer_academic_links ?? [] as $link)
+                <a href="{{ $link['url'] }}" target="_blank" rel="noopener">{{ $link['label'] }}</a>
+            @empty
+                <a href="https://wiraakademik.uniwara.ac.id" target="_blank" rel="noopener">Wiraakademik</a>
+                <a href="https://student.wiraakademik.uniwara.ac.id" target="_blank" rel="noopener">Student Wiraakademik</a>
+                <a href="https://wiramerdeka.uniwara.ac.id" target="_blank" rel="noopener">Wiramerdeka MBKM</a>
+                <a href="https://wiraakademik.uniwara.ac.id/kalender-akademik" target="_blank" rel="noopener">Calender Akademik</a>
+                <a href="https://wiralearning.uniwara.ac.id" target="_blank" rel="noopener">Wiralearning</a>
+            @endforelse
         </nav>
         <nav class="footer-column pt-[52px] max-[1024px]:pt-0 [&_a]:block [&_a]:text-[#c7d1d9] [&_a]:text-base max-[560px]:[&_a]:text-[15px] [&_a]:font-semibold [&_a]:leading-[1.3] [&_a:hover]:text-yellow [&_a+a]:mt-5 max-[560px]:[&_a+a]:mt-4" aria-label="Menu cepat">
             <h3>Menu Cepat</h3>
@@ -49,7 +53,7 @@
                 <a href="#">Kebijakan Privasi</a>
                 <a href="#">Aksesibilitas</a>
             </div>
-            <p>&copy; 2026 Program Studi Ilmu Komputer.</p>
+            <p>{{ $site->footer_text ?? '© '.date('Y').' Program Studi Ilmu Komputer.' }}</p>
         </div>
     </div>
 </footer>

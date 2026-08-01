@@ -54,8 +54,8 @@ test('admin can open the lecturer index and both real forms', function () use ($
         ->assertSee('Tambah Dosen')
         ->assertSee('name="nidn"', escape: false)
         ->assertSee('name="sort_order"', escape: false)
-        ->assertSee('Task 22')
-        ->assertSee('Task 23');
+        ->assertSee('name="photo"', escape: false)
+        ->assertSee('accept="image/jpeg,image/png,image/gif,image/webp"', escape: false);
 
     $this->get(route('admin.dosen.edit', $lecturer))
         ->assertOk()

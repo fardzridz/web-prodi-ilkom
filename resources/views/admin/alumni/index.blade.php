@@ -74,8 +74,8 @@
                             <th scope="col">Foto</th>
                             <th scope="col">Nama</th>
                             <th scope="col">Angkatan</th>
-                            <th scope="col">Lulus</th>
-                            <th scope="col">Posisi</th>
+                            <th scope="col" class="col-graduation">Lulus</th>
+                            <th scope="col" class="col-position">Posisi</th>
                             <th scope="col">Perusahaan</th>
                             <th scope="col">Status</th>
                             <th scope="col">Aksi</th>
@@ -108,8 +108,8 @@
                                     <small>{{ Str::limit($alumnus->testimonial ?: 'Testimoni belum diisi', 70) }}</small>
                                 </td>
                                 <td>{{ $alumnus->batch_year }}</td>
-                                <td>{{ $alumnus->graduation_year ?: '-' }}</td>
-                                <td>{{ $alumnus->job_position ?: '-' }}</td>
+                                <td class="col-graduation">{{ $alumnus->graduation_year ?: '-' }}</td>
+                                <td class="col-position">{{ $alumnus->job_position ?: '-' }}</td>
                                 <td>{{ $alumnus->company ?: '-' }}</td>
                                 <td>
                                     <span @class([

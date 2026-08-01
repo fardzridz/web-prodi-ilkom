@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('excerpt')->nullable();
-            $table->longText('content')->nullable();
+            $table->mediumText('content')->nullable();
             $table->string('image')->nullable();
             $table->date('activity_date')->nullable();
             $table->string('location')->nullable();

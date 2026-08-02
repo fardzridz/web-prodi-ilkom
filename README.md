@@ -1,58 +1,165 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<img src="public/assets/images/logo/logo.png" alt="Logo Program Studi Ilmu Komputer" width="340"/>
 
-## About Laravel
+# Website Profil Program Studi Ilmu Komputer
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Website profil resmi Program Studi Ilmu Komputer — Universitas PGRI Wiranegara**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Pest](https://img.shields.io/badge/Pest-4-2a2a40?style=for-the-badge&logo=pest&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-122%20passed-2ea44f?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+![No npm](https://img.shields.io/badge/No%20npm%20%2F%20Vite-24292E?style=flat-square)
 
-## Learning Laravel
+</div>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📖 Daftar Isi
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- [Fitur](#fitur)
+- [Teknologi](#teknologi)
+- [Instalasi](#instalasi)
+- [Akun Admin Awal](#akun-admin-awal)
+- [Perintah Artisan Tambahan](#perintah-artisan-tambahan)
+- [Testing](#testing)
+- [Struktur Aset (No-NPM)](#struktur-aset-no-npm)
+- [Lisensi](#lisensi)
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## ✨ Fitur
+
+### 🌐 Situs Publik
+
+| Fitur | Keterangan |
+| --- | --- |
+| 🏠 Beranda | Hero slider, sambutan, kegiatan & alumni terbaru |
+| 🏛️ Profil Prodi | Sejarah, visi & misi, tujuan, keunggulan, akreditasi |
+| 👨‍🏫 Dosen & 🎓 Alumni | Profil lengkap dengan foto |
+| 📅 Kegiatan | Daftar, detail, dan **penerbitan otomatis** dari jadwal tayang |
+| 📄 Dokumen | Kategori, unduh, dan pratinjau PDF / DOCX |
+| ✉️ Kontak | Info kontak + form pesan |
+| 🔗 E-jurnal | Redirect ke portal jurnal |
+| 📃 Halaman Statis | Kebijakan Privasi, Aksesibilitas |
+
+### 🔐 Panel Pengelola (`/komi-panel`)
+
+- 📊 **Dashboard** — ringkasan konten & kesiapan publikasi
+- 🖊️ **Editor konten** — Beranda, Profil Prodi, Kontak, Pengaturan Situs (logo, favicon, footer, URL e-jurnal)
+- 👥 **Kelola data** — Dosen, Alumni, Kegiatan (draf/terjadwal/terbit), Dokumen & Kategori, Halaman Statis
+- 🧑‍💼 **Akun Admin** — kelola akun pengelola
+- ⏰ **Jadwal tayang otomatis** — kegiatan terjadwal terbit sendiri via scheduler
+
+---
+
+## 🛠 Teknologi
+
+- **Laravel 13** / PHP 8.3
+- **MySQL** (InnoDB, `utf8mb4`)
+- **Blade murni** (server-side rendering) + **Tailwind CSS** (CDN) + **Font Awesome** (CDN)
+- **Tanpa npm / Node.js / Vite** — aset statis dikelola langsung di `public/`
+
+---
+
+## 🚀 Instalasi
+
+**Persyaratan:** PHP ≥ 8.3, Composer, MySQL. (Opsional: CLI `mysqldump` / `mysql` untuk backup & restore.)
 
 ```bash
-composer require laravel/boost --dev
+# 1. Install dependensi
+composer install
 
-php artisan boost:install
+# 2. Siapkan environment
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Sesuaikan koneksi database di `.env` (MySQL), lalu:
 
-## Contributing
+```bash
+# 3. Buat skema database + data awal
+php artisan migrate --seed
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 4. Tautkan storage publik
+php artisan storage:link
 
-## Code of Conduct
+# 5. Jalankan
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🔐 Akun Admin Awal
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Seeder membuat akun admin dari variabel env berikut (lihat `config/initial-data.php`):
 
-## License
+```env
+INITIAL_ADMIN_NAME="Administrator Prodi"
+INITIAL_ADMIN_EMAIL=admin@uniwara.ac.id
+INITIAL_ADMIN_PASSWORD=password
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Login di **`/komi-panel/login`**. Di production, jangan biarkan password tetap `password` — seeder akan menolak.
+
+---
+
+## ⚙ Perintah Artisan Tambahan
+
+| Perintah | Fungsi |
+| --- | --- |
+| `php artisan migrate:safe [--fresh] [--seed]` | Migrasi dengan **backup otomatis** (mysqldump) + konfirmasi sebelum operasi destruktif |
+| `php artisan db:restore {file}` | Restore backup MySQL dari `storage/app/backups` |
+| `php artisan activities:publish-scheduled` | Terbitkan kegiatan terjadwal yang waktunya tiba |
+
+Perintah `activities:publish-scheduled` terdaftar di `routes/console.php` dan berjalan **tiap menit**. Jalankan scheduler lokal dengan:
+
+```bash
+php artisan schedule:work
+```
+
+Di server, tambahkan cron: `* * * * * php artisan schedule:run`
+
+---
+
+## 🧪 Testing
+
+```bash
+php artisan test
+```
+
+Suite test menggunakan database terpisah (`db_prodi_test`, lihat `phpunit.xml`).
+
+---
+
+## 📁 Struktur Aset (No-NPM)
+
+```
+public/
+├── css/
+│   ├── app/       # CSS admin, terorganisir per modul
+│   └── public/    # CSS situs publik
+├── js/
+│   ├── app/       # JavaScript admin per fungsi
+│   ├── vendor/    # Pustaka pihak ketiga (docx-preview, jszip)
+│   └── public.js  # JavaScript situs publik
+└── assets/        # Font, logo, dan gambar statis
+```
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+<div align="center">
+  Dibuat dengan ❤️ oleh **Ridz** ([@ridztzy](https://github.com/ridztzy)) untuk <b>Program Studi Ilmu Komputer</b> — Universitas PGRI Wiranegara
+</div>

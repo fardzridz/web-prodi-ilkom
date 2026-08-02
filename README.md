@@ -162,6 +162,6 @@ Proyek ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/M
 
 <div align="center">
 
-Dibuat dengan ❤️ oleh **Ridz** ([@ridztzy](https://github.com/ridztzy)) untuk **Program Studi Ilmu Komputer** — Universitas PGRI Wiranegara
+Dibuat dengan ❤️ oleh **Ridz** ([@fardzridz](https://github.com/fardzridz)) untuk **Program Studi Ilmu Komputer** — Universitas PGRI Wiranegara
 
 </div>

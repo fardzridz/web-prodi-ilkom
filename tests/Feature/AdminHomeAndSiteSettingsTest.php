@@ -69,7 +69,7 @@ $settingRecordPayload = fn (array $overrides = []): array => array_merge([
     'footer_academic_links' => [],
 ], $overrides);
 
-test('admin can open the real home settings and journal editors', function () use ($homeRecordPayload, $settingRecordPayload) {
+test('admin can open the real home settings editor', function () use ($homeRecordPayload, $settingRecordPayload) {
     HomeSection::query()->create($homeRecordPayload());
     SiteSetting::query()->create($settingRecordPayload());
 
@@ -88,11 +88,6 @@ test('admin can open the real home settings and journal editors', function () us
         ->assertSee('name="logo"', escape: false)
         ->assertSee('name="favicon"', escape: false)
         ->assertSee(route('admin.pengaturan.update'), escape: false);
-
-    $this->get(route('admin.jurnal'))
-        ->assertOk()
-        ->assertSee('Alamat E-Jurnal Resmi')
-        ->assertSee(route('admin.jurnal.update'), escape: false);
 });
 
 test('admin can update singleton home content and upload hero slides', function () use ($homePayload) {
@@ -269,22 +264,6 @@ test('admin can update singleton site settings logo favicon and footer links', f
     $this->assertDatabaseCount('site_settings', 1);
 });
 
-test('journal shortcut updates only the journal URL and keeps one setting row', function () use ($settingRecordPayload) {
-    SiteSetting::query()->create($settingRecordPayload());
-
-    $this->put(route('admin.jurnal.update'), [
-        'journal_url' => '  https://journal.example.ac.id  ',
-    ])
-        ->assertRedirect(route('admin.jurnal'))
-        ->assertSessionHas('success', 'Tautan e-jurnal berhasil diperbarui.');
-
-    $this->assertDatabaseHas('site_settings', [
-        'site_name' => 'Program Studi Ilmu Komputer',
-        'journal_url' => 'https://journal.example.ac.id',
-    ]);
-    $this->assertDatabaseCount('site_settings', 1);
-});
-
 test('home and site setting validation rejects unsafe or invalid input', function () use ($homePayload, $settingPayload, $homeRecordPayload, $settingRecordPayload) {
     $homeSection = HomeSection::query()->create($homeRecordPayload());
     $siteSetting = SiteSetting::query()->create($settingRecordPayload());
@@ -316,6 +295,4 @@ test('authenticated users without admin role cannot manage home or site settings
     $this->put(route('admin.beranda.update'), $homePayload())->assertForbidden();
     $this->get(route('admin.pengaturan'))->assertForbidden();
     $this->put(route('admin.pengaturan.update'), $settingPayload())->assertForbidden();
-    $this->get(route('admin.jurnal'))->assertForbidden();
-    $this->put(route('admin.jurnal.update'), ['journal_url' => 'https://example.com'])->assertForbidden();
 });

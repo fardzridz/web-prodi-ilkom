@@ -50,7 +50,6 @@ class DocumentCategoryController extends Controller
     }
 
     public function destroy(
-        IndexDocumentCategoryRequest $request,
         DocumentCategory $documentCategory,
     ): RedirectResponse {
         if ($documentCategory->documents()->exists()) {

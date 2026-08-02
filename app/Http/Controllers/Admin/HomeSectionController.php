@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ManageHomeSectionRequest;
 use App\Http\Requests\Admin\UpdateHomeSectionRequest;
 use App\Models\HomeSection;
 use Illuminate\Contracts\View\View;
@@ -13,7 +12,7 @@ use Throwable;
 
 class HomeSectionController extends Controller
 {
-    public function index(ManageHomeSectionRequest $request): View
+    public function index(): View
     {
         return view('admin.home-section.index', [
             'homeSection' => HomeSection::query()->first() ?? new HomeSection([

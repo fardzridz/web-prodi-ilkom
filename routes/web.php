@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DocumentCategoryController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\HomeSectionController;
 use App\Http\Controllers\Admin\LecturerController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProgramProfileController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\PublicController;
@@ -31,6 +32,8 @@ Route::get('/dokumen/{document}/view', [PublicController::class, 'documentView']
     ->name('documents.view');
 Route::get('/alumni', [PublicController::class, 'alumni'])->name('alumni');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
+Route::get('/kebijakan-privasi', [PublicController::class, 'privacyPolicy'])->name('public.privacy-policy');
+Route::get('/aksesibilitas', [PublicController::class, 'accessibility'])->name('public.accessibility');
 Route::post('/kontak', [PublicController::class, 'contactStore'])->middleware('throttle:5,1')->name('contact.store');
 
 // Route::prefix('admin')->name('admin.')->group(function (): void {
@@ -38,7 +41,7 @@ Route::prefix('komi-panel')->name('admin.')->group(function (): void {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate'])->name('login.store');
 
-    Route::middleware('auth')->group(function (): void {
+    Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/', fn () => redirect()->route('admin.dashboard'))->name('home');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -65,13 +68,14 @@ Route::prefix('komi-panel')->name('admin.')->group(function (): void {
         Route::resource('alumni', AlumniController::class)
             ->except(['show'])
             ->parameters(['alumni' => 'alumni']);
-        Route::get('/jurnal', [SiteSettingController::class, 'journal'])->name('jurnal');
-        Route::put('/jurnal', [SiteSettingController::class, 'updateJournal'])->name('jurnal.update');
         Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
         Route::put('/kontak', [ContactController::class, 'update'])->name('kontak.update');
         Route::get('/pengaturan', [SiteSettingController::class, 'index'])->name('pengaturan');
         Route::put('/pengaturan', [SiteSettingController::class, 'update'])->name('pengaturan.update');
         Route::get('/akun-admin', [AccountController::class, 'index'])->name('akun-admin');
         Route::put('/akun-admin', [AccountController::class, 'update'])->name('akun-admin.update');
+        Route::get('/halaman', [PageController::class, 'index'])->name('halaman');
+        Route::get('/halaman/{slug}/edit', [PageController::class, 'edit'])->name('halaman.edit');
+        Route::put('/halaman/{slug}', [PageController::class, 'update'])->name('halaman.update');
     });
 });

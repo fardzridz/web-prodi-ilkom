@@ -55,10 +55,6 @@
                 <i class="fa-solid fa-folder-tree" aria-hidden="true"></i>
                 <span>Kategori Dokumen</span>
             </a>
-            <a @class(['admin-nav-link', 'is-active' => request()->routeIs('admin.jurnal*')]) href="{{ route('admin.jurnal') }}" @if (request()->routeIs('admin.jurnal*')) aria-current="page" @endif>
-                <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-                <span>Tautan E-Jurnal</span>
-            </a>
         </div>
 
         <div class="admin-nav-group">
@@ -66,6 +62,10 @@
             <a @class(['admin-nav-link', 'is-active' => request()->routeIs('admin.kontak*')]) href="{{ route('admin.kontak') }}" @if (request()->routeIs('admin.kontak*')) aria-current="page" @endif>
                 <i class="fa-solid fa-address-book" aria-hidden="true"></i>
                 <span>Kontak</span>
+            </a>
+            <a @class(['admin-nav-link', 'is-active' => request()->routeIs('admin.halaman*')]) href="{{ route('admin.halaman') }}" @if (request()->routeIs('admin.halaman*')) aria-current="page" @endif>
+                <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                <span>Halaman Situs</span>
             </a>
             <a @class(['admin-nav-link', 'is-active' => request()->routeIs('admin.pengaturan*')]) href="{{ route('admin.pengaturan') }}" @if (request()->routeIs('admin.pengaturan*')) aria-current="page" @endif>
                 <i class="fa-solid fa-gear" aria-hidden="true"></i>

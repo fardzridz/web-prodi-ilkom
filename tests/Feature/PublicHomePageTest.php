@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\HomeSection;
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 $configuredDatabase = getenv('DB_CONNECTION');
@@ -48,4 +49,26 @@ test('public home falls back gracefully when home section is missing', function 
         ->assertSee('Logika diasah.', escape: false)
         ->assertSee('Tentang Ilmu Komputer')
         ->assertSee('Lihat Profil');
+});
+
+test('public home renders uploaded site logo and favicon from settings', function () {
+    SiteSetting::query()->create([
+        'site_name' => 'Program Studi Ilmu Komputer',
+        'university_name' => 'Universitas PGRI Wiranegara',
+        'faculty_name' => 'Fakultas Teknologi dan Sains',
+        'logo' => 'uploads/settings/logo-upload.png',
+        'favicon' => 'uploads/settings/favicon-upload.ico',
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee(asset('storage/uploads/settings/logo-upload.png'), escape: false)
+        ->assertSee(asset('storage/uploads/settings/favicon-upload.ico'), escape: false);
+});
+
+test('public home falls back to bundled logo and favicon when settings are empty', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee(asset('assets/images/logo/logo.png'), escape: false)
+        ->assertSee(asset('assets/images/logo/logo-prodi.svg'), escape: false);
 });

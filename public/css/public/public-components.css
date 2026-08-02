@@ -1,0 +1,177 @@
+.video-link::after {
+    position: absolute;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    content: "";
+    border-radius: 50%;
+    background:
+        linear-gradient(90deg, var(--blue-dark) 0 0) 57% 50% / 7px 10px
+            no-repeat,
+        var(--yellow);
+    clip-path: circle(50%);
+}
+
+.image-frame::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background-image: radial-gradient(
+        rgba(255, 255, 255, 0.26) 1px,
+        transparent 1.5px
+    );
+    background-size: 12px 12px;
+    opacity: 0.35;
+}
+
+.placeholder-campus {
+    background: linear-gradient(135deg, #163852, #7ca4b8 48%, #d8b15a);
+}
+
+.placeholder-classroom {
+    background: linear-gradient(135deg, #2b5d79, #c99649);
+}
+
+.placeholder-community {
+    background: linear-gradient(135deg, #972536, #e5a34c);
+}
+
+.placeholder-career {
+    background: linear-gradient(135deg, #163d5a, #789cb4);
+}
+
+.placeholder-aid {
+    background: linear-gradient(135deg, #b8323c, #f0c150);
+}
+
+.placeholder-media {
+    background: linear-gradient(135deg, #143852, #7aa2b7);
+}
+
+.placeholder-business {
+    background: linear-gradient(135deg, #234d68, #d9ad58);
+}
+
+.placeholder-sport {
+    background: linear-gradient(135deg, #17445d, #9cb46b);
+}
+
+.placeholder-visit {
+    background: linear-gradient(135deg, #173a58, #95b6c4);
+}
+
+.placeholder-open {
+    background: linear-gradient(135deg, #8f2330, #d9a04b);
+}
+
+.placeholder-virtual {
+    background: linear-gradient(135deg, #214d67, #738897);
+}
+
+.placeholder-story {
+    background: linear-gradient(135deg, #1f4a66, #c79a4a);
+}
+
+.placeholder-story-alt {
+    background: linear-gradient(135deg, #9a2737, #e3b347);
+}
+
+.placeholder-story-third {
+    background: linear-gradient(135deg, #153d5b, #83a2b0);
+}
+
+.intro-section .placeholder-campus {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.14), rgba(0, 36, 58, 0.14)),
+        url("../../assets/images/hero/hero-2.jpeg") center / cover no-repeat;
+}
+
+.why-section .placeholder-classroom {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-1.jpeg") center / cover no-repeat;
+}
+
+.why-section .placeholder-community {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-2.jpeg") center / cover no-repeat;
+}
+
+.why-section .placeholder-career {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-3.jpeg") center / cover no-repeat;
+}
+
+.why-section .placeholder-aid {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-4.jpeg") center / cover no-repeat;
+}
+
+.careers-section .placeholder-media {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)),
+        url("../../assets/images/hero/hero-1.jpeg") center / cover no-repeat;
+}
+
+.careers-section .placeholder-business {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)),
+        url("../../assets/images/hero/hero-2.jpeg") center / cover no-repeat;
+}
+
+.careers-section .placeholder-sport {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)),
+        url("../../assets/images/hero/hero-4.jpeg") center / cover no-repeat;
+}
+
+#kegiatan-section .placeholder-visit {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)),
+        url("../../assets/images/hero/hero-3.jpeg") center / cover no-repeat;
+}
+
+#kegiatan-section .placeholder-open {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)),
+        url("../../assets/images/hero/hero-1.jpeg") center / cover no-repeat;
+}
+
+#kegiatan-section .placeholder-virtual {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)),
+        url("../../assets/images/hero/hero-2.jpeg") center / cover no-repeat;
+}
+
+.activities-list-section .placeholder-visit,
+.activities-list-section .placeholder-community,
+.activities-list-section .placeholder-business {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-1.jpeg") center / cover no-repeat;
+}
+
+.activities-list-section .placeholder-open,
+.activities-list-section .placeholder-career,
+.activities-list-section .placeholder-sport {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-2.jpeg") center / cover no-repeat;
+}
+
+.activities-list-section .placeholder-virtual,
+.activities-list-section .placeholder-media {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-3.jpeg") center / cover no-repeat;
+}
+
+.activities-list-section .placeholder-classroom {
+    background:
+        linear-gradient(rgba(0, 36, 58, 0.1), rgba(0, 36, 58, 0.1)),
+        url("../../assets/images/hero/hero-4.jpeg") center / cover no-repeat;
+}
+

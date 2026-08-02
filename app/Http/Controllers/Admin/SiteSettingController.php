@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ManageSiteSettingRequest;
-use App\Http\Requests\Admin\UpdateJournalUrlRequest;
 use App\Http\Requests\Admin\UpdateSiteSettingRequest;
 use App\Models\SiteSetting;
 use Illuminate\Contracts\View\View;
@@ -14,7 +12,7 @@ use Throwable;
 
 class SiteSettingController extends Controller
 {
-    public function index(ManageSiteSettingRequest $request): View
+    public function index(): View
     {
         return view('admin.site-setting.index', [
             'siteSetting' => SiteSetting::query()->first() ?? new SiteSetting([
@@ -70,27 +68,5 @@ class SiteSettingController extends Controller
         return redirect()
             ->route('admin.pengaturan')
             ->with('success', 'Pengaturan website berhasil diperbarui.');
-    }
-
-    public function journal(ManageSiteSettingRequest $request): View
-    {
-        return view('admin.site-setting.journal', [
-            'siteSetting' => SiteSetting::query()->first() ?? new SiteSetting,
-        ]);
-    }
-
-    public function updateJournal(UpdateJournalUrlRequest $request): RedirectResponse
-    {
-        $siteSetting = SiteSetting::query()->first() ?? new SiteSetting([
-            'site_name' => 'Program Studi Ilmu Komputer',
-            'university_name' => 'Universitas PGRI Wiranegara',
-            'faculty_name' => 'Fakultas Teknologi dan Sains',
-        ]);
-
-        $siteSetting->fill($request->validated())->save();
-
-        return redirect()
-            ->route('admin.jurnal')
-            ->with('success', 'Tautan e-jurnal berhasil diperbarui.');
     }
 }

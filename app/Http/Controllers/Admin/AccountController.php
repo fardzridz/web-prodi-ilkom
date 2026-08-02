@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ManageAccountRequest;
 use App\Http\Requests\Admin\UpdateAccountRequest;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class AccountController extends Controller
 {
-    public function index(ManageAccountRequest $request): View
+    public function index(): View
     {
         return view('admin.account.index', [
-            'admin' => $request->user(),
+            'admin' => auth()->user(),
         ]);
     }
 

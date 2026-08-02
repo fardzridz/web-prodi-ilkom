@@ -12,11 +12,7 @@
 <body class="login-shell">
     <main class="login-panel">
         <a class="brand login-brand" href="{{ route('home') }}" aria-label="Kembali ke situs">
-            <span class="brand-mark">IK</span>
-            <span>
-                <strong>Ilmu Komputer</strong>
-                <small>Program Studi</small>
-            </span>
+            <img class="login-brand-logo" src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo Program Studi Ilmu Komputer">
         </a>
 
         <section class="content-panel login-card" aria-labelledby="login-heading">

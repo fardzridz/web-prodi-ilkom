@@ -22,9 +22,19 @@
 }
 
 .login-brand {
-    width: fit-content;
-    margin: 0 auto 24px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0 0 24px;
     color: var(--white);
+}
+
+.login-brand-logo {
+    display: block;
+    width: auto;
+    max-width: min(100%, 360px);
+    height: 64px;
+    object-fit: contain;
 }
 
 .brand-mark {

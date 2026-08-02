@@ -8,7 +8,14 @@
     <title>@yield('title', 'Pengelola Situs Prodi')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/app/app.css') }}?v={{ filemtime(public_path('css/app/app.css')) }}">
-    <script defer src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-shared.js') }}?v={{ filemtime(public_path('js/app/app-shared.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-core.js') }}?v={{ filemtime(public_path('js/app/app-core.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-select.js') }}?v={{ filemtime(public_path('js/app/app-select.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-datepicker.js') }}?v={{ filemtime(public_path('js/app/app-datepicker.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-forms.js') }}?v={{ filemtime(public_path('js/app/app-forms.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-home-editor.js') }}?v={{ filemtime(public_path('js/app/app-home-editor.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-image-preview.js') }}?v={{ filemtime(public_path('js/app/app-image-preview.js')) }}"></script>
+    <script defer src="{{ asset('js/app/app-quill.js') }}?v={{ filemtime(public_path('js/app/app-quill.js')) }}"></script>
     @once
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>

@@ -146,6 +146,8 @@ a {
 }
 .ql-container.ql-snow {
     font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 /* Tampilkan preview font family di dropdown toolbar Quill */

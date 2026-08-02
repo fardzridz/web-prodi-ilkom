@@ -1,0 +1,132 @@
+.desktop-header::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    background: var(--blue-deep);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 34px 100%);
+}
+
+.language-toggle::after {
+    width: 0;
+    height: 0;
+    content: "";
+    border-top: 4px solid var(--white);
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+
+.language-switcher.is-open .language-menu,
+.language-switcher:hover .language-menu {
+    display: block;
+}
+
+.desktop-header .language-menu a:hover,
+.desktop-header .language-menu a[aria-current="true"] {
+    background: var(--yellow);
+}
+
+.mobile-nav.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        opacity 0.28s ease,
+        visibility 0s linear;
+}
+
+.mobile-anim-item {
+    --enter-order: 0;
+    --exit-order: 0;
+    opacity: 0;
+    transform: translateX(52px);
+    transition:
+        opacity 0.28s ease,
+        transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--exit-order) * 45ms);
+}
+
+.mobile-nav-header a:nth-child(1) {
+    --enter-order: 0;
+    --exit-order: 10;
+}
+
+.mobile-nav-header a:nth-child(2) {
+    --enter-order: 1;
+    --exit-order: 9;
+}
+
+.mobile-nav-header a:nth-child(3) {
+    --enter-order: 2;
+    --exit-order: 8;
+}
+
+.mobile-nav-header a:nth-child(4) {
+    --enter-order: 3;
+    --exit-order: 7;
+}
+
+.mobile-nav-header a:nth-child(5) {
+    --enter-order: 4;
+    --exit-order: 6;
+}
+
+.mobile-nav-menu a:nth-child(1) {
+    --enter-order: 5;
+    --exit-order: 5;
+}
+
+.mobile-nav-menu a:nth-child(2) {
+    --enter-order: 6;
+    --exit-order: 4;
+}
+
+.mobile-nav-menu a:nth-child(3) {
+    --enter-order: 7;
+    --exit-order: 3;
+}
+
+.mobile-nav-menu a:nth-child(4) {
+    --enter-order: 8;
+    --exit-order: 2;
+}
+
+.mobile-nav-menu a:nth-child(5) {
+    --enter-order: 9;
+    --exit-order: 1;
+}
+
+.mobile-nav-menu a:nth-child(6) {
+    --enter-order: 10;
+    --exit-order: 0;
+}
+
+.mobile-nav-menu a:nth-child(7) {
+    --enter-order: 11;
+    --exit-order: 0;
+}
+
+.mobile-nav.is-open .mobile-anim-item {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: calc(90ms + (var(--enter-order) * 55ms));
+}
+
+.mobile-close::before,
+.mobile-close::after {
+    position: absolute;
+    top: 21px;
+    left: 8px;
+    width: 28px;
+    height: 2px;
+    content: "";
+    background: var(--blue-dark);
+}
+
+.mobile-close::before {
+    transform: rotate(45deg);
+}
+
+.mobile-close::after {
+    transform: rotate(-45deg);
+}

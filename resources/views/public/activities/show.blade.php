@@ -2,6 +2,7 @@
 
 @section('title', $activity['title'].' | Kegiatan Program Studi Ilmu Komputer')
 @section('description', $activity['excerpt'])
+@section('og_image', $activity['image'])
 
 @section('content')
 @include('partials.public.page-hero', [
@@ -48,7 +49,7 @@
             <p class="lead-copy mt-[22px] mb-0 text-[17px] font-light">{{ $activity['excerpt'] }}</p>
             <div class="contact-actions activity-detail-actions flex flex-wrap items-center gap-3.5 justify-end max-[1024px]:justify-start max-[560px]:grid max-[560px]:w-full max-[560px]:justify-items-start justify-start mt-[30px]">
                 <a class="button button-blue inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase bg-blue-mid" href="{{ route('activities.index') }}">Kembali ke Kegiatan</a>
-                <a class="button button-light-outline inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase border-2 border-current bg-transparent !bg-transparent" href="mailto:univ.pgriwiranegara@gmail.com">Tanya Panitia</a>
+                <a class="button button-light-outline inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase border-2 border-current bg-transparent !bg-transparent" href="mailto:{{ $contactInfo->email ?? 'univ.pgriwiranegara@gmail.com' }}">Tanya Panitia</a>
             </div>
         </div>
     </div>
@@ -95,7 +96,7 @@
 'primaryLabel' => 'Lihat Semua Kegiatan',
 'primaryHref' => route('activities.index'),
 'secondaryLabel' => 'Hubungi Prodi',
-'secondaryHref' => 'mailto:univ.pgriwiranegara@gmail.com',
+'secondaryHref' => 'mailto:'.($contactInfo->email ?? 'univ.pgriwiranegara@gmail.com'),
 ])
 @endsection
 

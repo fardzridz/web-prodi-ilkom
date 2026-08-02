@@ -352,6 +352,41 @@ document.querySelectorAll("[data-filter-target]").forEach((button) => {
     bodyElement.appendChild(iframe);
   }
 
+  // docx-preview merender halaman sesuai ukuran asli (mis. A4 ≈ 794px) sehingga
+  // di layar sempit isinya meluber dan terlihat "ke-zoom". Fungsi ini mengecilkan
+  // hasil render agar selebar kontainer (fit to width) dan tetap di tengah —
+  // di desktop tidak berubah.
+  function fitDocxToContainer(container) {
+    const wrapper = container.querySelector(".docx-wrapper") || container.firstElementChild;
+    const page = wrapper ? wrapper.querySelector("section") || wrapper.firstElementChild : null;
+    if (!wrapper || !page) {
+      return;
+    }
+    // Reset penskalaan sebelumnya agar pengukuran memakai ukuran asli lagi.
+    wrapper.style.transform = "";
+    wrapper.style.transformOrigin = "";
+    wrapper.style.height = "";
+    const pageWidth = page.offsetWidth;
+    const availableWidth = container.clientWidth;
+    if (!pageWidth || !availableWidth) {
+      return;
+    }
+    const scale = Math.min(1, availableWidth / pageWidth);
+    if (scale >= 1) {
+      return; // Konten sudah muat — tidak perlu diskalakan.
+    }
+    // Posisi kiri halaman relatif terhadap wrapper; bisa negatif karena wrapper
+    // meratakan tengah (align-items: center) sehingga halaman yang lebih lebar
+    // meluber ke kiri. Translate dipakai untuk mengembalikan halaman ke tengah
+    // setelah diskalakan dari pojok kiri-atas.
+    const pageLeft = page.getBoundingClientRect().left - wrapper.getBoundingClientRect().left;
+    const translateX = (availableWidth - pageWidth * scale) / 2 - pageLeft * scale;
+    const naturalHeight = wrapper.scrollHeight;
+    wrapper.style.transformOrigin = "top left";
+    wrapper.style.transform = `translate(${translateX}px, 0) scale(${scale})`;
+    wrapper.style.height = `${naturalHeight * scale}px`;
+  }
+
   function renderDocx(url, downloadUrl) {
     loadDocxPreview()
       .then((docx) => fetch(url)
@@ -364,6 +399,9 @@ document.querySelectorAll("[data-filter-target]").forEach((button) => {
         .then((buffer) => {
           bodyElement.innerHTML = "";
           return docx.renderAsync(buffer, bodyElement);
+        })
+        .then(() => {
+          fitDocxToContainer(bodyElement);
         }))
       .catch(() => {
         showFallback(downloadUrl);
@@ -402,6 +440,13 @@ document.querySelectorAll("[data-filter-target]").forEach((button) => {
   function closePreview() {
     setModalOpen(false);
   }
+
+  // Jaga penskalaan tetap pas saat ukuran/orientasi layar berubah (mis. rotasi HP).
+  window.addEventListener("resize", () => {
+    if (!modal.hidden && bodyElement.querySelector(".docx-wrapper")) {
+      fitDocxToContainer(bodyElement);
+    }
+  });
 
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-preview-url]");

@@ -285,8 +285,13 @@
 }
 
 @media (max-width: 768px) {
+    .document-table {
+        min-width: 820px;
+    }
+
     .document-table .col-filetype,
-    .document-table .col-filesize {
+    .document-table .col-filesize,
+    .document-table .col-uploaded {
         display: none;
     }
 }

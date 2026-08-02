@@ -5,9 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Program Studi Ilmu Komputer')</title>
     <meta name="description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer Universitas PGRI Wiranegara.')">
+    <meta property="og:site_name" content="{{ $siteSetting?->site_name ?: 'Program Studi Ilmu Komputer' }}">
+    <meta property="og:title" content="@yield('title', 'Program Studi Ilmu Komputer')">
+    <meta property="og:description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer Universitas PGRI Wiranegara.')">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    @hasSection('og_image')
+    <meta property="og:image" content="{{ $__env->yieldContent('og_image') }}">
+    @else
+    <meta property="og:image" content="{{ $siteSetting?->logo ? asset('storage/'.$siteSetting->logo) : asset('assets/images/logo/logo.png') }}">
+    @endif
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="{{ asset($siteSetting?->favicon ? 'storage/'.$siteSetting->favicon : 'assets/images/logo/logo-prodi.svg') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind CDN is used in development. In production, the Tailwind classes are compiled into public/css/public.css via the Laravel Boost pipeline. Do not remove the CDN script to preserve development convenience. -->
+    <!-- Tailwind CDN is used in development. In production, the Tailwind classes are compiled into public/css/public/app.css via the Laravel Boost pipeline. Do not remove the CDN script to preserve development convenience. -->
     <script>
         tailwind.config = {
             theme: {
@@ -37,7 +49,7 @@
             },
         };
     </script>
-    <link rel="stylesheet" href="{{ asset('css/public.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/public/app.css') }}">
     @stack('head')
 </head>
 <body class="m-0 overflow-x-clip bg-[#f8f9fa] text-grey-1 font-body text-base font-normal leading-[1.55] tracking-normal antialiased">

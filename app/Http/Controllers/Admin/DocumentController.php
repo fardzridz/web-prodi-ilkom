@@ -52,7 +52,7 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function create(IndexDocumentRequest $request): View
+    public function create(): View
     {
         return view('admin.documents.create', [
             'document' => new Document(['status' => Document::STATUS_DRAFT]),
@@ -86,7 +86,7 @@ class DocumentController extends Controller
             ->with('success', 'Dokumen berhasil ditambahkan dan berkas tersimpan dengan aman.');
     }
 
-    public function edit(IndexDocumentRequest $request, Document $document): View
+    public function edit(Document $document): View
     {
         return view('admin.documents.edit', [
             'document' => $document->load('documentCategory'),
@@ -131,7 +131,7 @@ class DocumentController extends Controller
             ->with('success', 'Dokumen berhasil diperbarui.');
     }
 
-    public function toggleStatus(IndexDocumentRequest $request, Document $document): RedirectResponse
+    public function toggleStatus(Document $document): RedirectResponse
     {
         $document->update([
             'status' => $document->status === Document::STATUS_PUBLISHED
@@ -144,7 +144,7 @@ class DocumentController extends Controller
             ->with('success', "Status {$document->title} berhasil diubah menjadi {$document->statusLabel()}.");
     }
 
-    public function download(IndexDocumentRequest $request, Document $document): StreamedResponse
+    public function download(Document $document): StreamedResponse
     {
         abort_unless(Storage::disk('local')->exists($document->file), 404);
 
@@ -155,7 +155,7 @@ class DocumentController extends Controller
         );
     }
 
-    public function destroy(IndexDocumentRequest $request, Document $document): RedirectResponse
+    public function destroy(Document $document): RedirectResponse
     {
         $file = $document->file;
         $document->delete();

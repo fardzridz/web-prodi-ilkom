@@ -1,0 +1,151 @@
+@media (max-width: 1024px) {
+    .site-footer::before {
+        height: 57px;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 58% 100%, 54% 62%, 0 62%);
+    }
+
+    .footer-dots {
+        top: 96px;
+        right: -70px;
+        opacity: 0.2;
+    }
+
+    .profile-core-section::after {
+        right: -150px;
+        opacity: 0.28;
+    }
+}
+
+@media (max-width: 560px) {
+    .site-footer::before {
+        height: 45px;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 62% 100%, 55% 62%, 0 62%);
+    }
+
+    #kegiatan-section::before {
+        bottom: 36px;
+        left: -104px;
+        width: 204px;
+        height: 148px;
+        opacity: 0.22;
+        background-size: 17px 17px;
+    }
+
+    #kegiatan-section::after {
+        top: 92px;
+        right: -112px;
+        width: 206px;
+        height: 150px;
+        opacity: 0.2;
+        background-size: 17px 17px;
+    }
+
+    .why-card::before {
+        top: 76px;
+        left: 0;
+        width: 100%;
+        height: 190px;
+    }
+
+    #visi-misi-section::before {
+        top: auto;
+        bottom: 210px;
+        left: -86px;
+        width: 196px;
+        height: 150px;
+        opacity: 0.38;
+        background-size: 18px 18px;
+    }
+
+    #visi-misi-section::after {
+        top: 62%;
+        right: -52px;
+        bottom: auto;
+        width: 188px;
+        height: 146px;
+        opacity: 0.5;
+        background-size: 18px 18px;
+    }
+
+    .scholarship-section::before {
+        top: -88px;
+        right: -82px;
+        width: 232px;
+        height: 148px;
+        opacity: 0.48;
+        background-size: 17px 17px;
+    }
+
+    .scholarship-section::after {
+        bottom: -124px;
+        left: -72px;
+        width: 270px;
+        height: 178px;
+        opacity: 0.36;
+        background-size: 17px 17px;
+    }
+
+    .profile-intro-section::after {
+        right: -126px;
+        bottom: 18px;
+        width: 230px;
+        height: 160px;
+        opacity: 0.22;
+        background-size: 16px 16px;
+    }
+
+    .profile-core-section::before {
+        top: auto;
+        bottom: 18px;
+        left: -104px;
+        width: 224px;
+        height: 154px;
+        opacity: 0.24;
+        background-size: 18px 18px;
+    }
+
+    .profile-core-section::after {
+        display: none;
+    }
+
+    .rich-text-content {
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+    .rich-text-content p {
+        font-size: 16px;
+    }
+
+    .rich-text-content li {
+        padding: 6px 0 6px 28px;
+    }
+
+    .rich-text-content ul li::before {
+        left: 5px;
+    }
+
+    .rich-text-content blockquote {
+        padding: 0;
+    }
+
+    .profile-focus-section::before {
+        top: auto;
+        bottom: 22px;
+        left: -104px;
+        width: 220px;
+        height: 150px;
+        opacity: 0.2;
+        background-size: 16px 16px;
+    }
+
+    .activities-list-section::before,
+    .alumni-list-section::before,
+    .documents-list-section::before,
+    .documents-flow-section::before {
+        width: 214px;
+        height: 150px;
+        opacity: 0.16;
+        background-size: 16px 16px;
+    }
+}

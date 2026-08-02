@@ -28,3 +28,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Backup file sementara hasil refactoring CSS/JS
+*.bak

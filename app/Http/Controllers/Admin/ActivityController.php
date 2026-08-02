@@ -39,7 +39,7 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function create(IndexActivityRequest $request): View
+    public function create(): View
     {
         return view('admin.activities.create', [
             'activity' => new Activity(['status' => Activity::STATUS_DRAFT]),
@@ -62,7 +62,7 @@ class ActivityController extends Controller
             ->with('success', 'Kegiatan berhasil ditambahkan.');
     }
 
-    public function edit(IndexActivityRequest $request, Activity $activity): View
+    public function edit(Activity $activity): View
     {
         return view('admin.activities.edit', [
             'activity' => $activity,
@@ -99,7 +99,7 @@ class ActivityController extends Controller
             ->with('success', 'Kegiatan berhasil diperbarui.');
     }
 
-    public function destroy(IndexActivityRequest $request, Activity $activity): RedirectResponse
+    public function destroy(Activity $activity): RedirectResponse
     {
         $image = $activity->image;
         $activity->delete();

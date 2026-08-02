@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SiteSettingSeeder::class,
             HomeSectionSeeder::class,
             ProgramProfileSeeder::class,
+            PageSeeder::class,
             ContactSeeder::class,
             DocumentCategorySeeder::class,
             LecturerSeeder::class,

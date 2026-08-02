@@ -49,7 +49,7 @@ class AlumniController extends Controller
         ]);
     }
 
-    public function create(IndexAlumniRequest $request): View
+    public function create(): View
     {
         return view('admin.alumni.create', [
             'alumni' => new Alumni([
@@ -75,7 +75,7 @@ class AlumniController extends Controller
             ->with('success', 'Data alumni berhasil ditambahkan.');
     }
 
-    public function edit(IndexAlumniRequest $request, Alumni $alumni): View
+    public function edit(Alumni $alumni): View
     {
         return view('admin.alumni.edit', [
             'alumni' => $alumni,
@@ -114,7 +114,7 @@ class AlumniController extends Controller
             ->with('success', 'Data alumni berhasil diperbarui.');
     }
 
-    public function toggleStatus(IndexAlumniRequest $request, Alumni $alumni): RedirectResponse
+    public function toggleStatus(Alumni $alumni): RedirectResponse
     {
         $alumni->update([
             'status' => $alumni->status === Alumni::STATUS_ACTIVE
@@ -127,7 +127,7 @@ class AlumniController extends Controller
             ->with('success', "Status {$alumni->name} berhasil diubah menjadi {$alumni->statusLabel()}.");
     }
 
-    public function destroy(IndexAlumniRequest $request, Alumni $alumni): RedirectResponse
+    public function destroy(Alumni $alumni): RedirectResponse
     {
         $photo = $alumni->photo;
         $alumni->delete();

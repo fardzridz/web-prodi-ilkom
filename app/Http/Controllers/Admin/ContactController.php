@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ManageContactRequest;
 use App\Http\Requests\Admin\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Contracts\View\View;
@@ -11,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 
 class ContactController extends Controller
 {
-    public function index(ManageContactRequest $request): View
+    public function index(): View
     {
         return view('admin.contact.index', [
             'contact' => Contact::query()->first() ?? new Contact,

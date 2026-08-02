@@ -10,11 +10,6 @@ use Illuminate\Validation\Rules\Password;
 
 class UpdateAccountRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return $this->user()?->role === User::ROLE_ADMIN;
-    }
-
     /** @return array<string, ValidationRule|array<mixed>|string> */
     public function rules(): array
     {

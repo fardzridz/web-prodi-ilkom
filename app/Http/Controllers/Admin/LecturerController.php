@@ -40,7 +40,7 @@ class LecturerController extends Controller
         ]);
     }
 
-    public function create(IndexLecturerRequest $request): View
+    public function create(): View
     {
         return view('admin.lecturers.create', [
             'lecturer' => new Lecturer([
@@ -67,7 +67,7 @@ class LecturerController extends Controller
             ->with('success', 'Data dosen berhasil ditambahkan.');
     }
 
-    public function edit(IndexLecturerRequest $request, Lecturer $lecturer): View
+    public function edit(Lecturer $lecturer): View
     {
         return view('admin.lecturers.edit', [
             'lecturer' => $lecturer,
@@ -106,7 +106,7 @@ class LecturerController extends Controller
             ->with('success', 'Data dosen berhasil diperbarui.');
     }
 
-    public function toggleStatus(IndexLecturerRequest $request, Lecturer $lecturer): RedirectResponse
+    public function toggleStatus(Lecturer $lecturer): RedirectResponse
     {
         $lecturer->update([
             'status' => $lecturer->status === Lecturer::STATUS_ACTIVE
@@ -119,7 +119,7 @@ class LecturerController extends Controller
             ->with('success', "Status {$lecturer->name} berhasil diubah menjadi {$lecturer->statusLabel()}.");
     }
 
-    public function destroy(IndexLecturerRequest $request, Lecturer $lecturer): RedirectResponse
+    public function destroy(Lecturer $lecturer): RedirectResponse
     {
         $photo = $lecturer->photo;
         $lecturer->delete();

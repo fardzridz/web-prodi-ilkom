@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Public\ContactMessageRequest;
 use App\Models\Activity;
 use App\Models\Alumni;
+use App\Models\Concerns\SanitizesHtml;
 use App\Models\Contact;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\HomeSection;
 use App\Models\Lecturer;
 use App\Models\Message;
+use App\Models\Page;
 use App\Models\ProgramProfile;
 use App\Models\SiteSetting;
 use Illuminate\Contracts\View\View;
@@ -22,6 +24,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PublicController extends Controller
 {
+    use SanitizesHtml;
+
     public function __construct()
     {
         view()->share('site', SiteSetting::query()->first() ?? new SiteSetting([
@@ -75,6 +79,22 @@ class PublicController extends Controller
     public function visionMission(): RedirectResponse
     {
         return redirect('/profil#visi-misi-page');
+    }
+
+    public function privacyPolicy(): View
+    {
+        return view('public.kebijakan-privasi', [
+            'page' => Page::query()->where('slug', 'kebijakan-privasi')->first()
+                ?? new Page(['title' => 'Kebijakan Privasi']),
+        ]);
+    }
+
+    public function accessibility(): View
+    {
+        return view('public.aksesibilitas', [
+            'page' => Page::query()->where('slug', 'aksesibilitas')->first()
+                ?? new Page(['title' => 'Aksesibilitas']),
+        ]);
     }
 
     public function lecturers(): View
@@ -258,18 +278,7 @@ class PublicController extends Controller
         }
 
         return $query->get()
-            ->map(fn (Activity $activity): array => [
-                'title' => $activity->title,
-                'slug' => $activity->slug,
-                'excerpt' => $activity->excerpt ?? '',
-                'date' => $activity->activity_date?->format('Y-m-d') ?? '',
-                'date_label' => $activity->activity_date?->translatedFormat('d F Y') ?? '',
-                'location' => $activity->location ?? '',
-                'category' => $activity->category ?? '',
-                'image' => $activity->image ? asset('storage/'.$activity->image) : 'assets/images/hero/hero-1.jpeg',
-                'image_class' => 'placeholder-visit',
-                'content_blocks' => $this->parseActivityContent($activity->content),
-            ])
+            ->map(fn (Activity $activity): array => $this->mapActivity($activity))
             ->all();
     }
 
@@ -284,7 +293,7 @@ class PublicController extends Controller
 
         if (str_starts_with(ltrim((string) $content), '<')) {
             return [
-                ['type' => 'html', 'html' => $this->sanitizeActivityHtml((string) $content)],
+                ['type' => 'html', 'html' => $this->sanitizeHtml((string) $content, ['p', 'br', 'strong', 'b', 'em', 'i', 'ul', 'ol', 'li', 'h2', 'h3', 'h4', 'a', 'span'])],
             ];
         }
 
@@ -293,31 +302,22 @@ class PublicController extends Controller
         ];
     }
 
-    private function sanitizeActivityHtml(string $html): string
+    /**
+     * @return array<string, mixed>
+     */
+    private function mapActivity(Activity $activity): array
     {
-        $allowedTags = '<p><br><strong><b><em><i><ul><ol><li><h2><h3><h4><a><span>';
-        $html = strip_tags($html, $allowedTags);
-
-        // Drop event-handler attributes (onclick, onerror, …).
-        $html = preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html) ?? $html;
-
-        // Neutralize javascript: / data: / vbscript: in href (and similar URL attrs).
-        $html = preg_replace_callback(
-            '/\s(href|src|xlink:href)\s*=\s*(["\'])(.*?)\2/i',
-            function (array $matches): string {
-                $url = trim(html_entity_decode($matches[3], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-                $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
-
-                if (in_array($scheme, ['javascript', 'data', 'vbscript'], true)) {
-                    return '';
-                }
-
-                return ' '.$matches[1].'='.$matches[2].$matches[3].$matches[2];
-            },
-            $html
-        ) ?? $html;
-
-        return $html;
+        return [
+            'title' => $activity->title,
+            'slug' => $activity->slug,
+            'excerpt' => $activity->excerpt ?? '',
+            'date' => $activity->activity_date?->format('Y-m-d') ?? '',
+            'date_label' => $activity->activity_date?->translatedFormat('d F Y') ?? '',
+            'location' => $activity->location ?? '',
+            'category' => $activity->category ?? '',
+            'image' => $activity->image ? asset('storage/'.$activity->image) : asset('assets/images/hero/hero-1.jpeg'),
+            'content_blocks' => $this->parseActivityContent($activity->content),
+        ];
     }
 
     /**
@@ -332,18 +332,7 @@ class PublicController extends Controller
 
         abort_unless($activity, 404);
 
-        return [
-            'title' => $activity->title,
-            'slug' => $activity->slug,
-            'excerpt' => $activity->excerpt ?? '',
-            'date' => $activity->activity_date?->format('Y-m-d') ?? '',
-            'date_label' => $activity->activity_date?->translatedFormat('d F Y') ?? '',
-            'location' => $activity->location ?? '',
-            'category' => $activity->category ?? '',
-            'image' => $activity->image ? asset('storage/'.$activity->image) : 'assets/images/hero/hero-1.jpeg',
-            'image_class' => 'placeholder-visit',
-            'content_blocks' => $this->parseActivityContent($activity->content),
-        ];
+        return $this->mapActivity($activity);
     }
 
     /**
@@ -362,9 +351,7 @@ class PublicController extends Controller
                 'name' => $lecturer->name,
                 'nidn' => $lecturer->nidn,
                 'position' => $lecturer->position ?? '',
-                'field' => $lecturer->expertise ?? '',
                 'expertise' => $lecturer->expertise ?? '',
-                'expertise_short' => $lecturer->expertise ?? '',
                 'education' => $lecturer->education ?? '',
                 'email' => $lecturer->email ?? '',
                 'image' => $lecturer->photo ? asset('storage/'.$lecturer->photo) : 'assets/images/hero/hero-1.jpeg',
@@ -393,7 +380,6 @@ class PublicController extends Controller
             ->map(fn (Alumni $alumni): array => [
                 'name' => $alumni->name,
                 'role' => trim(implode(' ', array_filter([$alumni->job_position, 'di', $alumni->company]))),
-                'year' => (string) ($alumni->batch_year ?? ''),
                 'batch_year' => (string) ($alumni->batch_year ?? ''),
                 'graduation_year' => (string) ($alumni->graduation_year ?? ''),
                 'job_position' => $alumni->job_position ?? '',
@@ -421,8 +407,6 @@ class PublicController extends Controller
                 'title' => $document->title,
                 'category' => $document->documentCategory?->name ?? '',
                 'description' => $document->description ?? '',
-                'type' => $document->fileTypeLabel(),
-                'date' => (string) ($document->uploaded_at?->year ?? ''),
                 'file_type' => $document->fileTypeLabel(),
                 'file_icon' => match (strtoupper($document->file_type)) {
                     'PDF' => 'fa-file',

@@ -47,7 +47,7 @@
             ['title' => 'Pembelajaran Berbasis Proyek', 'copy' => 'Mahasiswa diarahkan membangun portofolio nyata melalui praktikum, proyek aplikasi, dan kegiatan kolaboratif.', 'class' => 'placeholder-career'],
             ['title' => 'Koneksi Akademik dan Industri', 'copy' => 'Kegiatan prodi menghubungkan perkuliahan dengan sertifikasi, magang, PKL, dan pengabdian masyarakat.', 'class' => 'placeholder-aid'],
             ] as $index => $item)
-            <article class="why-card relative grid grid-cols-[150px_46px_minmax(0,1fr)] gap-[22px] items-start min-h-[230px] pt-[18px] isolate max-[560px]:grid-cols-[72px_minmax(0,1fr)] max-[560px]:gap-4 max-[560px]:min-h-0 max-[560px]:p-0">
+            <article class="why-card relative grid grid-cols-[150px_46px_minmax(0,1fr)] gap-[22px] items-start min-h-[230px] pt-[18px] isolate max-[560px]:grid-cols-[72px_minmax(0,1fr)] max-[560px]:gap-4 max-[560px]:min-h-0 max-[560px]:p-0 max-[560px]:[&_.why-copy]:col-span-2">
                 <div class="image-frame why-card-image {{ $item['class'] }} relative w-[150px] h-[150px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] max-[560px]:w-[72px] max-[560px]:h-[72px]"></div>
                 <div class="why-number text-red font-display text-[64px] font-thin leading-[0.74] tracking-normal max-[560px]:text-[56px]">{{ $index + 1 }}</div>
                 <div class="why-copy [&_h3]:max-w-[330px] [&_h3]:m-0 [&_h3]:text-blue-dark [&_h3]:font-body [&_h3]:text-[clamp(22px,2.2vw,30px)] max-[560px]:[&_h3]:text-2xl [&_h3]:font-bold [&_h3]:leading-[0.98] [&_h3]:tracking-[-0.02em] [&_p]:max-w-[360px] [&_p]:mt-5 [&_p]:mb-0 [&_p]:text-grey-2 [&_p]:text-[15px] [&_p]:leading-normal">

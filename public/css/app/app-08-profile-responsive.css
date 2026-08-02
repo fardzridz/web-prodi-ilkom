@@ -166,7 +166,10 @@
     }
 
     .document-form,
-    .document-category-layout,
+    .document-category-layout {
+        grid-template-columns: 1fr;
+    }
+
     .profile-field-vision {
         grid-column: auto;
     }

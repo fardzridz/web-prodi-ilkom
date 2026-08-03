@@ -15,7 +15,6 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 ![Pest](https://img.shields.io/badge/Pest-4-2a2a40?style=for-the-badge&logo=pest&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-%E2%9C%93%20passed-2ea44f?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
-![No npm](https://img.shields.io/badge/No%20npm%20%2F%20Vite-24292E?style=flat-square)
 
 </div>
 

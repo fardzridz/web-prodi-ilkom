@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request): string => route('admin.login'),
         );
         $middleware->alias(['admin' => EnsureAdmin::class]);
+        // ponytail: '*' trusts any proxy — cukup untuk tunnel dev (trycloudflare);
+        // di produksi pin IP proxy cloudflared/reverse-proxy agar header tidak bisa dispoof.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

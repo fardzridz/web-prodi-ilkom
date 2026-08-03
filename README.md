@@ -13,7 +13,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Pest](https://img.shields.io/badge/Pest-4-2a2a40?style=for-the-badge&logo=pest&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-122%20passed-2ea44f?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-%E2%9C%93%20passed-2ea44f?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 ![No npm](https://img.shields.io/badge/No%20npm%20%2F%20Vite-24292E?style=flat-square)
 
@@ -26,6 +26,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 - [Fitur](#fitur)
 - [Teknologi](#teknologi)
 - [Instalasi](#instalasi)
+- [Screenshot](#screenshot)
 - [Akun Admin Awal](#akun-admin-awal)
 - [Perintah Artisan Tambahan](#perintah-artisan-tambahan)
 - [Testing](#testing)
@@ -96,6 +97,20 @@ php artisan serve
 
 ---
 
+## 📸 Screenshot
+
+### Situs Publik
+
+![Beranda](screenshots/home.png)
+
+### Panel Pengelola (`/komi-panel`)
+
+![Dashboard Admin](screenshots/admin-dashboard.png)
+
+> 📌 Screenshot akan tersedia di folder `screenshots/`. Belum sempat ambil? Bisa pakai tool apa saja (mis. **Win+Shift+S** di Windows) setelah aplikasi berjalan.
+
+---
+
 ## 🔐 Akun Admin Awal
 
 Seeder membuat akun admin dari variabel env berikut (lihat `config/initial-data.php`):
@@ -115,7 +130,7 @@ Login di **`/komi-panel/login`**. Di production, jangan biarkan password tetap `
 | Perintah | Fungsi |
 | --- | --- |
 | `php artisan migrate:safe [--fresh] [--seed]` | Migrasi dengan **backup otomatis** (mysqldump) + konfirmasi sebelum operasi destruktif |
-| `php artisan db:restore {file}` | Restore backup MySQL dari `storage/app/backups` |
+| `php artisan db:restore {file}` | Restore backup MySQL dari `storage/app/backups` — contoh: `php artisan db:restore db_prodi_20260803_093000.sql` |
 | `php artisan activities:publish-scheduled` | Terbitkan kegiatan terjadwal yang waktunya tiba |
 
 Perintah `activities:publish-scheduled` terdaftar di `routes/console.php` dan berjalan **tiap menit**. Jalankan scheduler lokal dengan:

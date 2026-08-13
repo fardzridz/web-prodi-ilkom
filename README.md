@@ -63,7 +63,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 
 - **Laravel 13** / PHP 8.3
 - **MySQL** (InnoDB, `utf8mb4`)
-- **Blade murni** (server-side rendering) + **Tailwind CSS v4** + **Font Awesome** (CDN)
+- **Blade murni** (server-side rendering) + **Tailwind CSS v4** (via Vite)
 
 ---
 

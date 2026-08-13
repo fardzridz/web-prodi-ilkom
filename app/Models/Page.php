@@ -17,6 +17,6 @@ class Page extends Model
 
     public function getSanitizedContentAttribute(): string
     {
-        return $this->sanitizeHtml($this->content, ['p', 'br', 'strong', 'b', 'em', 'i', 'ul', 'ol', 'li', 'h2', 'h3', 'h4', 'a', 'span']);
+        return $this->sanitizeHtml($this->content, ['p', 'br', 'div', 'strong', 'b', 'em', 'i', 'u', 's', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'span', 'blockquote', 'pre', 'code', 'img', 'figure', 'figcaption']);
     }
 }

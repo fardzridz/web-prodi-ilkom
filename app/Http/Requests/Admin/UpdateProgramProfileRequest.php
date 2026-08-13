@@ -16,7 +16,16 @@ class UpdateProgramProfileRequest extends FormRequest
             'vision' => ['required', 'string', 'max:5000'],
             'mission' => ['required', 'string', 'max:50000'],
             'goals' => ['required', 'string', 'max:50000'],
-            'accreditation' => ['required', 'string', 'max:255'],
+            // Strip Unicode bidi / zero-width control chars to defeat RTL override
+            // spoofing. Allow letters, digits, whitespace, and a narrow punctuation
+            // set typical of BAN-PT accreditation labels ("Baik Sekali", "A",
+            // "Unggul (2024)").
+            'accreditation' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\pL\pN\s\-\/\.,()]+$/u',
+            ],
             'advantages' => ['required', 'string', 'max:50000'],
         ];
     }
@@ -34,19 +43,31 @@ class UpdateProgramProfileRequest extends FormRequest
             'advantages.required' => 'Keunggulan program studi wajib diisi.',
             'vision.max' => 'Visi maksimal 5.000 karakter.',
             'accreditation.max' => 'Akreditasi maksimal 255 karakter.',
+            'accreditation.regex' => 'Akreditasi hanya boleh berisi huruf, angka, dan tanda baca umum.',
         ];
     }
 
     protected function prepareForValidation(): void
     {
+        $stripControl = static function (string $value): string {
+            // Drop Unicode bidi controls and zero-width / format chars.
+            $cleaned = preg_replace(
+                '/[\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{206F}\x{FEFF}]/u',
+                '',
+                $value,
+            );
+
+            return trim($cleaned ?? $value);
+        };
+
         $this->merge([
-            'history' => trim((string) $this->input('history')),
-            'description' => trim((string) $this->input('description')),
-            'vision' => trim((string) $this->input('vision')),
-            'mission' => trim((string) $this->input('mission')),
-            'goals' => trim((string) $this->input('goals')),
-            'accreditation' => trim((string) $this->input('accreditation')),
-            'advantages' => trim((string) $this->input('advantages')),
+            'history' => $stripControl(trim((string) $this->input('history'))),
+            'description' => $stripControl(trim((string) $this->input('description'))),
+            'vision' => $stripControl(trim((string) $this->input('vision'))),
+            'mission' => $stripControl(trim((string) $this->input('mission'))),
+            'goals' => $stripControl(trim((string) $this->input('goals'))),
+            'accreditation' => $stripControl(trim((string) $this->input('accreditation'))),
+            'advantages' => $stripControl(trim((string) $this->input('advantages'))),
         ]);
     }
 }

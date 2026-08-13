@@ -16,25 +16,27 @@ use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [PublicController::class, 'home'])->name('home');
-Route::get('/profil', [PublicController::class, 'profile'])->name('profile');
-Route::get('/visi-misi', [PublicController::class, 'visionMission'])->name('vision-mission');
-Route::get('/dosen', [PublicController::class, 'lecturers'])->name('lecturers');
-Route::get('/kegiatan', [PublicController::class, 'activities'])->name('activities.index');
-Route::get('/kegiatan/{slug}', [PublicController::class, 'activityDetail'])->name('activities.show');
-Route::get('/jurnal', [PublicController::class, 'journalRedirect'])->name('journal');
-Route::get('/dokumen', [PublicController::class, 'documents'])->name('documents');
-Route::get('/dokumen/{document}/download', [PublicController::class, 'documentDownload'])
-    ->middleware('throttle:30,1')
-    ->name('documents.download');
-Route::get('/dokumen/{document}/view', [PublicController::class, 'documentView'])
-    ->middleware('throttle:30,1')
-    ->name('documents.view');
-Route::get('/alumni', [PublicController::class, 'alumni'])->name('alumni');
-Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
-Route::get('/kebijakan-privasi', [PublicController::class, 'privacyPolicy'])->name('public.privacy-policy');
-Route::get('/aksesibilitas', [PublicController::class, 'accessibility'])->name('public.accessibility');
-Route::post('/kontak', [PublicController::class, 'contactStore'])->middleware('throttle:5,1')->name('contact.store');
+Route::middleware('public.security')->group(function (): void {
+    Route::get('/', [PublicController::class, 'home'])->name('home');
+    Route::get('/profil', [PublicController::class, 'profile'])->name('profile');
+    Route::get('/visi-misi', [PublicController::class, 'visionMission'])->name('vision-mission');
+    Route::get('/dosen', [PublicController::class, 'lecturers'])->name('lecturers');
+    Route::get('/kegiatan', [PublicController::class, 'activities'])->name('activities.index');
+    Route::get('/kegiatan/{slug}', [PublicController::class, 'activityDetail'])->name('activities.show');
+    Route::get('/jurnal', [PublicController::class, 'journalRedirect'])->name('journal');
+    Route::get('/dokumen', [PublicController::class, 'documents'])->name('documents');
+    Route::get('/dokumen/{document}/download', [PublicController::class, 'documentDownload'])
+        ->middleware('throttle:30,1')
+        ->name('documents.download');
+    Route::get('/dokumen/{document}/view', [PublicController::class, 'documentView'])
+        ->middleware('throttle:30,1')
+        ->name('documents.view');
+    Route::get('/alumni', [PublicController::class, 'alumni'])->name('alumni');
+    Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
+    Route::get('/kebijakan-privasi', [PublicController::class, 'privacyPolicy'])->name('public.privacy-policy');
+    Route::get('/aksesibilitas', [PublicController::class, 'accessibility'])->name('public.accessibility');
+    Route::post('/kontak', [PublicController::class, 'contactStore'])->middleware('throttle:5,1')->name('contact.store');
+});
 
 // Route::prefix('admin')->name('admin.')->group(function (): void {
 Route::prefix('komi-panel')->name('admin.')->group(function (): void {
@@ -48,14 +50,17 @@ Route::prefix('komi-panel')->name('admin.')->group(function (): void {
         Route::get('/beranda', [HomeSectionController::class, 'index'])->name('beranda');
         Route::put('/beranda', [HomeSectionController::class, 'update'])->name('beranda.update');
         Route::get('/profil', [ProgramProfileController::class, 'index'])->name('profil');
-        Route::put('/profil', [ProgramProfileController::class, 'update'])->name('profil.update');
+        Route::put('/profil', [ProgramProfileController::class, 'update'])
+            ->middleware('throttle:30,1')
+            ->name('profil.update');
         Route::patch('/dosen/{lecturer}/status', [LecturerController::class, 'toggleStatus'])->name('dosen.status');
         Route::resource('dosen', LecturerController::class)
             ->except(['show'])
             ->parameters(['dosen' => 'lecturer']);
         Route::resource('kegiatan', ActivityController::class)
             ->except(['show'])
-            ->parameters(['kegiatan' => 'activity']);
+            ->parameters(['kegiatan' => 'activity'])
+            ->middlewareFor(['store', 'update', 'destroy'], 'throttle:60,1');
         Route::get('/dokumen/{document}/download', [DocumentController::class, 'download'])->name('dokumen.download');
         Route::patch('/dokumen/{document}/status', [DocumentController::class, 'toggleStatus'])->name('dokumen.status');
         Route::resource('dokumen', DocumentController::class)

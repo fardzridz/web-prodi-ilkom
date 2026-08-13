@@ -3,65 +3,42 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Program Studi Ilmu Komputer')</title>
-    <meta name="description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer Universitas PGRI Wiranegara.')">
-    <meta property="og:site_name" content="{{ $siteSetting?->site_name ?: 'Program Studi Ilmu Komputer' }}">
-    <meta property="og:title" content="@yield('title', 'Program Studi Ilmu Komputer')">
-    <meta property="og:description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer Universitas PGRI Wiranegara.')">
+    <title>@yield('title', $site?->site_name ?: 'Program Studi Ilmu Komputer')</title>
+    <meta name="description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer ' . ($site?->university_name ?: 'Universitas PGRI Wiranegara') . '.')">
+    <meta property="og:site_name" content="{{ $site?->site_name ?: 'Program Studi Ilmu Komputer' }}">
+    <meta property="og:title" content="@yield('title', $site?->site_name ?: 'Program Studi Ilmu Komputer')">
+    <meta property="og:description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer.')">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     @hasSection('og_image')
     <meta property="og:image" content="{{ $__env->yieldContent('og_image') }}">
     @else
-    <meta property="og:image" content="{{ $siteSetting?->logo ? asset('storage/'.$siteSetting->logo) : asset('assets/images/logo/logo.png') }}">
+    <meta property="og:image" content="{{ $site?->logo ? asset('storage/'.$site->logo) : asset('assets/images/logone.png') }}">
     @endif
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" href="{{ asset($siteSetting?->favicon ? 'storage/'.$siteSetting->favicon : 'assets/images/logo/logo-prodi.svg') }}">
+    <link rel="icon" href="{{ $site?->favicon ? asset('storage/'.$site->favicon) : asset('assets/images/logone.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind CDN is used in development. In production, the Tailwind classes are compiled into public/css/public/app.css via the Laravel Boost pipeline. Do not remove the CDN script to preserve development convenience. -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'blue-dark': '#00243a',
-                        'blue-deep': '#001d2e',
-                        'blue-mid': '#29557b',
-                        'blue-section': '#153d5b',
-                        red: '#e91b2f',
-                        'red-dark': '#961a26',
-                        yellow: '#fdb913',
-                        'grey-1': '#343638',
-                        'grey-2': '#5b5c5e',
-                        'grey-3': '#898a8c',
-                        'grey-4': '#a7a9ac',
-                        'grey-5': '#e6e9ec',
-                    },
-                    fontFamily: {
-                        body: ['Fakt Local', 'Fakt', 'Fakt Pro', 'Aptos', 'Segoe UI Variable Text', 'Segoe UI', 'Arial', 'sans-serif'],
-                        display: ['Grold Local', 'Grold', 'Aptos Display', 'Segoe UI Variable Display', 'Segoe UI', 'Arial', 'sans-serif'],
-                        slim: ['Grold Slim Local', 'GroldSlim', 'Grold Local', 'Aptos', 'Segoe UI Variable Text', 'Segoe UI', 'Arial', 'sans-serif'],
-                        rounded: ['Grold Rounded Local', 'Grold Local', 'Aptos Display', 'Segoe UI', 'Arial', 'sans-serif'],
-                        script: ['Gotcha Local', 'Brush Script MT', 'cursive'],
-                    },
-                },
-            },
-        };
-    </script>
-    <link rel="stylesheet" href="{{ asset('css/public/app.css') }}">
+    @vite('resources/css/app.css')
     @stack('head')
 </head>
-<body class="m-0 overflow-x-clip bg-[#f8f9fa] text-grey-1 font-body text-base font-normal leading-[1.55] tracking-normal antialiased">
-    @include('partials.public.header')
+<body class="overflow-x-hidden bg-line text-ink font-sans text-base leading-normal antialiased">
+    <x-topbar />
+
+    <x-navbar />
+
+    <x-mobile-menu />
 
     <main>
         @yield('content')
     </main>
 
-    @include('partials.public.footer')
-    @include('partials.public.sticky-actions')
-    <script src="{{ asset('js/public.js') }}"></script>
+    <x-footer />
+
+    <x-scroll-to-top />
+
     @stack('scripts')
 </body>
 </html>

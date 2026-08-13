@@ -1,62 +1,75 @@
 @extends('layouts.public')
 
-@section('title', 'Kegiatan Program Studi Ilmu Komputer')
-@section('description', 'Informasi seminar, workshop, kuliah tamu, pelatihan, sertifikasi, PKL, kunjungan industri, dan agenda kolaborasi Program Studi Ilmu Komputer.')
+@section('title', 'Kegiatan — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
+
+@push('scripts')
+<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/list-filter.js') }}"></script>
+<script>
+ListFilter({
+    searchId: 'kegiatan-search',
+    gridId: 'kegiatan-grid',
+    filterSelector: '.keg-filter',
+    counterTextId: 'kegiatan-count-text',
+    emptyId: 'kegiatan-empty',
+    label: 'kegiatan'
+});
+</script>
+@endpush
 
 @section('content')
-    @php
-        $activityFilters = collect($activities)->pluck('category')->unique()->values();
-    @endphp
+<x-hero title="Kegiatan" :breadcrumbs="['Kegiatan' => null]" image="{{ asset('assets/images/hero/hero-1.jpeg') }}">
+    Ragam kegiatan yang memperkaya pengalaman mahasiswa — dari seminar nasional, workshop, hingga ajang prestasi tingkat nasional.
+</x-hero>
 
-    @include('partials.public.page-hero', [
-        'active' => 'activities',
-        'variant' => 'page-hero-activities',
-        'kicker' => 'Kegiatan Program Studi',
-        'title' => 'Agenda Ilmu Komputer',
-        'description' => 'Informasi seminar, workshop, kuliah tamu, pelatihan, sertifikasi, PKL, kunjungan industri, dan agenda kolaborasi yang mendukung kompetensi mahasiswa Ilmu Komputer.',
-    ])
-
-    <section class="activities-list-section internal-section section-space relative overflow-hidden bg-[#f8f9fa] py-20 max-[560px]:py-16">
-        <div class="container w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))]">
-            <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Daftar Kegiatan</p>
-            <h2 class="internal-heading m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-normal">Kegiatan Prodi Ilmu Komputer</h2>
-            <div class="filter-row flex flex-wrap gap-3 mt-7" aria-label="Kategori kegiatan">
-                <button class="filter-pill is-active inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease] focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]" type="button" data-filter-target="#kegiatan-grid" data-filter-category="*" aria-pressed="true">Semua</button>
-                @foreach ($activityFilters as $filter)
-                    <button class="filter-pill inline-flex items-center min-h-10 px-[18px] text-blue-dark text-[13px] font-bold bg-white border border-[rgba(0,36,58,0.12)] cursor-pointer transition-colors duration-[180ms] ease-[ease] focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[3px]" type="button" data-filter-target="#kegiatan-grid" data-filter-category="{{ $filter }}" aria-pressed="false">{{ $filter }}</button>
-                @endforeach
-            </div>
-
-            <div id="kegiatan-grid" class="visit-grid activities-page-grid grid grid-cols-3 gap-[34px] max-[1024px]:grid-cols-1 mt-9">
-                @foreach ($activities as $activity)
-                    <article class="visit-card activities-page-card h-full load-more-item{{ $loop->iteration > 6 ? ' is-hidden' : '' }} [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:line-clamp-2 [&_h3]:min-h-[2.1em] [&_h3]:overflow-hidden [&_h3]:text-blue-dark [&_h3]:font-display [&_h3]:text-[34px] [&_h3]:font-medium [&_h3]:leading-[1.05] [&_h3]:tracking-[-0.035em] [&_p]:line-clamp-2 [&_p]:min-h-[3.1em] [&_p]:mb-0 [&_p]:overflow-hidden [&_p]:text-grey-2 [&_p]:leading-[1.55]" data-activity-date="{{ $activity['date'] }}" data-activity-location="{{ $activity['location'] }}" data-activity-category="{{ $activity['category'] }}" data-activity-slug="{{ $activity['slug'] }}" data-activity-image="{{ asset($activity['image']) }}">
-                        <a href="{{ route('activities.show', $activity['slug']) }}" class="group flex h-full flex-col focus-visible:[outline:3px_solid_rgba(253,185,19,0.72)] focus-visible:outline-offset-[5px]" aria-label="Baca detail {{ $activity['title'] }}">
-                            <div class="image-frame placeholder-visit relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] bg-center bg-cover" style="background-image: linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)), url('{{ $activity['image'] }}');" aria-hidden="true"></div>
-                            <h3>{{ $activity['title'] }}</h3>
-                            <p>{{ $activity['excerpt'] }}</p>
-                            <div class="visit-meta grid gap-[7px] mt-4 text-grey-2 text-[13px] leading-[1.35]" aria-label="Detail kegiatan">
-                                <time datetime="{{ $activity['date'] }}"><i class="fa-regular fa-calendar" aria-hidden="true"></i> {{ $activity['date_label'] }}</time>
-                                <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ $activity['location'] }}</span>
-                                <span><i class="fa-solid fa-tag" aria-hidden="true"></i> {{ $activity['category'] }}</span>
-                            </div>
-                            <span class="activity-detail-link inline-flex items-center gap-2 mt-[18px] text-red text-[13px] font-extrabold uppercase tracking-[0.04em] [&_i]:w-auto [&_i]:text-[12px] [&_i]:transition-transform [&_i]:duration-[180ms] [&_i]:ease-[ease]">Baca Detail <i class="fa-solid fa-arrow-right group-hover:translate-x-[3px] group-focus-visible:translate-x-[3px]" aria-hidden="true"></i></span>
-                        </a>
-                    </article>
-                @endforeach
-            </div>
-
-            <div class="flex justify-center mt-[42px]">
-                <button class="button button-blue load-more-button inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase bg-blue-mid" type="button" data-load-more-target="#kegiatan-grid" data-load-more-initial="6" data-load-more-step="3">
-                    Muat Lebih Banyak
-                </button>
+<section class="bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="anim-fade-up anim-delay-1" data-reveal>
+            <div class="text-left">
+                <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold anim-fade-up anim-delay-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008v-.008Zm2.25-2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Z"/></svg>
+                    Kegiatan {{ $site?->site_name ?: 'Uniwara' }}
+                </h3>
+                <h1 class="mt-4 font-display text-3xl font-bold uppercase tracking-wide text-primary sm:text-4xl lg:text-5xl anim-fade-up anim-delay-2">Daftar Kegiatan</h1>
+                <p class="mt-6 max-w-2xl text-[0.95rem] leading-relaxed text-ink/70 anim-fade-up anim-delay-3">Telusuri dan saring kegiatan berdasarkan kategori — temukan berita terbaru, capaian prestasi, agenda akademik, hingga kegiatan kemahasiswaan.</p>
             </div>
         </div>
-    </section>
 
-    @include('partials.public.contact-cta', [
-        'title' => 'Punya agenda untuk dipublikasikan?',
-        'primaryLabel' => 'Kirim Informasi',
-        'secondaryLabel' => 'Lihat Profil',
-        'secondaryHref' => route('profile'),
-    ])
+        <div class="mt-10">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+                <label class="relative block w-full max-w-xl" for="kegiatan-search">
+                    <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                    <input id="kegiatan-search" type="search" placeholder="Cari judul, lokasi, atau kategori kegiatan..." class="h-12 w-full rounded-full border border-line bg-white pl-12 pr-4 text-sm text-ink placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-shadow">
+                </label>
+                <p id="kegiatan-count" class="inline-flex h-12 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-5 text-sm font-medium text-muted">
+                    <svg class="h-4 w-4 shrink-0 text-primary/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008v-.008Z"/></svg>
+                    <span id="kegiatan-count-text"></span>
+                </p>
+            </div>
+            <div id="kegiatan-filters" class="mt-6 flex flex-wrap items-center gap-2.5" role="group" aria-label="Filter kategori kegiatan">
+                <button type="button" data-filter="semua" aria-pressed="true" class="keg-filter filter-pill rounded-full border border-primary px-5 py-2 text-sm font-semibold text-white">Semua</button>
+                @foreach($categories as $cat)
+                <button type="button" data-filter="{{ strtolower($cat) }}" aria-pressed="false" class="keg-filter filter-pill rounded-full border border-line bg-white px-5 py-2 text-sm font-medium text-muted">{{ $cat }}</button>
+                @endforeach
+            </div>
+        </div>
+
+        <div id="kegiatan-grid" class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            @forelse($activities as $activity)
+            <div data-category="{{ strtolower($activity['category']) ?: 'lainnya' }}" data-search="{{ $activity['title'] }} {{ $activity['category'] }} {{ $activity['excerpt'] }} {{ $activity['location'] }}">
+                <x-activity-card :activity="$activity" />
+            </div>
+            @empty
+            @endforelse
+        </div>
+
+        <div id="kegiatan-empty" class="mt-10 hidden flex-col items-center justify-center rounded-xl border border-dashed border-primary/30 bg-white/60 px-6 py-14 text-center">
+            <svg class="h-12 w-12 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+            <h4 class="mt-4 font-display text-lg font-bold text-primary">Kegiatan tidak ditemukan</h4>
+            <p class="mt-1 text-sm text-muted">Coba ubah kata kunci pencarian atau pilih kategori lain.</p>
+        </div>
+    </div>
+</section>
+
+<x-cta-banner />
 @endsection

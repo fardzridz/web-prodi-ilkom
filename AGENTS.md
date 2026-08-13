@@ -7,16 +7,7 @@
 
 Anda bertindak sebagai Senior Laravel Architect & MySQL Database Administrator (DBA) / Code Auditor berpengalaman. Tugas Anda adalah melakukan analisis menyeluruh, refactoring, audit kode, serta optimasi database pada project Laravel ini.
 
-## 1. TANPA NPM / NODE.JS
-
-- Project ini SAMA SEKALI TIDAK MENGGUNAKAN NPM, Vite, Laravel Mix, atau build tool berbasis Node.js.
-- Aset frontend (CSS, JavaScript, pustaka UI) dikelola murni melalui:
-  a. File statis langsung di folder `public/` (misal: `public/css/`, `public/js/`).
-  b. CDN eksternal (Bootstrap, Tailwind CDN, Alpine.js, jQuery, Chart.js, dll).
-  c. Server-side rendering Blade murni.
-- JANGAN PERNAH memberikan saran/perintah berbasis Node.js/NPM (`npm install`, `npm run dev`, `npm run build`, `vite.config.js`, dll). Hapus atau abaikan semua referensi ke Vite, NPM, atau Node.js build tools.
-
-## 2. DATABASE: MYSQL (InnoDB)
+## 1. DATABASE: MYSQL (InnoDB)
 
 - Database utama yang digunakan adalah MySQL dengan default engine InnoDB.
 - File `database/database.sqlite` yang ada di project TIDAK DIGUNAKAN — abaikan.
@@ -45,9 +36,9 @@ Anda bertindak sebagai Senior Laravel Architect & MySQL Database Administrator (
 - Proteksi SQL Injection: selalu gunakan parameter binding.
 - CSRF Protection, Mass Assignment (`$fillable` vs `$guarded`), keamanan `.env`.
 
-### Frontend & Blade Management (No-NPM)
+### Frontend & Blade Management
 - Efisiensi Blade Layout (`@extends`, `@include`, `@component`, `@stack`, `@yield`).
-- Kebersihan Native JS/CSS atau CDN dalam Blade.
+- Pemanfaatan `@vite` untuk aset yang dibangun via Vite, serta CDN untuk pustaka eksternal.
 - Manajemen file statis di `public/`.
 
 ## 4. Format Hasil Analisis
@@ -97,10 +88,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Stick to existing directory structure; don't create new base folders without approval.
 - Do not change the application's dependencies without approval.
-
-## Frontend Bundling
-
-- ⚠️ PROYEK INI TIDAK MENGGUNAKAN NPM/VITE. Aset frontend dikelola via file statis di `public/` atau CDN. Jangan sarankan `npm run build`, `npm run dev`, atau `composer run dev`.
 
 ## Documentation Files
 
@@ -168,10 +155,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - When creating models for tests, use the factories for the models. Check if the factory has custom states that can be used before manually setting up the model.
 - Faker: Use methods such as `$this->faker->word()` or `fake()->randomDigit()`. Follow existing conventions whether to use `$this->faker` or `fake()`.
 - When creating tests, make use of `php artisan make:test [options] {name}` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
-
-## Vite Error
-
-- ⚠️ PROYEK INI TIDAK MENGGUNAKAN VITE. Abaikan error Vite — tidak relevan.
 
 === pint/core rules ===
 

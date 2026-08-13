@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 
 class ContactController extends Controller
 {
@@ -21,6 +22,7 @@ class ContactController extends Controller
     {
         $contact = Contact::query()->first() ?? new Contact;
         $contact->fill($request->validated())->save();
+        Cache::forget('contact_info');
 
         return redirect()
             ->route('admin.kontak')

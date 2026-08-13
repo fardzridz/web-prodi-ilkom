@@ -1,0 +1,50 @@
+{
+  "resources/css/admin.css": {
+    "file": "assets/admin-CDLnqRiF.css",
+    "src": "resources/css/admin.css",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-NqrEsLO4.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/admin.js": {
+    "file": "assets/admin-DOC2Oh_H.js",
+    "name": "admin",
+    "src": "resources/js/admin.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/components/chart-1.js",
+      "resources/js/components/chart-2.js",
+      "resources/js/components/chart-3.js"
+    ],
+    "css": [
+      "assets/admin-CksuuEqD.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BX3Jy4_6.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/components/chart-1.js": {
+    "file": "assets/chart-1-DGxnI4-N.js",
+    "name": "chart-1",
+    "src": "resources/js/components/chart-1.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/components/chart-2.js": {
+    "file": "assets/chart-2-HP4sInwr.js",
+    "name": "chart-2",
+    "src": "resources/js/components/chart-2.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/components/chart-3.js": {
+    "file": "assets/chart-3-BNNOZWvg.js",
+    "name": "chart-3",
+    "src": "resources/js/components/chart-3.js",
+    "isDynamicEntry": true
+  }
+}

@@ -1,111 +1,266 @@
 @extends('layouts.public')
 
-@section('title', 'Beranda - Program Studi Ilmu Komputer')
-@section('description', 'Beranda Program Studi Ilmu Komputer Universitas PGRI Wiranegara.')
+@section('title', $site?->site_name ?: 'Program Studi Ilmu Komputer')
+@section('description', $homeSection?->welcome_description ?: 'Website resmi Program Studi Ilmu Komputer')
+
+@push('scripts')
+<script src="{{ asset('js/app.js') }}"></script>
+<script>
+(function () {
+    const hero = document.querySelector('[data-hero]');
+    const header = document.querySelector('header');
+    const topbar = document.querySelector('[data-topbar]');
+    if (!hero || !header) return;
+    const measure = () => {
+        const topbarH = topbar ? topbar.offsetHeight : 0;
+        hero.style.top = (topbarH + header.offsetHeight) + 'px';
+    };
+    measure();
+    window.addEventListener('resize', measure);
+})();
+
+(function () {
+    const slides = Array.from(document.querySelectorAll('[data-slide]'));
+    const dots = Array.from(document.querySelectorAll('[data-slide-dot]'));
+    if (!slides.length) return;
+    let current = 0, timer = null;
+    const show = (i) => {
+        current = (i + slides.length) % slides.length;
+        slides.forEach((s, k) => {
+            s.classList.toggle('opacity-100', k === current);
+            s.classList.toggle('opacity-0', k !== current);
+            s.classList.toggle('pointer-events-none', k !== current);
+        });
+        dots.forEach((d, k) => {
+            d.classList.toggle('bg-gold', k === current);
+            d.classList.toggle('bg-cream/50', k !== current);
+            d.setAttribute('aria-current', k === current ? 'true' : 'false');
+        });
+        replayAnimations(slides[current]);
+    };
+    const next = () => show(current + 1);
+    const play = () => { stop(); timer = setInterval(next, 6000); };
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+    dots.forEach((d, i) => d.addEventListener('click', () => { show(i); play(); }));
+    const heroEl = slides[0].closest('[data-hero]');
+    if (heroEl) {
+        heroEl.addEventListener('mouseenter', stop);
+        heroEl.addEventListener('mouseleave', play);
+    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) play();
+    show(0);
+})();
+</script>
+@endpush
 
 @section('content')
-<section class="hero-section relative h-[630px] min-h-0 overflow-hidden text-white bg-blue-deep max-[1024px]:h-[564px]">
-    <div class="hero-media absolute inset-0 overflow-hidden bg-blue-deep bg-cover bg-center" aria-hidden="true">
-        @foreach ($heroSlides as $slide)
-        <span
-            class="hero-slide {{ $slide['delay_class'] }} absolute inset-0 opacity-0 bg-center bg-cover backface-hidden will-change-[opacity,transform] scale-[1.04]"
-            style="background-image: url('{{ $slide['url'] }}');"></span>
+@php
+    $heroTitle = $homeSection?->hero_title ?: "Logika diasah.\nKreativitas dikembangkan.\nMasa depan diciptakan.";
+    $heroLines = explode("\n", $heroTitle);
+    $heroSubtitle = $homeSection?->hero_subtitle ?: 'Dunia digital terus berubah, membawa tantangan dan peluang baru di setiap langkahnya. Di Program Studi Ilmu Komputer, mahasiswa belajar membangun solusi teknologi yang berguna bagi masyarakat.';
+@endphp
+
+{{-- Hero Spacer + Slider --}}
+<div class="h-[560px] md:h-[700px] lg:h-[631px] 2xl:h-[846px]" aria-hidden="true"></div>
+<section class="fixed left-0 right-0 top-0 z-0 h-[560px] overflow-hidden md:h-[700px] lg:h-[631px] 2xl:h-[846px]" data-hero aria-roledescription="carousel" aria-label="Sorotan program studi">
+    @foreach($heroSlides as $index => $slide)
+    <div class="hero-slide absolute inset-0 z-0 @if($index > 0) opacity-0 pointer-events-none @else opacity-100 @endif transition-opacity duration-700" data-slide role="group" aria-label="Slide {{ $index + 1 }}">
+        <img src="{{ $slide['url'] }}" alt="{{ $slide['alt'] }}" class="absolute inset-0 z-0 h-full w-full object-cover">
+        <div class="absolute inset-0 z-10 bg-gradient-to-r from-badge/85 via-badge/45 to-badge/10"></div>
+        <div class="absolute inset-0 z-20 flex items-center mx-4 px-4 sm:mx-8 sm:px-8 lg:mx-16 lg:px-20">
+            <div class="max-w-2xl text-cream">
+                <h1 class="font-display text-2xl font-bold leading-tight sm:text-3xl md:text-5xl mb-5">
+                    @foreach($heroLines as $i => $line)
+                    <span class="block anim-fade-up anim-delay-{{ $i + 1 }}">{{ $line }}</span>
+                    @endforeach
+                </h1>
+                <p class="anim-fade-up anim-delay-{{ count($heroLines) + 1 }} mb-8 max-w-xl text-base text-cream/85">{{ $heroSubtitle }}</p>
+                <a href="{{ $heroCtaUrl }}" class="anim-zoom anim-delay-{{ count($heroLines) + 2 }} btn btn-primary btn-lg">
+                    <span class="btn-label">Jelajahi Prodi</span>
+                    <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
+    @if(count($heroSlides) > 1)
+    <div class="anim-fade anim-delay-6 absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2.5">
+        @foreach($heroSlides as $index => $slide)
+        <button type="button" class="hero-dot h-2.5 w-2.5 rounded-full @if($index === 0) bg-gold @else bg-cream/50 @endif transition-colors" data-slide-dot aria-label="Ke slide {{ $index + 1 }}" @if($index === 0) aria-current="true" @else aria-current="false" @endif></button>
         @endforeach
     </div>
-    <div class="hero-dots absolute inset-0 z-[1] opacity-[0.38]" aria-hidden="true"></div>
-    <div class="hero-stripes absolute inset-y-0 right-[-4px] left-auto z-[1] w-24" aria-hidden="true"></div>
-    <div class="container hero-content w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] relative z-[2] h-full pt-[120px] pb-[88px] max-[1024px]:pt-16 max-[1024px]:pb-16">
-        <h1 class="max-w-[800px] mt-0 mr-0 mb-4 ml-0 font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-normal">{!! nl2br(e($homeSection->hero_title)) !!}</h1>
-        <p class="max-w-[500px] mt-4 mb-0 text-[17.6px] font-light leading-[1.6] tracking-[-0.01em] max-[1024px]:pr-9 max-[1024px]:text-[17px]">{{ $homeSection->hero_subtitle }}</p>
-        <div class="hero-actions flex flex-wrap items-center gap-y-7 gap-x-14 mt-9 max-[560px]:grid max-[560px]:justify-items-start max-[560px]:gap-[18px]">
-            <a class="button button-primary inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase bg-blue-mid" href="{{ $heroCtaUrl }}">{{ $homeSection->cta_text }}</a>
+    @endif
+</section>
+
+{{-- Sambutan Kaprodi --}}
+<section class="relative z-10 bg-line py-16 lg:py-24">
+    <div class="mx-4 px-4 sm:mx-8 sm:px-8 lg:mx-16 lg:px-20">
+        <div class="mb-12 text-center lg:mb-16" data-reveal>
+            <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold anim-fade-up anim-delay-1">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
+                Selamat datang di {{ $site?->site_name ?: 'Ilmu Komputer' }}
+            </h3>
+            <h1 class="mt-4 font-display text-3xl font-bold uppercase tracking-wide text-primary sm:text-4xl lg:text-5xl anim-fade-up anim-delay-2">
+                {{ $site?->university_name ?: 'Universitas PGRI Wiranegara' }}
+            </h1>
+        </div>
+
+        <div class="mx-auto grid max-w-3xl items-center gap-12 md:grid-cols-[minmax(0,auto)_minmax(0,1fr)] md:gap-14 lg:max-w-4xl">
+            <div class="justify-self-center">
+                <img src="https://placehold.co/600x600/132845/FDC72F?text=FOTO+Kaprodi&font=roboto" alt="Foto Ketua Program Studi" class="h-72 w-72 object-cover sm:h-80 sm:w-80 lg:h-96 lg:w-96" loading="lazy">
+            </div>
+            <div data-reveal class="anim-fade-up anim-delay-1">
+                <h2 class="mb-5 font-display text-2xl font-bold leading-tight text-primary sm:text-3xl">{{ $homeSection?->welcome_title ?: 'Sambutan' }}</h2>
+                <div class="max-w-2xl space-y-4 text-[0.95rem] leading-relaxed text-ink/80">
+                    @if($homeSection?->welcome_description)
+                    <p>{{ $homeSection->welcome_description }}</p>
+                    @else
+                    <p>Assalamualaikum warahmatullahi wabarakatuh. Puji syukur kita panjatkan ke hadirat Allah SWT atas rahmat-Nya sehingga Program Studi Ilmu Komputer terus bertumbuh sebagai rumah bagi generasi yang ingin memecahkan masalah nyata lewat teknologi.</p>
+                    <p>Kami membekali mahasiswa tidak hanya dengan keterampilan rekayasa perangkat lunak, data, dan kecerdasan buatan, tetapi juga integritas dan kemampuan berpikir kritis. Selamat bergabung, mari kita ciptakan masa depan bersama.</p>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-@include('partials.public.floating-nav', ['active' => 'home'])
-
-<section id="profil-section" class="intro-section section-space py-20 max-[560px]:py-16">
-    <div class="container split-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-center max-[1024px]:grid-cols-1">
-        <div class="image-frame image-frame-large placeholder-campus relative min-h-[520px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] max-[1024px]:min-h-[360px]"></div>
-        <div class="copy-block [&_h2]:m-0 [&_h2]:text-blue-dark [&_h2]:font-display [&_h2]:text-[length:var(--hero-heading-size)] [&_h2]:font-medium [&_h2]:leading-[0.95] [&_h2]:tracking-[-0.035em] max-[560px]:[&_h2]:text-[34px] [&>p]:max-w-[450px] [&>p]:my-6 [&>p]:text-grey-2 [&>p]:text-[17px] [&>p]:leading-[1.65] [&>p]:tracking-[-0.01em]">
-            <p class="eyebrow m-0 mb-2.5 text-red text-[13px] font-bold tracking-[0.045em] uppercase">Profil Prodi</p>
-            <h2>{{ $homeSection->welcome_title }}</h2>
-            <p>{{ $homeSection->welcome_description }}</p>
-            <a class="button button-blue inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase bg-blue-mid" href="{{ route('profile') }}">Lihat Profil</a>
+{{-- Mengapa Memilih --}}
+@if(!empty($advantageSection['items']))
+<section class="relative z-10 bg-primary pt-16 lg:pt-24">
+    <div class="mx-4 px-4 pb-16 sm:mx-8 sm:px-8 lg:mx-16 lg:px-20 lg:pb-24">
+        <div class="text-center" data-reveal>
+            <h1 class="inline-block font-display text-3xl font-bold uppercase tracking-wide text-cream sm:text-4xl lg:text-5xl anim-fade-up anim-delay-1">{{ $advantageSection['heading'] }}</h1>
+            <div class="my-20 flex justify-center anim-fade-up anim-delay-2">
+                <span class="h-1 w-24 rounded-full bg-gold" aria-hidden="true"></span>
+            </div>
         </div>
-    </div>
-</section>
 
-<section id="keunggulan-section" class="why-section section-space bg-[#f8f9fa] py-[92px] pb-24 max-[560px]:py-16">
-    <div class="container w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))]">
-        <h2 class="section-title m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-[-0.035em] max-[560px]:text-[34px] text-center">Mengapa Memilih Ilmu Komputer?</h2>
-        <div class="why-list grid grid-cols-2 gap-y-[84px] gap-x-[74px] max-w-[1120px] mt-[78px] mx-auto max-[1024px]:grid-cols-1 max-[1024px]:gap-[58px] max-[1024px]:max-w-[760px]">
-            @foreach ([
-            ['title' => 'Arah Karier Luas', 'copy' => 'Lulusan disiapkan untuk berkiprah sebagai software developer, network specialist, big data specialist, game specialist, mobile developer, researcher, hingga startup entrepreneur.', 'class' => 'placeholder-classroom'],
-            ['title' => 'Peminatan yang Jelas', 'copy' => 'Mulai semester 5 mahasiswa dapat memperdalam bidang KBJ, KCV, RPL, atau MGM sesuai minat dan rencana profesi.', 'class' => 'placeholder-community'],
-            ['title' => 'Pembelajaran Berbasis Proyek', 'copy' => 'Mahasiswa diarahkan membangun portofolio nyata melalui praktikum, proyek aplikasi, dan kegiatan kolaboratif.', 'class' => 'placeholder-career'],
-            ['title' => 'Koneksi Akademik dan Industri', 'copy' => 'Kegiatan prodi menghubungkan perkuliahan dengan sertifikasi, magang, PKL, dan pengabdian masyarakat.', 'class' => 'placeholder-aid'],
-            ] as $index => $item)
-            <article class="why-card relative grid grid-cols-[150px_46px_minmax(0,1fr)] gap-[22px] items-start min-h-[230px] pt-[18px] isolate max-[560px]:grid-cols-[72px_minmax(0,1fr)] max-[560px]:gap-4 max-[560px]:min-h-0 max-[560px]:p-0 max-[560px]:[&_.why-copy]:col-span-2">
-                <div class="image-frame why-card-image {{ $item['class'] }} relative w-[150px] h-[150px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] max-[560px]:w-[72px] max-[560px]:h-[72px]"></div>
-                <div class="why-number text-red font-display text-[64px] font-thin leading-[0.74] tracking-normal max-[560px]:text-[56px]">{{ $index + 1 }}</div>
-                <div class="why-copy [&_h3]:max-w-[330px] [&_h3]:m-0 [&_h3]:text-blue-dark [&_h3]:font-body [&_h3]:text-[clamp(22px,2.2vw,30px)] max-[560px]:[&_h3]:text-2xl [&_h3]:font-bold [&_h3]:leading-[0.98] [&_h3]:tracking-[-0.02em] [&_p]:max-w-[360px] [&_p]:mt-5 [&_p]:mb-0 [&_p]:text-grey-2 [&_p]:text-[15px] [&_p]:leading-normal">
-                    <h3>{{ $item['title'] }}</h3>
-                    <p>{{ $item['copy'] }}</p>
+        <div class="mx-auto grid max-w-6xl gap-x-16 gap-y-14 sm:grid-cols-2">
+            @foreach($advantageSection['items'] as $item)
+            <article class="grid grid-cols-2 items-start gap-x-5 gap-y-4 sm:grid-cols-[minmax(0,140px)_auto_minmax(0,1fr)] sm:gap-x-6 anim-fade-up anim-delay-{{ ($loop->index % 3) + 1 }}" data-reveal>
+                <div class="relative aspect-square w-full overflow-hidden rounded-lg border border-white/10">
+                    <img src="{{ $item['image_url'] }}" alt="{{ $item['image_alt'] }}" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
+                </div>
+                <div class="font-display text-6xl font-light leading-[0.74] text-gold">{{ str_pad($item['order'], 2, '0', STR_PAD_LEFT) }}</div>
+                <div class="col-span-2 sm:col-span-1 sm:col-start-3">
+                    <h3 class="font-sans text-xl font-bold leading-snug text-cream">{{ $item['title'] }}</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-cream/75">{{ $item['description'] }}</p>
                 </div>
             </article>
             @endforeach
         </div>
     </div>
 </section>
+@endif
 
-<section id="kurikulum-section" class="scholarship-section relative overflow-hidden min-h-[252px] text-blue-dark bg-[rgba(253,185,19,0.9)] max-[560px]:min-h-[236px]">
-    <div class="scholarship-media absolute inset-0 z-0" aria-hidden="true"></div>
-    <div class="container scholarship-content w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] relative z-[2] grid min-h-[252px] content-center py-[34px] max-[560px]:min-h-[236px] max-[560px]:py-8 [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>p]:max-w-[590px] [&>p]:mt-3.5 [&>p]:mb-0 [&>p]:text-[rgba(0,36,58,0.84)] [&>p]:text-[17px]">
-        <h2>Kurikulum Berbasis Kompetensi</h2>
-        <p>Rangkaian perkuliahan disusun untuk membangun fondasi komputasi, kemampuan rekayasa, peminatan, dan pengalaman lapangan.</p>
+{{-- Marquee --}}
+<section class="relative z-10 overflow-hidden bg-primary py-3 select-none" aria-hidden="true">
+    <div class="marquee-track flex w-max items-center">
+        <div class="flex shrink-0 items-center gap-10 pr-10">
+            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Ilmu Komputer</span>
+            <img src="{{ asset('assets/images/logone.png') }}" alt="" class="h-10 sm:h-12 lg:h-16">
+            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-gold sm:text-5xl lg:text-7xl">Uniwara</span>
+            <img src="{{ asset('assets/images/logone.png') }}" alt="" class="h-10 sm:h-12 lg:h-16">
+            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Compscience</span>
+            <img src="{{ asset('assets/images/logone.png') }}" alt="" class="h-10 sm:h-12 lg:h-16">
+        </div>
+        <div class="flex shrink-0 items-center gap-10 pr-10">
+            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Ilmu Komputer</span>
+            <img src="{{ asset('assets/images/logone.png') }}" alt="" class="h-10 sm:h-12 lg:h-16">
+            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-gold sm:text-5xl lg:text-7xl">Uniwara</span>
+            <img src="{{ asset('assets/images/logone.png') }}" alt="" class="h-10 sm:h-12 lg:h-16">
+            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Compscience</span>
+            <img src="{{ asset('assets/images/logone.png') }}" alt="" class="h-10 sm:h-12 lg:h-16">
+        </div>
     </div>
 </section>
 
-<section id="kegiatan-section" class="visit-section section-space py-20 max-[560px]:py-16">
-    <div class="container w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))]">
-        <h2 class="section-title m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-[-0.035em] max-[560px]:text-[34px]">Kegiatan Prodi</h2>
-        <div class="visit-grid grid grid-cols-3 gap-[34px] mt-[42px] max-[1024px]:grid-cols-1">
-            @foreach ($activities as $activity)
-            <article class="visit-card h-full [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:line-clamp-2 [&_h3]:min-h-[2.1em] [&_h3]:overflow-hidden [&_h3]:text-blue-dark [&_h3]:font-display [&_h3]:text-[34px] [&_h3]:font-medium [&_h3]:leading-[1.05] [&_h3]:tracking-[-0.035em] [&_p]:text-grey-2">
-                <a href="{{ route('activities.show', $activity['slug']) }}" class="flex h-full flex-col">
-                    <div class="image-frame placeholder-visit relative min-h-[250px] overflow-hidden bg-center bg-cover" style="background-image: linear-gradient(rgba(0, 36, 58, 0.12), rgba(0, 36, 58, 0.12)), url('{{ asset($activity['image']) }}');"></div>
-                    <h3>{{ $activity['title'] }}</h3>
-                    <p>{{ $activity['excerpt'] }}</p>
-                    <div class="visit-meta grid gap-[7px] mt-4 text-grey-2 text-[13px] leading-[1.35]" aria-label="Detail kegiatan">
-                        <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> {{ $activity['date_label'] }}</span>
-                        <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ $activity['location'] }}</span>
-                        <span><i class="fa-solid fa-tag" aria-hidden="true"></i> {{ $activity['category'] }}</span>
-                    </div>
+{{-- Profil Prodi --}}
+<section class="relative z-10 bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,auto)_minmax(0,1fr)] md:gap-20">
+            <div class="justify-self-center">
+                <img src="{{ asset('assets/images/image.png') }}" alt="Profil {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+            </div>
+            <div data-reveal class="anim-fade-up anim-delay-1">
+                <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold anim-fade-up anim-delay-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                    Tentang {{ $site?->site_name ?: 'Ilmu Komputer' }}
+                </h3>
+                @if($programProfile?->description)
+                <div class="mt-6 space-y-5 text-[1.02rem] leading-relaxed text-ink/80 anim-fade-up anim-delay-3">
+                    <x-public.program-profile-field :value="$programProfile->description" />
+                </div>
+                @endif
+                <a href="{{ route('profile') }}" class="btn btn-primary btn-lg mt-8 anim-fade-up anim-delay-4">
+                    <span class="btn-label">Lihat Profil</span>
+                    <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
                 </a>
-            </article>
-            @endforeach
+            </div>
         </div>
     </div>
 </section>
 
-<section id="alumni-section" class="explore-section home-alumni-section section-space bg-white py-20 max-[560px]:py-16">
-    <div class="container w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))]">
-        <h2 class="section-title m-0 text-blue-dark font-display text-[length:var(--hero-heading-size)] font-medium leading-[0.95] tracking-[-0.035em] max-[560px]:text-[34px]">Alumni Ilmu Komputer</h2>
-        <div class="home-alumni-grid grid grid-cols-4 gap-[18px] mt-6 max-[1024px]:grid-cols-2 max-[560px]:grid-cols-1 max-[560px]:gap-3.5">
-            @foreach ($alumni as $graduate)
-            <a class="home-alumni-card grid grid-cols-[82px_minmax(0,1fr)] gap-[18px] items-center min-h-[138px] p-[18px] bg-[#f0f2f4] max-[560px]:min-h-[124px] max-[560px]:p-4" href="{{ route('alumni') }}">
-                <span class="home-alumni-photo block w-[82px] h-[82px] overflow-hidden bg-center bg-cover" style="background-image: linear-gradient(rgba(0, 36, 58, 0.08), rgba(0, 36, 58, 0.08)), url('{{ asset($graduate['image']) }}');" aria-hidden="true"></span>
-                <span class="home-alumni-body grid gap-[7px] min-w-0">
-                    <strong>{{ $graduate['name'] }}</strong>
-                    <span>{{ $graduate['role'] }}.</span>
-                </span>
-            </a>
+{{-- Kegiatan --}}
+@if(!empty($activities))
+<section id="kegiatan" class="relative z-10 bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="anim-fade-up anim-delay-1" data-reveal>
+            <div class="mb-12 flex flex-wrap items-end justify-between gap-6 lg:mb-16">
+                <div class="text-left">
+                    <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold anim-fade-up anim-delay-1">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9 6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008v-.008Zm2.25-2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Z"/></svg>
+                        Kegiatan {{ $site?->university_name ?: 'Uniwara' }}
+                    </h3>
+                    <h1 class="mt-4 font-display text-3xl font-bold uppercase tracking-wide text-primary sm:text-4xl lg:text-5xl anim-fade-up anim-delay-2">Kegiatan</h1>
+                    <p class="mt-6 max-w-2xl text-[0.95rem] leading-relaxed text-ink/70 anim-fade-up anim-delay-3">Ragam kegiatan yang memperkaya pengalaman mahasiswa — dari seminar nasional hingga ajang prestasi tingkat nasional.</p>
+                </div>
+                <a href="{{ route('activities.index') }}" class="btn btn-primary btn-md mb-1 anim-fade-up anim-delay-3">
+                    <span class="btn-label">Lihat Lebih Banyak</span>
+                    <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            @foreach($activities as $activity)
+            <x-activity-card :activity="$activity" />
             @endforeach
         </div>
     </div>
 </section>
+@endif
 
-@include('partials.public.contact-cta', ['id' => 'kontak-section'])
+{{-- Alumni --}}
+@if(!empty($alumni))
+<section class="relative z-10 bg-primary py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="anim-fade-up anim-delay-1" data-reveal>
+            <div class="mb-12 flex flex-wrap items-end justify-between gap-6 lg:mb-16">
+                <div class="text-left">
+                    <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-gold text-base font-semibold anim-fade-up anim-delay-1">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
+                        Alumni {{ $site?->university_name ?: 'Uniwara' }}
+                    </h3>
+                    <h1 class="mt-4 font-display text-3xl font-bold uppercase tracking-wide text-cream sm:text-4xl lg:text-5xl anim-fade-up anim-delay-2">Alumni</h1>
+                    <p class="mt-6 max-w-2xl text-[0.95rem] leading-relaxed text-cream/70 anim-fade-up anim-delay-3">Jejak karier lulusan Ilmu Komputer yang membuktikan bahwa kompetensi yang dibangun di kampus berdampak nyata di dunia kerja.</p>
+                </div>
+                <a href="{{ route('alumni') }}" class="btn btn-primary btn-md mb-1 anim-fade-up anim-delay-3">
+                    <span class="btn-label">Lihat Lebih Banyak</span>
+                    <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            @foreach($alumni as $alumnus)
+            <x-alumni-card :alumni="$alumnus" />
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<x-cta-banner />
 @endsection

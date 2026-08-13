@@ -29,7 +29,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 - [Akun Admin Awal](#akun-admin-awal)
 - [Perintah Artisan Tambahan](#perintah-artisan-tambahan)
 - [Testing](#testing)
-- [Struktur Aset (No-NPM)](#struktur-aset-no-npm)
+- [Struktur Aset](#struktur-aset)
 - [Lisensi](#lisensi)
 
 ---
@@ -38,16 +38,16 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 
 ### 🌐 Situs Publik
 
-| Fitur | Keterangan |
-| --- | --- |
-| 🏠 Beranda | Hero slider, sambutan, kegiatan & alumni terbaru |
-| 🏛️ Profil Prodi | Sejarah, visi & misi, tujuan, keunggulan, akreditasi |
-| 👨‍🏫 Dosen & 🎓 Alumni | Profil lengkap dengan foto |
-| 📅 Kegiatan | Daftar, detail, dan **penerbitan otomatis** dari jadwal tayang |
-| 📄 Dokumen | Kategori, unduh, dan pratinjau PDF / DOCX |
-| ✉️ Kontak | Info kontak + form pesan |
-| 🔗 E-jurnal | Redirect ke portal jurnal |
-| 📃 Halaman Statis | Kebijakan Privasi, Aksesibilitas |
+| Fitur                | Keterangan                                                     |
+| -------------------- | -------------------------------------------------------------- |
+| 🏠 Beranda           | Hero slider, sambutan, kegiatan & alumni terbaru               |
+| 🏛️ Profil Prodi      | Sejarah, visi & misi, tujuan, keunggulan, akreditasi           |
+| 👨‍🏫 Dosen & 🎓 Alumni | Profil lengkap dengan foto                                     |
+| 📅 Kegiatan          | Daftar, detail, dan **penerbitan otomatis** dari jadwal tayang |
+| 📄 Dokumen           | Kategori, unduh, dan pratinjau PDF / DOCX                      |
+| ✉️ Kontak            | Info kontak + form pesan                                       |
+| 🔗 E-jurnal          | Redirect ke portal jurnal                                      |
+| 📃 Halaman Statis    | Kebijakan Privasi, Aksesibilitas                               |
 
 ### 🔐 Panel Pengelola (`/komi-panel`)
 
@@ -63,8 +63,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 
 - **Laravel 13** / PHP 8.3
 - **MySQL** (InnoDB, `utf8mb4`)
-- **Blade murni** (server-side rendering) + **Tailwind CSS** (CDN) + **Font Awesome** (CDN)
-- **Tanpa npm / Node.js / Vite** — aset statis dikelola langsung di `public/`
+- **Blade murni** (server-side rendering) + **Tailwind CSS v4** + **Font Awesome** (CDN)
 
 ---
 
@@ -126,11 +125,11 @@ Login di **`/komi-panel/login`**. Di production, jangan biarkan password tetap `
 
 ## ⚙ Perintah Artisan Tambahan
 
-| Perintah | Fungsi |
-| --- | --- |
-| `php artisan migrate:safe [--fresh] [--seed]` | Migrasi dengan **backup otomatis** (mysqldump) + konfirmasi sebelum operasi destruktif |
-| `php artisan db:restore {file}` | Restore backup MySQL dari `storage/app/backups` — contoh: `php artisan db:restore db_prodi_20260803_093000.sql` |
-| `php artisan activities:publish-scheduled` | Terbitkan kegiatan terjadwal yang waktunya tiba |
+| Perintah                                      | Fungsi                                                                                                          |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `php artisan migrate:safe [--fresh] [--seed]` | Migrasi dengan **backup otomatis** (mysqldump) + konfirmasi sebelum operasi destruktif                          |
+| `php artisan db:restore {file}`               | Restore backup MySQL dari `storage/app/backups` — contoh: `php artisan db:restore db_prodi_20260803_093000.sql` |
+| `php artisan activities:publish-scheduled`    | Terbitkan kegiatan terjadwal yang waktunya tiba                                                                 |
 
 Perintah `activities:publish-scheduled` terdaftar di `routes/console.php` dan berjalan **tiap menit**. Jalankan scheduler lokal dengan:
 
@@ -152,18 +151,16 @@ Suite test menggunakan database terpisah (`db_prodi_test`, lihat `phpunit.xml`).
 
 ---
 
-## 📁 Struktur Aset (No-NPM)
+## 📁 Struktur Aset
 
 ```
+resources/
+├── css/          # Sumber CSS (Tailwind v4)
+├── js/           # Sumber JavaScript
+└── views/        # Blade templates
 public/
-├── css/
-│   ├── app/       # CSS admin, terorganisir per modul
-│   └── public/    # CSS situs publik
-├── js/
-│   ├── app/       # JavaScript admin per fungsi
-│   ├── vendor/    # Pustaka pihak ketiga (docx-preview, jszip)
-│   └── public.js  # JavaScript situs publik
-└── assets/        # Font, logo, dan gambar statis
+├── build/        # Hasil build Vite (di-commit, siap deploy)
+└── assets/       # Font, logo, dan gambar statis
 ```
 
 ---

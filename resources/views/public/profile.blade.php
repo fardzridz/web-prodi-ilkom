@@ -1,110 +1,150 @@
 @extends('layouts.public')
 
-@section('title', 'Profil Program Studi Ilmu Komputer')
-@section('description', 'Profil Program Studi Ilmu Komputer, misi, tujuan, kompetensi lulusan, dan program unggulan.')
+@section('title', 'Profil — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
+@section('description', 'Informasi lengkap tentang ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer') . ' — sejarah, visi, misi, akreditasi, dan keunggulan.')
 
-@push('head')
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" defer></script>
+@push('scripts')
+<script src="{{ asset('js/app.js') }}"></script>
 @endpush
 
 @section('content')
-@include('partials.public.page-hero', [
-'active' => 'profile',
-'kicker' => 'Profil Program Studi',
-'title' => 'Ilmu Komputer',
-'description' => 'Mengenal identitas, misi, tujuan, kompetensi, dan program unggulan Program Studi Ilmu Komputer Universitas PGRI Wiranegara.',
-])
+<x-hero title="Profil" :breadcrumbs="['Profil' => null]" image="{{ asset('assets/images/hero/hero-1.jpeg') }}">
+    Kenali lebih dekat {{ $site?->site_name ?: 'Program Studi Ilmu Komputer' }} — sejarah, visi, misi, akreditasi, dan keunggulan yang membentuk lulusan siap bersaing.
+</x-hero>
 
-<section class="profile-intro-section section-space relative overflow-hidden bg-white py-20 max-[560px]:py-16">
-    <div class="container split-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-center max-[1024px]:grid-cols-1">
-        <div class="image-frame image-frame-large placeholder-campus relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] min-h-[520px] max-[1024px]:min-h-[360px]"></div>
-        <div class="copy-block [&_h2]:m-0 [&_h2]:text-blue-dark [&_h2]:font-display [&_h2]:text-[length:var(--hero-heading-size)] [&_h2]:font-medium [&_h2]:leading-[0.95] [&_h2]:tracking-[-0.035em] max-[560px]:[&_h2]:text-[34px] [&>p]:max-w-[450px] [&>p]:my-6 [&>p]:text-grey-2 [&>p]:text-[17px] [&>p]:leading-[1.65] [&>p]:tracking-[-0.01em]">
-            <x-public.program-profile-field
-                :value="$programProfile->description"
-                class="grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold"
-                data-profile-field="description" />
-        </div>
-    </div>
-</section>
-
-<section class="profile-history-section internal-section section-space relative overflow-hidden bg-[#f8f9fa] py-20 max-[560px]:py-16">
-    <div class="container split-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-center max-[1024px]:grid-cols-1">
-        <div class="profile-rich-copy relative z-[1] max-w-[760px] pt-2 [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>h2]:tracking-normal">
-            <x-public.program-profile-field
-                :value="$programProfile->history"
-                class="grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold"
-                data-profile-field="history" />
-        </div>
-        <div class="profile-visual-stack relative z-[1] grid gap-5 content-start">
-            <div class="image-frame image-frame-large profile-history-visual relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] min-h-[520px] max-[1024px]:min-h-[360px]"></div>
-        </div>
-    </div>
-</section>
-
-<section id="visi-misi-page" class="profile-core-section core-section section-space relative overflow-hidden bg-[#f8f9fa] py-20 max-[560px]:py-16">
-    <div class="container core-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-start max-[1024px]:grid-cols-1">
-        <div class="profile-core-copy">
-            <x-public.program-profile-field
-                :value="$programProfile->vision"
-                class="grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold"
-                data-profile-field="vision" />
-        </div>
-        <div class="profile-rich-copy profile-mission-box relative z-[1] max-w-[760px] pt-2 self-center py-2 max-[560px]:py-1 [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>h2]:tracking-normal">
-            <x-public.program-profile-field
-                :value="$programProfile->mission"
-                class="grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold"
-                data-profile-field="mission" />
-        </div>
-    </div>
-</section>
-
-<section class="profile-band scholarship-section relative overflow-hidden min-h-[252px] text-blue-dark bg-[rgba(253,185,19,0.9)] max-[560px]:min-h-[236px]">
-    <div class="scholarship-media absolute inset-0 z-0" aria-hidden="true"></div>
-    <div class="container scholarship-content profile-band-content w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] relative z-[2] grid min-h-[252px] content-center py-[34px] max-[560px]:min-h-[236px] max-[560px]:py-8 grid-cols-[minmax(0,1fr)_minmax(280px,0.64fr)] gap-[clamp(24px,5vw,64px)] items-center max-[560px]:grid-cols-1 max-[560px]:gap-4 [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>p]:max-w-[590px] [&>p]:mt-3.5 [&>p]:mb-0 [&>p]:text-[rgba(0,36,58,0.84)] [&>p]:text-[17px]">
-        <h2>Badge Akreditasi</h2>
-        <div class="profile-band-accreditation max-w-[520px] text-blue-dark">
-            <div class="rich-text-content profile-band-rich grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 gap-2 mt-2.5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold" data-profile-field="accreditation">
-                <p><strong>{{ $programProfile->accreditation }}</strong></p>
+{{-- Profil Prodi --}}
+<section class="bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,auto)_minmax(0,1fr)] md:gap-20">
+            <div class="justify-self-center">
+                <img src="{{ asset('assets/images/image.png') }}" alt="Profil {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+            </div>
+            <div data-reveal class="anim-fade-up anim-delay-1">
+                <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold anim-fade-up anim-delay-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                    Tentang {{ $site?->site_name ?: 'Ilmu Komputer' }}
+                </h3>
+                @if($programProfile?->description)
+                <div class="mt-6 space-y-5 text-[1.02rem] leading-relaxed text-ink/80 anim-fade-up anim-delay-3">
+                    <x-public.program-profile-field :value="$programProfile->description" />
+                </div>
+                @endif
             </div>
         </div>
     </div>
 </section>
 
-<section class="profile-goals-section internal-section section-space relative overflow-hidden bg-[#f8f9fa] py-20 max-[560px]:py-16">
-    <div class="container split-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-center max-[1024px]:grid-cols-1">
-        <div class="profile-rich-copy relative z-[1] max-w-[760px] pt-2 [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>h2]:tracking-normal">
-            <x-public.program-profile-field
-                :value="$programProfile->goals"
-                class="grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold"
-                data-profile-field="goals" />
-        </div>
-        <div class="profile-visual-stack relative z-[1] grid gap-5 content-start">
-            <div class="image-frame image-frame-large profile-goals-visual relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] min-h-[520px] max-[1024px]:min-h-[360px]"></div>
+{{-- Sejarah --}}
+@if($programProfile?->history)
+<section class="bg-primary py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] md:gap-20">
+            <div data-reveal class="anim-fade-up anim-delay-1">
+                <div class="mt-6">
+                    <x-public.program-profile-field class="rich-text-on-dark" :value="$programProfile->history" />
+                </div>
+            </div>
+            <div class="justify-self-center md:justify-self-end">
+                <img src="https://placehold.co/800x1000/0B1A2F/FDC72F?text=SEJARAH+PRODI&font=roboto" alt="Perjalanan Program Studi Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+            </div>
         </div>
     </div>
 </section>
+@endif
 
-<section class="profile-advantages-section profile-focus-section section-space relative overflow-hidden bg-white py-20 max-[560px]:py-16">
-    <div class="container split-grid w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))] grid grid-cols-2 gap-[clamp(38px,6vw,76px)] items-center max-[1024px]:grid-cols-1">
-        <div class="profile-visual-stack relative z-[1] grid gap-5 content-start">
-            <div class="image-frame image-frame-large profile-advantages-visual relative min-h-[250px] overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_42%),linear-gradient(135deg,#244761,#7aa8bb)] min-h-[520px] max-[1024px]:min-h-[360px]"></div>
-        </div>
-        <div class="profile-rich-copy relative z-[1] max-w-[760px] pt-2 [&>h2]:m-0 [&>h2]:text-blue-dark [&>h2]:font-display [&>h2]:text-[length:var(--hero-heading-size)] [&>h2]:font-medium [&>h2]:leading-[0.95] [&>h2]:tracking-normal">
-            <x-public.program-profile-field
-                :value="$programProfile->advantages"
-                class="grid gap-4 mt-6 text-grey-2 max-[560px]:gap-3.5 max-[560px]:mt-5 [&>*]:m-0 [&_p]:text-grey-2 [&_p]:text-[17px] max-[560px]:[&_p]:text-base [&_p]:leading-[1.72] [&_p]:tracking-[-0.01em] [&_strong]:text-blue-dark [&_strong]:font-extrabold"
-                data-profile-field="advantages" />
-            <div class="profile-section-cta flex flex-wrap gap-3.5 mt-7 max-[560px]:grid max-[560px]:justify-items-start">
-                <a class="button button-red inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase bg-red" href="{{ route('activities.index') }}">Lihat Kegiatan Prodi</a>
-                <a class="button button-light-outline inline-flex min-h-[54px] items-center justify-center pt-[19px] pr-[37px] pb-[14px] pl-[37px] text-white text-[15px] font-bold leading-[1.1] tracking-[0.03em] uppercase border-2 border-current bg-transparent !bg-transparent" href="{{ route('documents') }}">Dokumen Akademik</a>
+{{-- Visi & Misi --}}
+<section class="bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="grid max-w-6xl items-start gap-12 md:grid-cols-2 md:gap-16">
+            <div data-reveal class="anim-fade-up anim-delay-1">
+                @if($programProfile?->vision)
+                <div class="mt-6 font-display text-xl font-bold leading-snug text-primary sm:text-2xl">
+                    <x-public.program-profile-field :value="$programProfile->vision" />
+                </div>
+                @endif
+            </div>
+            <div data-reveal class="anim-fade-up anim-delay-2">
+                @if($programProfile?->mission)
+                <div class="rich-text mt-6 space-y-7">
+                    <x-public.program-profile-field :value="$programProfile->mission" />
+                </div>
+                @endif
             </div>
         </div>
     </div>
 </section>
 
-@include('partials.public.contact-cta', [
-'title' => 'Ingin mengenal prodi lebih lanjut?',
-'secondaryLabel' => 'Lihat Kegiatan',
-'secondaryHref' => route('activities.index'),
-])
+{{-- Badge Akreditasi --}}
+<section class="bg-gold text-primary py-12 sm:py-14 lg:py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center lg:gap-12">
+            <div class="max-w-2xl" data-reveal>
+                <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary/80 text-base font-bold">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+                    Akreditasi · BAN-PT
+                </h3>
+                <h2 class="mt-4 font-display text-2xl font-bold uppercase tracking-wide sm:text-3xl lg:text-4xl">Badge Akreditasi</h2>
+            </div>
+            <div class="inline-flex shrink-0 items-center rounded-full bg-primary px-8 py-4 font-display text-2xl font-bold text-gold sm:text-3xl anim-fade-up anim-delay-2" data-reveal>
+                {{ $programProfile?->accreditation ?: 'Baik Sekali' }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- Arah / Tujuan Pembelajaran --}}
+@if($programProfile?->goals)
+<section class="bg-primary py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] md:gap-20">
+            <div data-reveal>
+                <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-gold text-base font-semibold">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"/></svg>
+                    Arah Pembelajaran
+                </h3>
+                <div class="mt-6">
+                    <x-public.program-profile-field class="rich-text-on-dark" :value="$programProfile->goals" />
+                </div>
+            </div>
+            <div class="justify-self-center md:justify-self-end">
+                <img src="https://placehold.co/800x1000/0B1A2F/FDC72F?text=TUJUAN+PEMBELAJARAN&font=roboto" alt="Tujuan pembelajaran Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- Keunggulan --}}
+@if($programProfile?->advantages)
+<section class="bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
+        <div class="grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] md:gap-20">
+            <div class="justify-self-center md:justify-self-start">
+                <img src="https://placehold.co/800x1000/1B365D/FDC72F?text=KEUNGGULAN+PRODI&font=roboto" alt="Keunggulan Program Studi Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+            </div>
+            <div data-reveal class="anim-fade-up anim-delay-1">
+                <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
+                    Pembeda Program Studi
+                </h3>
+                <div class="mt-6 space-y-6 text-ink/80">
+                    <x-public.program-profile-field :value="$programProfile->advantages" />
+                </div>
+                <div class="mt-9 flex flex-wrap gap-3.5">
+                    <a href="{{ route('activities.index') }}" class="btn btn-primary btn-lg">
+                        <span class="btn-label">Lihat Kegiatan Prodi</span>
+                        <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                    </a>
+                    <a href="{{ route('documents') }}" class="btn btn-outline btn-lg">
+                        <span class="btn-label">Dokumen Akademik</span>
+                        <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
+<x-cta-banner />
 @endsection

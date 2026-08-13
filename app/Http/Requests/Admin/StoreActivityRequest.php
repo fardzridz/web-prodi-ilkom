@@ -58,6 +58,8 @@ class StoreActivityRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $status = strtolower(trim((string) $this->input('status')));
+
         $this->merge([
             'title' => trim((string) $this->input('title')),
             'slug' => Str::slug($this->input('slug') ?: $this->input('title')),
@@ -65,7 +67,8 @@ class StoreActivityRequest extends FormRequest
             'content' => (string) $this->input('content'),
             'location' => trim((string) $this->input('location')),
             'category' => trim((string) $this->input('category')) ?: null,
-            'status' => strtolower(trim((string) $this->input('status'))),
+            'status' => $status,
+            'published_at' => $status === Activity::STATUS_SCHEDULED ? $this->input('published_at') : null,
         ]);
     }
 }

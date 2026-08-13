@@ -19,6 +19,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -28,22 +29,46 @@ class PublicController extends Controller
 
     public function __construct()
     {
-        view()->share('site', SiteSetting::query()->first() ?? new SiteSetting([
+        try {
+            $site = Cache::rememberForever('site_setting', fn () => SiteSetting::query()->first()?->toArray());
+            $site = is_array($site) ? new SiteSetting($site) : $this->defaultSite();
+        } catch (\Throwable) {
+            $site = $this->defaultSite();
+        }
+
+        view()->share('site', $site);
+
+        try {
+            $contact = Cache::rememberForever('contact_info', fn () => Contact::query()->first()?->toArray());
+            $contact = is_array($contact) ? new Contact($contact) : $this->defaultContact();
+        } catch (\Throwable) {
+            $contact = $this->defaultContact();
+        }
+
+        view()->share('contactInfo', $contact);
+    }
+
+    private function defaultSite(): SiteSetting
+    {
+        return new SiteSetting([
             'site_name' => 'Program Studi Ilmu Komputer',
             'university_name' => 'Universitas PGRI Wiranegara',
             'faculty_name' => 'Fakultas Teknologi dan Sains',
             'footer_text' => '© '.date('Y').' Program Studi Ilmu Komputer.',
             'journal_url' => 'https://ejurnal.uniwara.ac.id',
-        ]));
+        ]);
+    }
 
-        view()->share('contactInfo', Contact::query()->first() ?? new Contact([
+    private function defaultContact(): Contact
+    {
+        return new Contact([
             'address' => 'Jl. Ki Hajar Dewantara No. 27-29, Pasuruan, Jawa Timur',
             'email' => 'univ.pgriwiranegara@gmail.com',
             'phone' => '0821-4155-4377',
             'instagram' => 'https://instagram.com/uniwara',
             'youtube' => 'https://youtube.com/@uniwara',
             'facebook' => 'https://facebook.com/uniwara',
-        ]));
+        ]);
     }
 
     public function home(): View
@@ -53,6 +78,7 @@ class PublicController extends Controller
                 'hero_title',
                 'hero_subtitle',
                 'hero_slides',
+                'advantages',
                 'cta_text',
                 'cta_link',
                 'welcome_title',
@@ -64,9 +90,34 @@ class PublicController extends Controller
             'homeSection' => $homeSection,
             'heroSlides' => $this->heroSlidesForPublic($homeSection),
             'heroCtaUrl' => $this->resolvePublicLink($homeSection->cta_link, route('profile')),
+            'advantageSection' => $this->advantageSectionData($homeSection),
             'activities' => $this->activitiesData(3),
             'alumni' => $this->alumniData(4),
+            'programProfile' => ProgramProfile::query()->first() ?? new ProgramProfile,
         ]);
+    }
+
+    /**
+     * @return array{heading: string, items: array<int, array{order: int, title: string, description: string, image_url: string, image_alt: string}>}
+     */
+    private function advantageSectionData(HomeSection $homeSection): array
+    {
+        $raw = $homeSection->advantages;
+
+        return [
+            'heading' => HomeSection::advantageHeading($raw),
+            'items' => collect(HomeSection::advantageItems($raw))
+                ->map(fn (array $item): array => [
+                    'order' => $item['order'],
+                    'title' => $item['title'],
+                    'description' => $item['description'],
+                    'image_url' => $item['image'] !== null
+                        ? asset('storage/'.$item['image'])
+                        : asset('assets/images/hero/hero-1.jpeg'),
+                    'image_alt' => $item['title'],
+                ])
+                ->all(),
+        ];
     }
 
     public function profile(): View
@@ -101,6 +152,13 @@ class PublicController extends Controller
     {
         return view('public.lecturers', [
             'lecturers' => $this->lecturersData(),
+            'expertises' => Lecturer::query()
+                ->where('status', Lecturer::STATUS_ACTIVE)
+                ->whereNotNull('expertise')
+                ->where('expertise', '!=', '')
+                ->distinct()
+                ->orderBy('expertise')
+                ->pluck('expertise'),
         ]);
     }
 
@@ -108,6 +166,13 @@ class PublicController extends Controller
     {
         return view('public.activities.index', [
             'activities' => $this->activitiesData(),
+            'categories' => Activity::query()
+                ->where('status', Activity::STATUS_PUBLISHED)
+                ->whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->orderBy('category')
+                ->pluck('category'),
         ]);
     }
 
@@ -115,12 +180,14 @@ class PublicController extends Controller
     {
         return view('public.activities.show', [
             'activity' => $this->findActivity($slug),
+            'otherActivities' => $this->otherActivitiesData($slug),
         ]);
     }
 
     public function journalRedirect(): RedirectResponse
     {
-        $journalUrl = SiteSetting::query()->value('journal_url');
+        $site = view()->shared('site');
+        $journalUrl = $site?->journal_url ?? 'https://ejurnal.uniwara.ac.id';
 
         return redirect()->away(trim((string) $journalUrl) !== '' ? $journalUrl : 'https://ejurnal.uniwara.ac.id');
     }
@@ -161,17 +228,35 @@ class PublicController extends Controller
 
         abort_unless($storage->exists($document->file), 404);
 
-        return $storage->response(
-            $document->file,
-            $document->slug.'.'.$document->file_type,
-            ['X-Content-Type-Options' => 'nosniff'],
-        );
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ];
+
+        $type = strtolower($document->file_type);
+        $mime = $mimeTypes[$type] ?? $storage->mimeType($document->file);
+
+        $headers = [
+            'Content-Type' => $mime ?: 'application/octet-stream',
+            'Content-Disposition' => 'inline; filename="'.$document->slug.'.'.$document->file_type.'"',
+            'X-Content-Type-Options' => 'nosniff',
+        ];
+
+        return $storage->response($document->file, $document->slug.'.'.$document->file_type, $headers);
     }
 
     public function alumni(): View
     {
         return view('public.alumni', [
             'alumni' => $this->alumniData(),
+            'jobPositions' => Alumni::query()
+                ->where('status', Alumni::STATUS_ACTIVE)
+                ->whereNotNull('job_position')
+                ->where('job_position', '!=', '')
+                ->distinct()
+                ->orderBy('job_position')
+                ->pluck('job_position'),
         ]);
     }
 
@@ -293,7 +378,7 @@ class PublicController extends Controller
 
         if (str_starts_with(ltrim((string) $content), '<')) {
             return [
-                ['type' => 'html', 'html' => $this->sanitizeHtml((string) $content, ['p', 'br', 'strong', 'b', 'em', 'i', 'ul', 'ol', 'li', 'h2', 'h3', 'h4', 'a', 'span'])],
+                ['type' => 'html', 'html' => $this->sanitizeHtml((string) $content, ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'span', 'blockquote', 'pre', 'code', 'img', 'figure', 'figcaption'])],
             ];
         }
 
@@ -333,6 +418,22 @@ class PublicController extends Controller
         abort_unless($activity, 404);
 
         return $this->mapActivity($activity);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function otherActivitiesData(string $excludeSlug): array
+    {
+        return Activity::query()
+            ->where('status', Activity::STATUS_PUBLISHED)
+            ->where('slug', '!=', $excludeSlug)
+            ->orderByDesc('activity_date')
+            ->orderByDesc('id')
+            ->limit(4)
+            ->get()
+            ->map(fn (Activity $activity): array => $this->mapActivity($activity))
+            ->all();
     }
 
     /**

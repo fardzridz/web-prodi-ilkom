@@ -1,18 +1,25 @@
 @props([
     'value' => '',
+    'delta' => null,
 ])
 
 @php
     $raw = (string) $value;
-    $isDelta = str_starts_with(ltrim($raw), '{');
-    $deltaPayload = $isDelta ? base64_encode($raw) : null;
-    $passThrough = $attributes->except(['data-quill-delta'])->merge(['class' => 'rich-text-content']);
+    $isDelta = $delta !== null && $delta !== '';
 
     if (! $isDelta && $raw !== '') {
-        // Match PublicController::sanitizeActivityHtml allowlist for Froala/Quill HTML.
-        $allowedTags = '<p><br><strong><b><em><i><ul><ol><li><h2><h3><h4><a><span>';
+        $allowedTags = '<p><br><strong><em><u><s>'
+            .'<ul><ol><li><a>'
+            .'<h1><h2><h3><h4><h5><h6>'
+            .'<blockquote><pre><code><hr>'
+            .'<table><thead><tbody><tr><th><td>'
+            .'<div><span>';
         $safe = strip_tags($raw, $allowedTags);
+
         $safe = preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safe) ?? $safe;
+
+        $safe = preg_replace('/\sstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safe) ?? $safe;
+
         $safe = preg_replace_callback(
             '/\s(href|src|xlink:href)\s*=\s*(["\'])(.*?)\2/i',
             function (array $matches): string {
@@ -27,14 +34,15 @@
             },
             $safe
         ) ?? $safe;
+
         $raw = $safe;
     }
 @endphp
 
 <div
-    {{ $passThrough }}
+    {{ $attributes->except(['delta', 'data-quill-delta'])->merge(['class' => 'rich-text']) }}
     @if($isDelta)
-        data-quill-delta="{{ $deltaPayload }}"
+        data-quill-delta="{{ base64_encode((string) $delta) }}"
     @endif
 >
     @unless($isDelta)

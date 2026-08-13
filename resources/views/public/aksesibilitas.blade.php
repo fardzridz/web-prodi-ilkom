@@ -1,26 +1,30 @@
 @extends('layouts.public')
 
-@section('title', 'Aksesibilitas - Program Studi Ilmu Komputer')
+@section('title', ($page?->title ?: 'Aksesibilitas') . ' — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
+
+@push('scripts')
+<script src="{{ asset('js/app.js') }}"></script>
+@endpush
 
 @section('content')
-    @include('partials.public.page-hero', [
-        'active' => null,
-        'kicker' => 'Informasi',
-        'title' => 'Aksesibilitas',
-        'description' => 'Komitmen kami terhadap aksesibilitas website bagi semua pengguna.',
-    ])
+<x-hero title="{{ $page?->title ?: 'Aksesibilitas' }}" :breadcrumbs="['Aksesibilitas' => null]" />
 
-    <section class="core-section section-space relative overflow-hidden bg-[#f8f9fa] py-20 max-[560px]:py-16">
-        <div class="container w-[min(100%_-_48px,var(--container))] mx-auto max-[560px]:w-[min(100%_-_32px,var(--container))]">
-            @if (filled($page->sanitized_content))
-                <article class="rich-text-content max-w-[820px]">
-                    {!! $page->sanitized_content !!}
-                </article>
+<section class="bg-line py-16 lg:py-24">
+    <div class="mx-auto max-w-3xl px-4 sm:px-8">
+        <div class="rich-text">
+            @if($page?->sanitized_content)
+                {!! $page->sanitized_content !!}
             @else
-                <div class="page-empty-content py-16 text-center">
-                    <p class="m-0 text-lg text-grey-3">Konten sedang disiapkan. Silakan kunjungi kembali halaman ini nanti.</p>
-                </div>
+            <h2>Pernyataan Aksesibilitas</h2>
+            <p>{{ $site?->site_name ?: 'Program Studi Ilmu Komputer' }} berkomitmen untuk menyediakan situs web yang dapat diakses oleh semua pengguna, termasuk penyandang disabilitas.</p>
+            <h3>Standar yang Digunakan</h3>
+            <p>Kami berupaya mematuhi pedoman WCAG 2.1 Level AA untuk memastikan aksesibilitas konten web.</p>
+            <h3>Umpan Balik</h3>
+            <p>Jika Anda mengalami kesulitan mengakses konten di situs ini, silakan hubungi kami melalui halaman kontak.</p>
             @endif
         </div>
-    </section>
+    </div>
+</section>
+
+<x-cta-banner />
 @endsection

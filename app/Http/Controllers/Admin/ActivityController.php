@@ -9,6 +9,8 @@ use App\Http\Requests\Admin\UpdateActivityRequest;
 use App\Models\Activity;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -51,11 +53,35 @@ class ActivityController extends Controller
         $data = $this->normalizePublication($request->validated());
         $data['user_id'] = $request->user()->getAuthIdentifier();
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('activities', 'public');
+        $storedImage = null;
+
+        try {
+            $activity = DB::transaction(function () use ($request, $data, &$storedImage): Activity {
+                $payload = $data;
+
+                if ($request->hasFile('image')) {
+                    $storedImage = $request->file('image')->store('activities', 'public');
+                    $payload['image'] = $storedImage;
+                }
+
+                return Activity::query()->create($payload);
+            });
+        } catch (Throwable $exception) {
+            if ($storedImage !== null) {
+                Storage::disk('public')->delete($storedImage);
+            }
+
+            throw $exception;
         }
 
-        Activity::query()->create($data);
+        Log::info('admin.activity.created', [
+            'activity_id' => $activity->id,
+            'user_id' => $request->user()->getAuthIdentifier(),
+            'slug' => $activity->slug,
+            'title' => $activity->title,
+            'status' => $activity->status,
+            'ip' => $request->ip(),
+        ]);
 
         return redirect()
             ->route('admin.kegiatan.index')
@@ -75,13 +101,17 @@ class ActivityController extends Controller
         $oldImage = $activity->image;
         $storedImage = null;
 
-        if ($request->hasFile('image')) {
-            $storedImage = $request->file('image')->store('activities', 'public');
-            $data['image'] = $storedImage;
-        }
-
         try {
-            $activity->update($data);
+            DB::transaction(function () use ($request, $activity, $data, &$storedImage): void {
+                $payload = $data;
+
+                if ($request->hasFile('image')) {
+                    $storedImage = $request->file('image')->store('activities', 'public');
+                    $payload['image'] = $storedImage;
+                }
+
+                $activity->update($payload);
+            });
         } catch (Throwable $exception) {
             if ($storedImage !== null) {
                 Storage::disk('public')->delete($storedImage);
@@ -94,6 +124,16 @@ class ActivityController extends Controller
             Storage::disk('public')->delete($oldImage);
         }
 
+        Log::info('admin.activity.updated', [
+            'activity_id' => $activity->id,
+            'user_id' => $request->user()->getAuthIdentifier(),
+            'slug' => $activity->slug,
+            'title' => $activity->title,
+            'status' => $activity->status,
+            'image_replaced' => $storedImage !== null,
+            'ip' => $request->ip(),
+        ]);
+
         return redirect()
             ->route('admin.kegiatan.index')
             ->with('success', 'Kegiatan berhasil diperbarui.');
@@ -102,11 +142,26 @@ class ActivityController extends Controller
     public function destroy(Activity $activity): RedirectResponse
     {
         $image = $activity->image;
-        $activity->delete();
+        $activityId = $activity->id;
+        $activitySlug = $activity->slug;
+        $activityTitle = $activity->title;
+        $activityUserId = $activity->user_id;
+
+        DB::transaction(function () use ($activity): void {
+            $activity->delete();
+        });
 
         if ($image) {
             Storage::disk('public')->delete($image);
         }
+
+        Log::info('admin.activity.deleted', [
+            'activity_id' => $activityId,
+            'user_id' => $activityUserId,
+            'slug' => $activitySlug,
+            'title' => $activityTitle,
+            'had_image' => $image !== null,
+        ]);
 
         return redirect()
             ->route('admin.kegiatan.index')

@@ -11,6 +11,7 @@ use App\Models\HomeSection;
 use App\Models\Lecturer;
 use App\Models\ProgramProfile;
 use App\Models\SiteSetting;
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
@@ -107,6 +108,9 @@ class DashboardController extends Controller
             'statusCards' => $statusCards,
             'latestContent' => $this->latestContent(),
             'publicReadiness' => $this->publicReadiness(),
+            'chartActivityMonthly' => $this->chartActivityMonthly(),
+            'chartStatusDistribution' => $this->chartStatusDistribution($activityCounts, $lecturerCounts, $documentCounts, $alumniCounts),
+            'chartCombinedMonthly' => $this->chartCombinedMonthly(),
         ]);
     }
 
@@ -238,6 +242,73 @@ class DashboardController extends Controller
             'label' => $label,
             'status' => $ready ? $readyLabel : 'Perlu isi',
             'tone' => $ready ? 'ready' : 'attention',
+        ];
+    }
+
+    /**
+     * @return array{labels: array<int, string>, counts: array<int, int>}
+     */
+    private function chartActivityMonthly(): array
+    {
+        $months = collect(range(5, 0))->map(fn ($i) => Carbon::now()->subMonths($i));
+
+        $labels = $months->map(fn (Carbon $d) => $d->locale('id')->translatedFormat('M'))->toArray();
+
+        $counts = $months->map(function (Carbon $d) {
+            return Activity::query()
+                ->whereYear('created_at', $d->year)
+                ->whereMonth('created_at', $d->month)
+                ->count();
+        })->toArray();
+
+        return compact('labels', 'counts');
+    }
+
+    /**
+     * @return array{series: array<int, int>, labels: array<int, string>}
+     */
+    private function chartStatusDistribution(
+        Collection $activityCounts,
+        Collection $lecturerCounts,
+        Collection $documentCounts,
+        Collection $alumniCounts,
+    ): array {
+        return [
+            'series' => [
+                (int) $activityCounts->sum() + (int) $documentCounts->sum(),
+                (int) $lecturerCounts->sum(),
+                (int) $alumniCounts->sum(),
+                (int) $activityCounts->get('draft', 0) + (int) $documentCounts->get('draft', 0),
+            ],
+            'labels' => ['Konten', 'Dosen', 'Alumni', 'Draf'],
+        ];
+    }
+
+    /**
+     * @return array{series: array<int, array{name: string, data: array<int, int>}>, labels: array<int, string>}
+     */
+    private function chartCombinedMonthly(): array
+    {
+        $months = collect(range(5, 0))->map(fn ($i) => Carbon::now()->subMonths($i));
+
+        $labels = $months->map(fn (Carbon $d) => $d->locale('id')->translatedFormat('M'))->toArray();
+
+        $activityData = $months->map(fn (Carbon $d) => Activity::query()
+            ->whereYear('created_at', $d->year)
+            ->whereMonth('created_at', $d->month)
+            ->count())->toArray();
+
+        $alumniData = $months->map(fn (Carbon $d) => Alumni::query()
+            ->whereYear('created_at', $d->year)
+            ->whereMonth('created_at', $d->month)
+            ->count())->toArray();
+
+        return [
+            'series' => [
+                ['name' => 'Kegiatan', 'data' => $activityData],
+                ['name' => 'Alumni', 'data' => $alumniData],
+            ],
+            'labels' => $labels,
         ];
     }
 }

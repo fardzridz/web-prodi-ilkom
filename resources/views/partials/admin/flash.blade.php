@@ -8,38 +8,15 @@
 @endphp
 
 @foreach ($flashMessages as $type => $message)
-    <div class="admin-flash admin-flash-{{ $type }}" role="status" data-flash-alert>
-        <span class="admin-flash-icon" aria-hidden="true">
-            <i @class([
-                'fa-solid',
-                'fa-circle-check' => $type === 'success',
-                'fa-circle-exclamation' => $type === 'error',
-                'fa-triangle-exclamation' => $type === 'warning',
-                'fa-circle-info' => $type === 'info',
-            ])></i>
-        </span>
-        <p>{{ $message }}</p>
-        <button type="button" data-alert-dismiss aria-label="Tutup pemberitahuan">
-            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
-    </div>
+    <x-admin.alert :variant="$type" :message="$message" class="mb-4" />
 @endforeach
 
 @if ($errors->any())
-    <div class="admin-flash admin-flash-error admin-flash-validation" role="alert" data-flash-alert>
-        <span class="admin-flash-icon" aria-hidden="true">
-            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-        </span>
-        <div>
-            <p><strong>Periksa kembali data yang dikirim.</strong></p>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        <button type="button" data-alert-dismiss aria-label="Tutup pemberitahuan">
-            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
-    </div>
+    <x-admin.alert variant="error" title="Periksa kembali data yang dikirim." class="mb-4">
+        <ul class="mt-2 list-disc pl-5 text-sm">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </x-admin.alert>
 @endif

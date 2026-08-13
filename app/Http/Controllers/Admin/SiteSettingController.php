@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\UpdateSiteSettingRequest;
 use App\Models\SiteSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -59,6 +60,7 @@ class SiteSettingController extends Controller
 
             $siteSetting->fill($validated)->save();
             Storage::disk('public')->delete(array_values(array_unique($oldPaths)));
+            Cache::forget('site_setting');
         } catch (Throwable $exception) {
             Storage::disk('public')->delete($storedPaths);
 

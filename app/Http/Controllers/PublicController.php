@@ -457,7 +457,6 @@ class PublicController extends Controller
                 'email' => $lecturer->email ?? '',
                 'image' => $lecturer->photo ? asset('storage/'.$lecturer->photo) : 'assets/images/hero/hero-1.jpeg',
                 'description' => $lecturer->bio ?? '',
-                'icon' => 'fa-solid fa-user-graduate',
             ])
             ->all();
     }
@@ -487,7 +486,6 @@ class PublicController extends Controller
                 'company' => $alumni->company ?? '',
                 'quote' => $alumni->testimonial ?? '',
                 'image' => $alumni->photo ? asset('storage/'.$alumni->photo) : 'assets/images/hero/hero-1.jpeg',
-                'icon' => 'fa-solid fa-briefcase',
             ])
             ->all();
     }
@@ -509,26 +507,10 @@ class PublicController extends Controller
                 'category' => $document->documentCategory?->name ?? '',
                 'description' => $document->description ?? '',
                 'file_type' => $document->fileTypeLabel(),
-                'file_icon' => match (strtoupper($document->file_type)) {
-                    'PDF' => 'fa-file',
-                    'DOCX', 'DOC' => 'fa-file-word',
-                    'XLSX', 'XLS', 'CSV' => 'fa-file-excel',
-                    'PPTX', 'PPT' => 'fa-file-powerpoint',
-                    'ZIP', 'RAR' => 'fa-file-zipper',
-                    default => 'fa-file',
-                },
                 'file_size' => $document->formattedFileSize(),
                 'updated_at' => $document->uploaded_at?->format('Y-m-d') ?? '',
                 'updated_label' => $document->uploaded_at?->translatedFormat('d F Y') ?? '',
                 'file' => $document->file,
-                'icon' => match (strtoupper($document->file_type)) {
-                    'PDF' => 'fa-file-pdf',
-                    'DOCX', 'DOC' => 'fa-file-word',
-                    'XLSX', 'XLS', 'CSV' => 'fa-file-excel',
-                    'PPTX', 'PPT' => 'fa-file-powerpoint',
-                    'ZIP', 'RAR' => 'fa-file-zipper',
-                    default => 'fa-file-lines',
-                },
             ])
             ->all();
     }

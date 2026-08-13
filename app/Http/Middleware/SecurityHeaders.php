@@ -20,10 +20,10 @@ class SecurityHeaders
 
         $viteDev = file_exists(public_path('hot'));
 
-        $styleSrc = "'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com";
+        $styleSrc = "'self' https://fonts.googleapis.com";
         $scriptSrc = "'self' https://cdn.jsdelivr.net";
         $connectSrc = "'self' https://cdn.jsdelivr.net";
-        $fontSrc = "'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com";
+        $fontSrc = "'self' https://fonts.gstatic.com";
 
         if ($viteDev) {
             $styleSrc .= ' http://localhost:*';

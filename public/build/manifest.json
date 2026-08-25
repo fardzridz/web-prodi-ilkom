@@ -1,50 +1,46 @@
 {
+  "_vendor-DATCATKt.js": {
+    "file": "assets/vendor-DATCATKt.js",
+    "name": "vendor"
+  },
+  "node_modules/apexcharts/dist/apexcharts.esm.js": {
+    "file": "assets/charts-sTgqAsG4.js",
+    "name": "charts",
+    "src": "node_modules/apexcharts/dist/apexcharts.esm.js",
+    "isDynamicEntry": true
+  },
   "resources/css/admin.css": {
-    "file": "assets/admin-CDLnqRiF.css",
+    "file": "assets/admin-DGvc4XH9.css",
     "src": "resources/css/admin.css",
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-BNneEphc.css",
+    "file": "assets/app-3l1NDQBG.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/admin.js": {
-    "file": "assets/admin-DOC2Oh_H.js",
+    "file": "assets/admin-9g6wbEzx.js",
     "name": "admin",
     "src": "resources/js/admin.js",
     "isEntry": true,
-    "dynamicImports": [
-      "resources/js/components/chart-1.js",
-      "resources/js/components/chart-2.js",
-      "resources/js/components/chart-3.js"
+    "imports": [
+      "_vendor-DATCATKt.js"
     ],
-    "css": [
-      "assets/admin-CksuuEqD.css"
+    "dynamicImports": [
+      "node_modules/apexcharts/dist/apexcharts.esm.js"
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BX3Jy4_6.js",
+    "file": "assets/app-CghCqHg1.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
   },
-  "resources/js/components/chart-1.js": {
-    "file": "assets/chart-1-DGxnI4-N.js",
-    "name": "chart-1",
-    "src": "resources/js/components/chart-1.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/components/chart-2.js": {
-    "file": "assets/chart-2-HP4sInwr.js",
-    "name": "chart-2",
-    "src": "resources/js/components/chart-2.js",
-    "isDynamicEntry": true
-  },
-  "resources/js/components/chart-3.js": {
-    "file": "assets/chart-3-BNNOZWvg.js",
-    "name": "chart-3",
-    "src": "resources/js/components/chart-3.js",
-    "isDynamicEntry": true
+  "resources/js/quill-init.js": {
+    "file": "assets/quill-init-B7BIjy5l.js",
+    "name": "quill-init",
+    "src": "resources/js/quill-init.js",
+    "isEntry": true
   }
 }

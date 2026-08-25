@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\LecturerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'name',
@@ -19,6 +23,9 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Lecturer extends Model
 {
+    /** @use HasFactory<LecturerFactory> */
+    use HasFactory;
+
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_INACTIVE = 'inactive';
@@ -27,6 +34,26 @@ class Lecturer extends Model
         self::STATUS_ACTIVE,
         self::STATUS_INACTIVE,
     ];
+
+    public function getPhotoExistsAttribute(): bool
+    {
+        if (blank($this->photo)) {
+            return false;
+        }
+
+        $key = 'lecturer:photo_exists:'.$this->id.':'.md5((string) $this->photo);
+
+        return (bool) Cache::remember($key, 3600, fn (): bool => Storage::disk('public')->exists($this->photo));
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (! $this->photo_exists) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->photo);
+    }
 
     /**
      * Get a human-readable label for the lecturer's status.

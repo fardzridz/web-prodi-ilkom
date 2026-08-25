@@ -21,6 +21,7 @@ class SiteSettingSeeder extends Seeder
                 'logo' => null,
                 'favicon' => null,
                 'journal_url' => 'https://ejurnal.uniwara.ac.id',
+                'registration_url' => 'https://admisi.uniwara.ac.id',
                 'footer_text' => '© 2026 Program Studi Ilmu Komputer.',
                 'footer_academic_links' => [
                     [

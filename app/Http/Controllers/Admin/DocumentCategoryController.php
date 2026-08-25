@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\UpdateDocumentCategoryRequest;
 use App\Models\DocumentCategory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 
 class DocumentCategoryController extends Controller
 {
@@ -33,6 +34,8 @@ class DocumentCategoryController extends Controller
     {
         DocumentCategory::query()->create($request->validated());
 
+        Cache::forget('public:document_categories');
+
         return redirect()
             ->route('admin.kategori-dokumen.index')
             ->with('success', 'Kategori dokumen berhasil ditambahkan.');
@@ -43,6 +46,8 @@ class DocumentCategoryController extends Controller
         DocumentCategory $documentCategory,
     ): RedirectResponse {
         $documentCategory->update($request->validated());
+
+        Cache::forget('public:document_categories');
 
         return redirect()
             ->route('admin.kategori-dokumen.index')
@@ -59,6 +64,8 @@ class DocumentCategoryController extends Controller
         }
 
         $documentCategory->delete();
+
+        Cache::forget('public:document_categories');
 
         return redirect()
             ->route('admin.kategori-dokumen.index')

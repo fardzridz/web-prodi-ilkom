@@ -25,14 +25,17 @@ class AdminUserSeeder extends Seeder
             throw new RuntimeException('Set a secure INITIAL_ADMIN_PASSWORD before seeding production.');
         }
 
-        User::query()->firstOrCreate(
+        $user = User::query()->firstOrCreate(
             ['email' => $email],
             [
                 'name' => $name,
                 'email_verified_at' => now(),
                 'password' => $password,
-                'role' => User::ROLE_ADMIN,
             ],
         );
+
+        if ($user->role !== User::ROLE_ADMIN) {
+            $user->forceFill(['role' => User::ROLE_ADMIN])->save();
+        }
     }
 }

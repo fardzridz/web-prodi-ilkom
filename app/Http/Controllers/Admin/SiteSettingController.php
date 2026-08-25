@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateSiteSettingRequest;
 use App\Models\SiteSetting;
+use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
@@ -30,23 +31,30 @@ class SiteSettingController extends Controller
         $storedPaths = [];
 
         try {
+            $optimizer = new ImageOptimizer;
             foreach (['logo', 'favicon'] as $fileField) {
                 $removeField = "remove_{$fileField}";
                 $currentPath = $siteSetting->{$fileField};
 
                 if (isset($validated[$fileField])) {
-                    $newPath = $validated[$fileField]->store('uploads/settings', 'public');
+                    $result = $optimizer->optimize($validated[$fileField], 'uploads/settings');
+                    $newPath = $result['path'];
                     $storedPaths[] = $newPath;
+                    if ($result['thumb']) {
+                        $storedPaths[] = $result['thumb'];
+                    }
                     $validated[$fileField] = $newPath;
 
                     if ($currentPath) {
                         $oldPaths[] = $currentPath;
+                        $oldPaths[] = ImageOptimizer::thumbPath($currentPath);
                     }
                 } elseif (($validated[$removeField] ?? false) === true) {
                     $validated[$fileField] = null;
 
                     if ($currentPath) {
                         $oldPaths[] = $currentPath;
+                        $oldPaths[] = ImageOptimizer::thumbPath($currentPath);
                     }
                 } else {
                     unset($validated[$fileField]);

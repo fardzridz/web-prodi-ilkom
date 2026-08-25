@@ -67,11 +67,10 @@
                     </thead>
                     <tbody>
                         @foreach ($lecturers as $lecturer)
-                            @php($hasPhoto = filled($lecturer->photo) && Storage::disk('public')->exists($lecturer->photo))
                             <tr class="border-b border-gray-100 dark:border-gray-800 last:border-0">
                                 <td class="py-3 pr-2">
-                                    @if ($hasPhoto)
-                                        <img src="{{ Storage::disk('public')->url($lecturer->photo) }}" alt="Foto {{ $lecturer->name }}"
+                                    @if ($lecturer->photo_url)
+                                        <img src="{{ $lecturer->photo_url }}" alt="Foto {{ $lecturer->name }}"
                                             class="h-10 w-10 rounded-full object-cover" loading="lazy" />
                                     @else
                                         <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-500 dark:bg-brand-500/15">
@@ -89,11 +88,7 @@
                                 <td class="py-3 pr-4 text-gray-600 dark:text-gray-400">{{ $lecturer->position ?: '-' }}</td>
                                 <td class="py-3 pr-4 text-gray-600 dark:text-gray-400">{{ $lecturer->expertise ?: '-' }}</td>
                                 <td class="py-3 pr-4">
-                                    @if ($lecturer->status === 'active')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">Aktif</span>
-                                    @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-white/80">Nonaktif</span>
-                                    @endif
+                                    <x-admin.badge variant="light" :color="$lecturer->status === 'active' ? 'success' : 'light'" size="sm">{{ $lecturer->status === 'active' ? 'Aktif' : 'Nonaktif' }}</x-admin.badge>
                                 </td>
                                 <td class="py-3 pr-4 text-center text-gray-600 dark:text-gray-400">{{ $lecturer->sort_order }}</td>
                                 <td class="py-3">
@@ -106,19 +101,7 @@
                                         </a>
                                         <form action="{{ route('admin.dosen.status', $lecturer) }}" method="post" class="inline">
                                             @csrf @method('PATCH')
-                                            <button type="submit"
-                                                class="inline-flex items-center justify-center h-8 w-8 rounded-lg text-gray-400 hover:text-{{ $lecturer->status === 'active' ? 'success' : 'error' }}-500 hover:bg-{{ $lecturer->status === 'active' ? 'success' : 'error' }}-50 dark:hover:bg-{{ $lecturer->status === 'active' ? 'success' : 'error' }}-500/10 transition"
-                                                title="{{ $lecturer->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                                @if ($lecturer->status === 'active')
-                                                    <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zm0-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill=""/>
-                                                    </svg>
-                                                @else
-                                                    <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zM7 16c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4H7z" fill=""/>
-                                                    </svg>
-                                                @endif
-                                            </button>
+                                            <x-admin.toggle :active="$lecturer->status === 'active'" variant="switch" :labelActive="'Aktifkan ' . $lecturer->name" :labelInactive="'Nonaktifkan ' . $lecturer->name" />
                                         </form>
                                         <button type="button"
                                             onclick="if(confirm('Hapus data {{ $lecturer->name }}?')) document.getElementById('delete-lecturer-{{ $lecturer->id }}').submit()"

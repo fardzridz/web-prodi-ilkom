@@ -2,7 +2,7 @@
     $isEditing = $document->exists;
     $selectedStatus = old('status', $document->status ?: 'draft');
     $selectedCategory = (string) old('document_category_id', $document->document_category_id);
-    $storedFileExists = $isEditing && Storage::disk('public')->exists($document->file);
+    $storedFileExists = $isEditing && (bool) $document->file_exists;
 @endphp
 
 <form x-data="{ submitting: false }" @submit="submitting = true" action="{{ $isEditing ? route('admin.dokumen.update', $document) : route('admin.dokumen.store') }}" method="post" enctype="multipart/form-data">
@@ -27,13 +27,14 @@
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
                                 @error('slug')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
                             </div>
-                            <div>
+                            <div x-data="{ fname: '' }">
                                 <label for="document-file" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">{{ $isEditing ? 'Ganti berkas' : 'Berkas' }}<span class="text-error-500">*</span></label>
                                 <label for="document-file" class="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-4 cursor-pointer hover:border-brand-400 dark:border-gray-700 dark:hover:border-brand-700 transition">
                                     <svg class="mr-2 fill-current text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" fill=""/></svg>
-                                    <span class="text-sm text-gray-500 dark:text-gray-400">PDF, DOC, DOCX — maks 10 MB</span>
-                                    <input id="document-file" name="document_file" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="sr-only" @unless($isEditing) required @endunless />
+                                    <span class="text-sm" :class="fname ? 'text-gray-800 dark:text-white/90 font-medium' : 'text-gray-500 dark:text-gray-400'" x-text="fname || 'PDF, DOC, DOCX — maks 10 MB'"></span>
+                                    <input id="document-file" name="document_file" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="sr-only" @unless($isEditing) required @endunless @change="fname = $event.target.files[0]?.name || ''" />
                                 </label>
+                                <p x-show="fname" x-cloak class="mt-1.5 text-xs font-medium text-success-600 dark:text-success-500" x-text="fname + ' ✓ siap diunggah'"></p>
                                 @error('document_file')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
                             </div>
                         </div>

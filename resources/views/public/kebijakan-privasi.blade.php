@@ -1,11 +1,5 @@
 @extends('layouts.public')
 
-@section('title', ($page?->title ?: 'Kebijakan Privasi') . ' — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
-
-@push('scripts')
-<script src="{{ asset('js/app.js') }}"></script>
-@endpush
-
 @section('content')
 <x-hero title="{{ $page?->title ?: 'Kebijakan Privasi' }}" :breadcrumbs="['Kebijakan Privasi' => null]" />
 

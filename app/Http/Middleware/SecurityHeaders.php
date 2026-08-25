@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeaders
@@ -18,7 +19,7 @@ class SecurityHeaders
         /** @var Response $response */
         $response = $next($request);
 
-        $viteDev = file_exists(public_path('hot'));
+        $viteDev = app()->environment('local') && Vite::isRunningHot();
 
         $styleSrc = "'self' https://fonts.googleapis.com";
         $scriptSrc = "'self' https://cdn.jsdelivr.net";

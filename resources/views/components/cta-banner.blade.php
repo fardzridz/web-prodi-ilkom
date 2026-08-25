@@ -14,7 +14,7 @@
                     {{ $heading }}
                 </h2>
             </div>
-            <a href="https://admisi.uniwara.ac.id" target="_blank" rel="noopener" class="btn btn-gold btn-lg mt-8 shrink-0 lg:mt-0">
+            <a href="{{ $site?->registration_url ?: 'https://admisi.uniwara.ac.id' }}" target="_blank" rel="noopener" class="btn btn-gold btn-lg mt-8 shrink-0 lg:mt-0">
                 <span class="btn-label">Daftar Disini</span>
                 <svg class="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />

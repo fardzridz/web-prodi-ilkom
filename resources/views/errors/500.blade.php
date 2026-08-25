@@ -12,7 +12,7 @@
         html, body { height: 100%; }
         body {
             background-color: #ececec;
-            background-image: url("{{ asset('assets/images/error-bg.gif') }}");
+            background-image: url("{{ asset('assets/images/error-bg.webp') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

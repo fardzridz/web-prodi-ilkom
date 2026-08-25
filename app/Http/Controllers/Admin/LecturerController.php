@@ -7,8 +7,12 @@ use App\Http\Requests\Admin\IndexLecturerRequest;
 use App\Http\Requests\Admin\StoreLecturerRequest;
 use App\Http\Requests\Admin\UpdateLecturerRequest;
 use App\Models\Lecturer;
+use App\Services\DashboardCache;
+use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -16,6 +20,7 @@ class LecturerController extends Controller
 {
     public function index(IndexLecturerRequest $request): View
     {
+        Gate::authorize('viewAny', Lecturer::class);
         $filters = $request->validated();
 
         $lecturers = Lecturer::query()
@@ -42,6 +47,8 @@ class LecturerController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('create', Lecturer::class);
+
         return view('admin.lecturers.create', [
             'lecturer' => new Lecturer([
                 'status' => Lecturer::STATUS_ACTIVE,
@@ -52,15 +59,34 @@ class LecturerController extends Controller
 
     public function store(StoreLecturerRequest $request): RedirectResponse
     {
+        Gate::authorize('create', Lecturer::class);
+
         $data = $request->validated();
+        $storedThumb = null;
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('uploads/lecturers', 'public');
+            $optimizer = new ImageOptimizer;
+            $result = $optimizer->optimize($request->file('photo'), 'uploads/lecturers');
+            $data['photo'] = $result['path'];
+            $storedThumb = $result['thumb'];
         } else {
             unset($data['photo']);
         }
 
-        Lecturer::query()->create($data);
+        try {
+            Lecturer::query()->create($data);
+        } catch (Throwable $e) {
+            if (isset($result['path'])) {
+                Storage::disk('public')->delete($result['path']);
+            }
+            if ($storedThumb) {
+                Storage::disk('public')->delete($storedThumb);
+            }
+            throw $e;
+        }
+
+        Cache::forget('public:expertises');
+        DashboardCache::forgetLecturer();
 
         return redirect()
             ->route('admin.dosen.index')
@@ -69,6 +95,8 @@ class LecturerController extends Controller
 
     public function edit(Lecturer $lecturer): View
     {
+        Gate::authorize('update', $lecturer);
+
         return view('admin.lecturers.edit', [
             'lecturer' => $lecturer,
         ]);
@@ -76,12 +104,19 @@ class LecturerController extends Controller
 
     public function update(UpdateLecturerRequest $request, Lecturer $lecturer): RedirectResponse
     {
+        Gate::authorize('update', $lecturer);
+
         $data = $request->validated();
         $oldPhoto = $lecturer->photo;
+        $oldThumb = $oldPhoto ? ImageOptimizer::thumbPath($oldPhoto) : null;
         $storedPhoto = null;
+        $storedThumb = null;
 
         if ($request->hasFile('photo')) {
-            $storedPhoto = $request->file('photo')->store('uploads/lecturers', 'public');
+            $optimizer = new ImageOptimizer;
+            $result = $optimizer->optimize($request->file('photo'), 'uploads/lecturers');
+            $storedPhoto = $result['path'];
+            $storedThumb = $result['thumb'];
             $data['photo'] = $storedPhoto;
         } else {
             unset($data['photo']);
@@ -93,13 +128,22 @@ class LecturerController extends Controller
             if ($storedPhoto !== null) {
                 Storage::disk('public')->delete($storedPhoto);
             }
+            if ($storedThumb !== null) {
+                Storage::disk('public')->delete($storedThumb);
+            }
 
             throw $exception;
         }
 
         if ($storedPhoto !== null && $oldPhoto !== null && $oldPhoto !== $storedPhoto) {
             Storage::disk('public')->delete($oldPhoto);
+            if ($oldThumb) {
+                Storage::disk('public')->delete($oldThumb);
+            }
         }
+
+        Cache::forget('public:expertises');
+        DashboardCache::forgetLecturer();
 
         return redirect()
             ->route('admin.dosen.index')
@@ -108,11 +152,16 @@ class LecturerController extends Controller
 
     public function toggleStatus(Lecturer $lecturer): RedirectResponse
     {
+        Gate::authorize('update', $lecturer);
+
         $lecturer->update([
             'status' => $lecturer->status === Lecturer::STATUS_ACTIVE
                 ? Lecturer::STATUS_INACTIVE
                 : Lecturer::STATUS_ACTIVE,
         ]);
+
+        Cache::forget('public:expertises');
+        DashboardCache::forgetLecturer();
 
         return redirect()
             ->route('admin.dosen.index')
@@ -121,12 +170,20 @@ class LecturerController extends Controller
 
     public function destroy(Lecturer $lecturer): RedirectResponse
     {
+        Gate::authorize('delete', $lecturer);
         $photo = $lecturer->photo;
+        $thumb = $photo ? ImageOptimizer::thumbPath($photo) : null;
         $lecturer->delete();
 
         if ($photo) {
             Storage::disk('public')->delete($photo);
         }
+        if ($thumb) {
+            Storage::disk('public')->delete($thumb);
+        }
+
+        Cache::forget('public:expertises');
+        DashboardCache::forgetLecturer();
 
         return redirect()
             ->route('admin.dosen.index')

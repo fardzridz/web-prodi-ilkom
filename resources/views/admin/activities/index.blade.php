@@ -17,8 +17,7 @@
                         class="dark:bg-dark-900 h-11 w-48 rounded-lg border border-gray-300 bg-transparent pl-11 pr-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-300 focus:ring-brand-500/10 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
                 </div>
                 <x-admin.select name="status" placeholder="Semua status" :selected="$filters['status'] ?? ''" :options="['draft' => 'Draf', 'scheduled' => 'Terjadwal', 'published' => 'Terbit']" />
-                <input type="date" name="activity_date" value="{{ $filters['activity_date'] ?? '' }}"
-                    class="dark:bg-dark-900 h-11 rounded-lg border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-gray-700 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                <div class="w-56"><x-admin.date-picker name="activity_date" :value="$filters['activity_date'] ?? ''" placeholder="Semua tanggal" /></div>
                 <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300">
                     <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" fill=""/></svg> Terapkan
                 </button>
@@ -73,10 +72,7 @@
                                 <td class="py-3 pr-4 text-gray-600 dark:text-gray-400">{{ $activity->activity_date?->translatedFormat('d M Y') ?? '-' }}</td>
                                 <td class="py-3 pr-4 text-gray-600 dark:text-gray-400">{{ $activity->location ?: '-' }}</td>
                                 <td class="py-3 pr-4">
-                                    @php
-                                        $statusColors = ['draft' => 'warning', 'scheduled' => 'info', 'published' => 'success'];
-                                    @endphp
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-{{ $statusColors[$activity->status] }}-50 text-{{ $statusColors[$activity->status] }}-600 dark:bg-{{ $statusColors[$activity->status] }}-500/15 dark:text-{{ $statusColors[$activity->status] }}-500">{{ $activity->statusLabel() }}</span>
+                                    <x-admin.badge variant="light" :color="$activity->status === 'published' ? 'success' : ($activity->status === 'scheduled' ? 'info' : 'light')" size="sm">{{ $activity->statusLabel() }}</x-admin.badge>
                                 </td>
                                 <td class="py-3 pr-4 text-sm text-gray-500 dark:text-gray-400">{{ $activity->published_at?->locale('id')->translatedFormat('d M Y, H.i') ?? '-' }}</td>
                                 <td class="py-3">

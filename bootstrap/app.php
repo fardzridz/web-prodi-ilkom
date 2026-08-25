@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CacheHeaders;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => EnsureAdmin::class,
             'public.security' => SecurityHeaders::class,
         ]);
+        $middleware->append(CacheHeaders::class);
         // ponytail: '*' trusts any proxy — cukup untuk tunnel dev (trycloudflare);
         // di produksi pin IP proxy cloudflared/reverse-proxy agar header tidak bisa dispoof.
         $middleware->trustProxies(at: '*');

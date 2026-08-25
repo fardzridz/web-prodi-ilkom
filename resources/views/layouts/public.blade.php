@@ -3,24 +3,38 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', $site?->site_name ?: 'Program Studi Ilmu Komputer')</title>
-    <meta name="description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer ' . ($site?->university_name ?: 'Universitas PGRI Wiranegara') . '.')">
+    <title>@yield('title', $seoTitle ?? config('seo.title', $site?->site_name ?: 'Program Studi Ilmu Komputer'))</title>
+    <meta name="description" content="@yield('description', $seoDesc ?? config('seo.description', 'Website resmi Program Studi Ilmu Komputer ' . ($site?->university_name ?: 'Universitas PGRI Wiranegara') . '.'))">
+    <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
+    <meta name="robots" content="index, follow">
     <meta property="og:site_name" content="{{ $site?->site_name ?: 'Program Studi Ilmu Komputer' }}">
-    <meta property="og:title" content="@yield('title', $site?->site_name ?: 'Program Studi Ilmu Komputer')">
-    <meta property="og:description" content="@yield('description', 'Website resmi Program Studi Ilmu Komputer.')">
+    <meta property="og:title" content="@yield('title', $seoTitle ?? config('seo.title', $site?->site_name ?: 'Program Studi Ilmu Komputer'))">
+    <meta property="og:description" content="@yield('description', $seoDesc ?? config('seo.description', 'Website resmi Program Studi Ilmu Komputer.'))">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="{{ $canonical ?? url()->current() }}">
     @hasSection('og_image')
     <meta property="og:image" content="{{ $__env->yieldContent('og_image') }}">
     @else
-    <meta property="og:image" content="{{ $site?->logo ? asset('storage/'.$site->logo) : asset('assets/images/logone.png') }}">
+    <meta property="og:image" content="{{ $site?->logo ? asset('storage/'.$site->logo) : asset('assets/images/logo/logo.webp') }}">
     @endif
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" href="{{ $site?->favicon ? asset('storage/'.$site->favicon) : asset('assets/images/logone.png') }}">
+    <link rel="icon" href="{{ $site?->favicon ? asset('storage/'.$site->favicon) : asset('assets/images/logo/logo.webp') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if(request()->routeIs('home') && isset($heroSlides[0]['url']))
+        <link rel="preload" as="image" href="{{ $heroSlides[0]['url'] }}" fetchpriority="high" imagesrcset="{{ $heroSlides[0]['url'] }}" imagesizes="100vw">
+    @endif
+    @if(config('seo.ga4_id'))
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('seo.ga4_id') }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ config('seo.ga4_id') }}');
+        </script>
+    @endif
     @stack('head')
 </head>
 <body class="overflow-x-hidden bg-line text-ink font-sans text-base leading-normal antialiased">
@@ -37,6 +51,8 @@
     <x-footer />
 
     <x-scroll-to-top />
+
+    <x-floating-contact />
 
     @stack('scripts')
 </body>

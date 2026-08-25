@@ -19,20 +19,73 @@ function replayAnimations(root) {
     });
 }
 
+window.replayAnimations = replayAnimations;
+
 (function () {
     const header = document.querySelector('header');
     if (!header || !window.matchMedia('(min-width: 1px)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let lastY = window.scrollY;
-    const HIDE_AFTER = 160;
+    const HIDE_AFTER_DEFAULT = 160;
+    // Khusus beranda: header stay selama hero, baru hide setelah section berikutnya menyentuh header
+    const hero = document.querySelector('[data-hero]');
+    const getHideAfter = () => {
+        if (!hero) return HIDE_AFTER_DEFAULT;
+        const spacer = hero.previousElementSibling;
+        if (spacer && spacer.offsetHeight > 0) return spacer.offsetHeight;
+        if (hero.offsetHeight > 0) return hero.offsetHeight;
+        return HIDE_AFTER_DEFAULT;
+    };
+    let hideAfter = getHideAfter();
+    window.addEventListener('resize', () => { hideAfter = getHideAfter(); }, { passive: true });
     window.addEventListener('scroll', () => {
         const y = window.scrollY;
         const delta = y - lastY;
         lastY = y;
-        if (y < HIDE_AFTER) { header.classList.remove('-translate-y-full'); return; }
+        if (y < hideAfter) { header.classList.remove('-translate-y-full'); return; }
         if (delta < -4) header.classList.remove('-translate-y-full');
         else if (delta > 4) header.classList.add('-translate-y-full');
     }, { passive: true });
+})();
+
+// Topbar khusus Beranda: hilang saat section pertama menyentuh Header, tetap terpisah dari Header
+(function () {
+    const topbar = document.querySelector('[data-topbar]');
+    const header = document.querySelector('header');
+    const hero = document.querySelector('[data-hero]');
+    // Hanya berlaku di Beranda (ada [data-hero])
+    if (!topbar || !header || !hero) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Jadikan topbar sticky khusus Beranda agar bisa stay sampai Sambutan menyentuh Header
+    topbar.classList.remove('relative');
+    topbar.classList.add('sticky', 'top-0', 'z-30');
+    const getHideAfter = () => {
+        const spacer = hero.previousElementSibling;
+        if (spacer && spacer.offsetHeight > 0) return spacer.offsetHeight;
+        if (hero.offsetHeight > 0) return hero.offsetHeight;
+        return 160;
+    };
+    let hideAfter = getHideAfter();
+    const syncHeaderTop = () => {
+        const isTopbarHidden = topbar.classList.contains('-translate-y-full');
+        const topbarH = topbar.offsetHeight;
+        header.style.top = isTopbarHidden ? '0px' : topbarH + 'px';
+    };
+    const updateTopbar = () => {
+        const y = window.scrollY;
+        // Beranda only: visible selama hero (y < hideAfter), hilang saat Sambutan sentuh Header (y >= hideAfter)
+        // Kembali visible jika scroll balik ke hero (y < hideAfter). Halaman lain topbar tetap relative tanpa JS.
+        if (y < hideAfter) {
+            topbar.classList.remove('-translate-y-full');
+        } else {
+            topbar.classList.add('-translate-y-full');
+        }
+        syncHeaderTop();
+    };
+    window.addEventListener('resize', () => { hideAfter = getHideAfter(); updateTopbar(); }, { passive: true });
+    window.addEventListener('scroll', updateTopbar, { passive: true });
+    // Init
+    updateTopbar();
 })();
 
 (function () {
@@ -97,6 +150,30 @@ document.querySelectorAll('.dropdown').forEach((dd) => {
         }
     });
 });
+
+(function () {
+    const widget = document.getElementById('floating-contact');
+    const trigger = widget?.querySelector('[data-contact-toggle]');
+    const popover = document.getElementById('contact-popover');
+    if (!widget || !trigger || !popover) return;
+
+    const setOpen = (open) => {
+        widget.classList.toggle('is-open', open);
+        trigger.setAttribute('aria-expanded', String(open));
+    };
+    trigger.addEventListener('click', () => setOpen(!widget.classList.contains('is-open')));
+    const closeBtn = widget.querySelector('[data-contact-close]');
+    if (closeBtn) closeBtn.addEventListener('click', () => setOpen(false));
+    document.addEventListener('click', (e) => {
+        if (!widget.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && widget.classList.contains('is-open')) {
+            setOpen(false);
+            trigger.focus();
+        }
+    });
+})();
 
 (function () {
     const btn = document.getElementById('menu-btn');

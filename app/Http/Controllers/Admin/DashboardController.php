@@ -16,15 +16,16 @@ use Carbon\CarbonInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index(): View
     {
-        $activityCounts = $this->countsByStatus(Activity::class);
-        $lecturerCounts = $this->countsByStatus(Lecturer::class);
-        $documentCounts = $this->countsByStatus(Document::class);
-        $alumniCounts = $this->countsByStatus(Alumni::class);
+        $activityCounts = collect(Cache::remember('dashboard:counts:activity', 300, fn (): array => $this->countsByStatus(Activity::class)->all()));
+        $lecturerCounts = collect(Cache::remember('dashboard:counts:lecturer', 300, fn (): array => $this->countsByStatus(Lecturer::class)->all()));
+        $documentCounts = collect(Cache::remember('dashboard:counts:document', 300, fn (): array => $this->countsByStatus(Document::class)->all()));
+        $alumniCounts = collect(Cache::remember('dashboard:counts:alumni', 300, fn (): array => $this->countsByStatus(Alumni::class)->all()));
 
         $summaryCards = [
             [
@@ -106,8 +107,8 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'summaryCards' => $summaryCards,
             'statusCards' => $statusCards,
-            'latestContent' => $this->latestContent(),
-            'publicReadiness' => $this->publicReadiness(),
+            'latestContent' => collect(Cache::remember('dashboard:latest_content', 300, fn (): array => $this->latestContent()->all())),
+            'publicReadiness' => Cache::remember('dashboard:readiness', 600, fn (): array => $this->publicReadiness()),
             'chartActivityMonthly' => $this->chartActivityMonthly(),
             'chartStatusDistribution' => $this->chartStatusDistribution($activityCounts, $lecturerCounts, $documentCounts, $alumniCounts),
             'chartCombinedMonthly' => $this->chartCombinedMonthly(),
@@ -128,7 +129,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return Collection<int, array{title: string, type: string, status: string, status_label: string, tone: string, updated_at: CarbonInterface}>
+     * @return Collection<int, array{title: string, type: string, status: string, status_label: string, tone: string, updated_at: string}>
      */
     private function latestContent(): Collection
     {
@@ -187,7 +188,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array{title: string, type: string, status: string, status_label: string, tone: string, updated_at: CarbonInterface}
+     * @return array{title: string, type: string, status: string, status_label: string, tone: string, updated_at: string}
      */
     private function contentItem(
         string $title,
@@ -209,7 +210,7 @@ class DashboardController extends Controller
             'status' => $status,
             'status_label' => $presentation['label'],
             'tone' => $presentation['tone'],
-            'updated_at' => $updatedAt,
+            'updated_at' => $updatedAt->toIso8601String(),
         ];
     }
 
@@ -250,18 +251,20 @@ class DashboardController extends Controller
      */
     private function chartActivityMonthly(): array
     {
-        $months = collect(range(5, 0))->map(fn ($i) => Carbon::now()->subMonths($i));
+        return Cache::remember('dashboard:chart_activity_monthly', 300, function (): array {
+            $now = Carbon::now();
+            $months = collect(range(5, 0))->map(fn (int $i) => $now->copy()->subMonths($i));
+            $labels = $months->map(fn (Carbon $d) => $d->locale('id')->translatedFormat('M'))->toArray();
+            $from = $now->copy()->subMonths(5)->startOfMonth();
+            $rows = Activity::query()
+                ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, COUNT(*) as c")
+                ->where('created_at', '>=', $from)
+                ->groupBy('ym')
+                ->pluck('c', 'ym');
+            $counts = $months->map(fn (Carbon $d) => (int) ($rows[$d->format('Y-m')] ?? 0))->toArray();
 
-        $labels = $months->map(fn (Carbon $d) => $d->locale('id')->translatedFormat('M'))->toArray();
-
-        $counts = $months->map(function (Carbon $d) {
-            return Activity::query()
-                ->whereYear('created_at', $d->year)
-                ->whereMonth('created_at', $d->month)
-                ->count();
-        })->toArray();
-
-        return compact('labels', 'counts');
+            return compact('labels', 'counts');
+        });
     }
 
     /**
@@ -289,26 +292,27 @@ class DashboardController extends Controller
      */
     private function chartCombinedMonthly(): array
     {
-        $months = collect(range(5, 0))->map(fn ($i) => Carbon::now()->subMonths($i));
+        return Cache::remember('dashboard:chart_combined_monthly', 300, function (): array {
+            $now = Carbon::now();
+            $months = collect(range(5, 0))->map(fn (int $i) => $now->copy()->subMonths($i));
+            $labels = $months->map(fn (Carbon $d) => $d->locale('id')->translatedFormat('M'))->toArray();
+            $from = $now->copy()->subMonths(5)->startOfMonth();
+            $activityRows = Activity::query()
+                ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, COUNT(*) as c")
+                ->where('created_at', '>=', $from)->groupBy('ym')->pluck('c', 'ym');
+            $alumniRows = Alumni::query()
+                ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, COUNT(*) as c")
+                ->where('created_at', '>=', $from)->groupBy('ym')->pluck('c', 'ym');
+            $activityData = $months->map(fn (Carbon $d) => (int) ($activityRows[$d->format('Y-m')] ?? 0))->toArray();
+            $alumniData = $months->map(fn (Carbon $d) => (int) ($alumniRows[$d->format('Y-m')] ?? 0))->toArray();
 
-        $labels = $months->map(fn (Carbon $d) => $d->locale('id')->translatedFormat('M'))->toArray();
-
-        $activityData = $months->map(fn (Carbon $d) => Activity::query()
-            ->whereYear('created_at', $d->year)
-            ->whereMonth('created_at', $d->month)
-            ->count())->toArray();
-
-        $alumniData = $months->map(fn (Carbon $d) => Alumni::query()
-            ->whereYear('created_at', $d->year)
-            ->whereMonth('created_at', $d->month)
-            ->count())->toArray();
-
-        return [
-            'series' => [
-                ['name' => 'Kegiatan', 'data' => $activityData],
-                ['name' => 'Alumni', 'data' => $alumniData],
-            ],
-            'labels' => $labels,
-        ];
+            return [
+                'series' => [
+                    ['name' => 'Kegiatan', 'data' => $activityData],
+                    ['name' => 'Alumni', 'data' => $alumniData],
+                ],
+                'labels' => $labels,
+            ];
+        });
     }
 }

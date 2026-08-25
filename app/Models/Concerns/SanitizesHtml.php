@@ -10,6 +10,10 @@ trait SanitizesHtml
             return '';
         }
 
+        // Non-breaking spaces join words into one unbreakable token, forcing the
+        // browser to split words mid-character when wrapping. Normalize them.
+        $html = str_replace(['&nbsp;', "\u{00A0}"], ' ', (string) $html);
+
         $safe = strip_tags($html, '<'.implode('><', $allowedTags).'>');
 
         // Drop event-handler attributes (onclick, onerror, …).

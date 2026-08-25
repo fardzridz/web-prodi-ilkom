@@ -11,10 +11,7 @@
 
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
 
-    @once
-        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-    @endonce
+    @stack('styles')
 
     <script>
         (function() {
@@ -76,10 +73,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/quill-init.js') }}"></script>
-
     @stack('scripts')
-
 </body>
 
 </html>

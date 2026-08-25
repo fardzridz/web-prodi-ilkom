@@ -1,6 +1,6 @@
-@props(['alumni', 'dataCategory' => '', 'dataSearch' => ''])
+@props(['alumni'])
 
-<article class="relative flex h-full flex-col rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/10" data-category="{{ $dataCategory }}" data-search="{{ $dataSearch }}" data-reveal>
+<article class="relative flex h-full flex-col rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/10" data-reveal>
     @if($alumni['batch_year'] || $alumni['graduation_year'])
     <div class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gold">
         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -12,7 +12,7 @@
     </div>
     @endif
     <div class="mt-6 flex items-center gap-4">
-        <img src="{{ $alumni['image'] }}" alt="Foto {{ $alumni['name'] }}" class="h-16 w-16 shrink-0 rounded-full object-cover" loading="lazy">
+        <img src="{{ $alumni['image'] }}" @if(!empty($alumni['image_srcset'])) srcset="{{ $alumni['image_srcset'] }}" sizes="64px" @endif alt="Foto {{ $alumni['name'] }}" class="h-16 w-16 shrink-0 rounded-full object-cover" loading="lazy" decoding="async" width="64" height="64">
         <h3 class="font-display text-xl font-bold leading-snug text-cream">{{ $alumni['name'] }}</h3>
     </div>
     @if($alumni['quote'])

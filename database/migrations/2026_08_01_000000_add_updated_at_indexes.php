@@ -16,9 +16,17 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('activities', fn (Blueprint $table) => $table->dropIndexIfExists('updated_at'));
-        Schema::table('documents', fn (Blueprint $table) => $table->dropIndexIfExists('updated_at'));
-        Schema::table('lecturers', fn (Blueprint $table) => $table->dropIndexIfExists('updated_at'));
-        Schema::table('alumni', fn (Blueprint $table) => $table->dropIndexIfExists('updated_at'));
+        Schema::table('activities', function (Blueprint $table): void {
+            $table->dropIndex(['updated_at']);
+        });
+        Schema::table('documents', function (Blueprint $table): void {
+            $table->dropIndex(['updated_at']);
+        });
+        Schema::table('lecturers', function (Blueprint $table): void {
+            $table->dropIndex(['updated_at']);
+        });
+        Schema::table('alumni', function (Blueprint $table): void {
+            $table->dropIndex(['updated_at']);
+        });
     }
 };

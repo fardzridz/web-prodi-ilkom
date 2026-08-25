@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'document_category_id',
@@ -16,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class Document extends Model
 {
+    /** @use HasFactory<DocumentFactory> */
+    use HasFactory;
+
     public const STATUS_DRAFT = 'draft';
 
     public const STATUS_PUBLISHED = 'published';
@@ -31,6 +38,17 @@ class Document extends Model
     public function documentCategory(): BelongsTo
     {
         return $this->belongsTo(DocumentCategory::class);
+    }
+
+    public function getFileExistsAttribute(): bool
+    {
+        if (blank($this->file)) {
+            return false;
+        }
+
+        $key = 'document:file_exists:'.$this->id.':'.md5((string) $this->file);
+
+        return (bool) Cache::remember($key, 3600, fn (): bool => Storage::disk('local')->exists($this->file));
     }
 
     public function fileTypeLabel(): string

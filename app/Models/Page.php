@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\Concerns\SanitizesHtml;
+use Database\Factories\PageFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -13,6 +15,9 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Page extends Model
 {
+    /** @use HasFactory<PageFactory> */
+    use HasFactory;
+
     use SanitizesHtml;
 
     public function getSanitizedContentAttribute(): string

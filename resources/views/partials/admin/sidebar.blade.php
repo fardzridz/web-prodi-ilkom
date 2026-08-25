@@ -1,5 +1,5 @@
 <aside id="sidebar"
-    class="fixed top-0 left-0 z-99999 flex flex-col h-screen px-5 mt-0 text-gray-900 transition-all duration-300 ease-in-out bg-white border-r border-gray-200 dark:bg-gray-900 dark:border-gray-800"
+    class="fixed top-0 left-0 z-99999 flex flex-col h-screen px-5 mt-0 text-white transition-all duration-300 ease-in-out bg-gray-900 border-r border-gray-800 pt-[78px] lg:pt-[90px] xl:pt-0"
     x-data="{
         activeSubmenu: null,
         toggleSubmenu(key) { this.activeSubmenu = this.activeSubmenu === key ? null : key; },
@@ -15,15 +15,14 @@
     @mouseenter="if (!$store.sidebar.isExpanded) $store.sidebar.isHovered = true"
     @mouseleave="$store.sidebar.isHovered = false">
 
-    <div class="flex pt-8 pb-7"
+    <div class="hidden pt-8 pb-7 xl:flex"
         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'justify-start'">
-        <a href="{{ route('admin.dashboard') }}">
+        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center rounded-2xl bg-cream ring-1 ring-gold/40 transition-all duration-300"
+            :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'h-12 w-12 rounded-xl' : 'h-20 px-6'">
             <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="dark:hidden" src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo Prodi" width="150" height="40" />
-            <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="hidden dark:block" src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo Prodi" width="150" height="40" />
+                class="block" src="{{ $site?->logo ? asset('storage/'.$site->logo) : asset('assets/images/logo/logo-motion.gif') }}" alt="Logo Prodi" width="150" height="40" />
             <img x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen"
-                src="{{ asset('assets/images/logo/logo-icon.svg') }}" alt="Logo" width="32" height="32" />
+                src="{{ asset('assets/images/logo/logo.webp') }}" alt="Logo" width="32" height="32" />
         </a>
     </div>
 
@@ -190,15 +189,15 @@
         </nav>
 
         <div x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" x-transition class="mt-auto pb-6">
-            <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-white/[0.03]">
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03]">
                 <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/10">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" fill="currentColor"/>
                     </svg>
                 </span>
                 <div>
-                    <p class="text-sm font-medium text-gray-800 dark:text-white/90">Panel Pengelola</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">v{{ config('app.version', '1.0') }}</p>
+                    <p class="text-sm font-medium text-white/90">Panel Pengelola</p>
+                    <p class="text-xs text-gray-400">v{{ config('app.version', '1.0') }}</p>
                 </div>
             </div>
         </div>

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\SiteSettingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -12,11 +14,15 @@ use Illuminate\Database\Eloquent\Model;
     'logo',
     'favicon',
     'journal_url',
+    'registration_url',
     'footer_text',
     'footer_academic_links',
 ])]
 class SiteSetting extends Model
 {
+    /** @use HasFactory<SiteSettingFactory> */
+    use HasFactory;
+
     /**
      * Get the attributes that should be cast.
      *

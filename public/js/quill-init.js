@@ -28,15 +28,19 @@
                 quill.clipboard.dangerouslyPasteHTML(existingContent);
             }
 
+            var normalizeWhitespace = function (html) {
+                return html.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ');
+            };
+
             var form = container.closest('form');
             if (form) {
                 form.addEventListener('formdata', function () {
-                    hiddenInput.value = quill.getSemanticHTML();
+                    hiddenInput.value = normalizeWhitespace(quill.getSemanticHTML());
                 });
             }
 
             quill.on('text-change', function () {
-                hiddenInput.value = quill.getSemanticHTML();
+                hiddenInput.value = normalizeWhitespace(quill.getSemanticHTML());
             });
         });
     });

@@ -7,8 +7,12 @@ use App\Http\Requests\Admin\IndexAlumniRequest;
 use App\Http\Requests\Admin\StoreAlumniRequest;
 use App\Http\Requests\Admin\UpdateAlumniRequest;
 use App\Models\Alumni;
+use App\Services\DashboardCache;
+use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -16,6 +20,7 @@ class AlumniController extends Controller
 {
     public function index(IndexAlumniRequest $request): View
     {
+        Gate::authorize('viewAny', Alumni::class);
         $filters = $request->validated();
 
         $alumni = Alumni::query()
@@ -51,6 +56,8 @@ class AlumniController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('create', Alumni::class);
+
         return view('admin.alumni.create', [
             'alumni' => new Alumni([
                 'status' => Alumni::STATUS_ACTIVE,
@@ -60,15 +67,34 @@ class AlumniController extends Controller
 
     public function store(StoreAlumniRequest $request): RedirectResponse
     {
+        Gate::authorize('create', Alumni::class);
+
         $data = $request->validated();
+        $storedThumb = null;
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('uploads/alumni', 'public');
+            $optimizer = new ImageOptimizer;
+            $result = $optimizer->optimize($request->file('photo'), 'uploads/alumni');
+            $data['photo'] = $result['path'];
+            $storedThumb = $result['thumb'];
         } else {
             unset($data['photo']);
         }
 
-        Alumni::query()->create($data);
+        try {
+            Alumni::query()->create($data);
+        } catch (Throwable $e) {
+            if (isset($result['path'])) {
+                Storage::disk('public')->delete($result['path']);
+            }
+            if ($storedThumb) {
+                Storage::disk('public')->delete($storedThumb);
+            }
+            throw $e;
+        }
+
+        Cache::forget('public:job_positions');
+        DashboardCache::forgetAlumni();
 
         return redirect()
             ->route('admin.alumni.index')
@@ -77,6 +103,8 @@ class AlumniController extends Controller
 
     public function edit(Alumni $alumni): View
     {
+        Gate::authorize('update', $alumni);
+
         return view('admin.alumni.edit', [
             'alumni' => $alumni,
         ]);
@@ -84,12 +112,19 @@ class AlumniController extends Controller
 
     public function update(UpdateAlumniRequest $request, Alumni $alumni): RedirectResponse
     {
+        Gate::authorize('update', $alumni);
+
         $data = $request->validated();
         $oldPhoto = $alumni->photo;
+        $oldThumb = $oldPhoto ? ImageOptimizer::thumbPath($oldPhoto) : null;
         $storedPhoto = null;
+        $storedThumb = null;
 
         if ($request->hasFile('photo')) {
-            $storedPhoto = $request->file('photo')->store('uploads/alumni', 'public');
+            $optimizer = new ImageOptimizer;
+            $result = $optimizer->optimize($request->file('photo'), 'uploads/alumni');
+            $storedPhoto = $result['path'];
+            $storedThumb = $result['thumb'];
             $data['photo'] = $storedPhoto;
         } else {
             unset($data['photo']);
@@ -101,13 +136,22 @@ class AlumniController extends Controller
             if ($storedPhoto !== null) {
                 Storage::disk('public')->delete($storedPhoto);
             }
+            if ($storedThumb !== null) {
+                Storage::disk('public')->delete($storedThumb);
+            }
 
             throw $exception;
         }
 
         if ($storedPhoto !== null && $oldPhoto !== null && $oldPhoto !== $storedPhoto) {
             Storage::disk('public')->delete($oldPhoto);
+            if ($oldThumb) {
+                Storage::disk('public')->delete($oldThumb);
+            }
         }
+
+        Cache::forget('public:job_positions');
+        DashboardCache::forgetAlumni();
 
         return redirect()
             ->route('admin.alumni.index')
@@ -116,11 +160,16 @@ class AlumniController extends Controller
 
     public function toggleStatus(Alumni $alumni): RedirectResponse
     {
+        Gate::authorize('update', $alumni);
+
         $alumni->update([
             'status' => $alumni->status === Alumni::STATUS_ACTIVE
                 ? Alumni::STATUS_INACTIVE
                 : Alumni::STATUS_ACTIVE,
         ]);
+
+        Cache::forget('public:job_positions');
+        DashboardCache::forgetAlumni();
 
         return redirect()
             ->route('admin.alumni.index')
@@ -129,12 +178,20 @@ class AlumniController extends Controller
 
     public function destroy(Alumni $alumni): RedirectResponse
     {
+        Gate::authorize('delete', $alumni);
         $photo = $alumni->photo;
+        $thumb = $photo ? ImageOptimizer::thumbPath($photo) : null;
         $alumni->delete();
 
         if ($photo) {
             Storage::disk('public')->delete($photo);
         }
+        if ($thumb) {
+            Storage::disk('public')->delete($thumb);
+        }
+
+        Cache::forget('public:job_positions');
+        DashboardCache::forgetAlumni();
 
         return redirect()
             ->route('admin.alumni.index')

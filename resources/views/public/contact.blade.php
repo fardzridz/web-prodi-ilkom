@@ -1,11 +1,5 @@
 @extends('layouts.public')
 
-@section('title', 'Kontak — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
-
-@push('scripts')
-<script src="{{ asset('js/app.js') }}"></script>
-@endpush
-
 @section('content')
 <x-hero title="Kontak" :breadcrumbs="['Kontak' => null]">
     Hubungi kami untuk informasi lebih lanjut tentang {{ $site?->site_name ?: 'Program Studi Ilmu Komputer' }}.

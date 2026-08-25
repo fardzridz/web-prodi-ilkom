@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\Activity;
+use App\Services\DashboardCache;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 #[Signature('activities:publish-scheduled')]
 #[Description('Publish activities whose scheduled publication time has arrived')]
@@ -23,6 +25,11 @@ class PublishScheduledActivitiesCommand extends Command
             ->update([
                 'status' => Activity::STATUS_PUBLISHED,
             ]);
+
+        if ($publishedCount > 0) {
+            Cache::forget('public:activity_categories');
+            DashboardCache::forgetActivity();
+        }
 
         $this->info("{$publishedCount} kegiatan terjadwal berhasil diterbitkan.");
 

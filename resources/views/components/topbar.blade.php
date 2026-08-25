@@ -1,4 +1,4 @@
-<div class="relative z-10 bg-primary text-white text-xs" data-topbar>
+<div class="relative z-10 bg-primary text-white text-xs transition-transform duration-300 ease-out will-change-transform" data-topbar>
     <div class="anim-fade-down anim-delay-1 mx-4 px-4 py-1 flex flex-wrap items-center justify-end gap-x-5 gap-y-1 sm:mx-8 sm:px-8 sm:gap-x-8 lg:mx-16 lg:px-20">
         @if($contactInfo?->phone)
         <a href="tel:{{ $contactInfo->phone }}" class="inline-flex items-center gap-1.5 text-white hover:text-gold transition-colors">

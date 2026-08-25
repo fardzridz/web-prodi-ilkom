@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\HomeSectionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -14,9 +16,13 @@ use Illuminate\Database\Eloquent\Model;
     'cta_link',
     'welcome_title',
     'welcome_description',
+    'welcome_image',
 ])]
 class HomeSection extends Model
 {
+    /** @use HasFactory<HomeSectionFactory> */
+    use HasFactory;
+
     public const DEFAULT_ADVANTAGE_HEADING = 'Mengapa Memilih Ilmu Komputer?';
 
     /**

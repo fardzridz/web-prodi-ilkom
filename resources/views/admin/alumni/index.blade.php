@@ -68,11 +68,10 @@
                     </thead>
                     <tbody>
                         @foreach ($alumni as $alumnus)
-                            @php($hasPhoto = filled($alumnus->photo) && Storage::disk('public')->exists($alumnus->photo))
                             <tr class="border-b border-gray-100 dark:border-gray-800 last:border-0">
                                 <td class="py-3 pr-2">
-                                    @if ($hasPhoto)
-                                        <img src="{{ Storage::disk('public')->url($alumnus->photo) }}" alt="Foto {{ $alumnus->name }}"
+                                    @if ($alumnus->photo_url)
+                                        <img src="{{ $alumnus->photo_url }}" alt="Foto {{ $alumnus->name }}"
                                             class="h-10 w-10 rounded-full object-cover" loading="lazy" />
                                     @else
                                         <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-500 dark:bg-brand-500/15">
@@ -91,11 +90,7 @@
                                 <td class="py-3 pr-4 text-gray-600 dark:text-gray-400">{{ $alumnus->job_position ?: '-' }}</td>
                                 <td class="py-3 pr-4 text-gray-600 dark:text-gray-400">{{ $alumnus->company ?: '-' }}</td>
                                 <td class="py-3 pr-4">
-                                    @if ($alumnus->status === 'active')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">Aktif</span>
-                                    @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-white/80">Nonaktif</span>
-                                    @endif
+                                    <x-admin.badge variant="light" :color="$alumnus->status === 'active' ? 'success' : 'light'" size="sm">{{ $alumnus->status === 'active' ? 'Aktif' : 'Nonaktif' }}</x-admin.badge>
                                 </td>
                                 <td class="py-3">
                                     <div class="flex items-center gap-1">
@@ -108,19 +103,7 @@
                                         </a>
                                         <form action="{{ route('admin.alumni.status', $alumnus) }}" method="post" class="inline">
                                             @csrf @method('PATCH')
-                                            <button type="submit"
-                                                class="inline-flex items-center justify-center h-8 w-8 rounded-lg text-gray-400 hover:text-{{ $alumnus->status === 'active' ? 'success' : 'error' }}-500 hover:bg-{{ $alumnus->status === 'active' ? 'success' : 'error' }}-50 dark:hover:bg-{{ $alumnus->status === 'active' ? 'success' : 'error' }}-500/10 transition"
-                                                title="{{ $alumnus->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                                @if ($alumnus->status === 'active')
-                                                    <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zm0-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill=""/>
-                                                    </svg>
-                                                @else
-                                                    <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zM7 16c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4H7z" fill=""/>
-                                                    </svg>
-                                                @endif
-                                            </button>
+                                            <x-admin.toggle :active="$alumnus->status === 'active'" variant="switch" :labelActive="'Aktifkan ' . $alumnus->name" :labelInactive="'Nonaktifkan ' . $alumnus->name" />
                                         </form>
                                         <button type="button"
                                             onclick="if(confirm('Hapus data {{ $alumnus->name }}?')) document.getElementById('delete-alumni-{{ $alumnus->id }}').submit()"

@@ -4,6 +4,15 @@
     $publishedAt = old('published_at', $activity->published_at?->format('Y-m-d\TH:i'));
 @endphp
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" crossorigin="anonymous">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" crossorigin="anonymous"></script>
+@vite('resources/js/quill-init.js')
+@endpush
+
 <form x-data="{ submitting: false, status: '{{ $selectedStatus }}' }" @submit="submitting = true" action="{{ $isEditing ? route('admin.kegiatan.update', $activity) : route('admin.kegiatan.store') }}" method="post" enctype="multipart/form-data" @select-change.window="if ($event.detail.name === 'status') status = $event.detail.value">
         @csrf
         @if ($isEditing) @method('PUT') @endif
@@ -65,8 +74,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label for="activity-date" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Tanggal<span class="text-error-500">*</span></label>
-                                <input id="activity-date" name="activity_date" type="date" value="{{ old('activity_date', $activity->activity_date?->format('Y-m-d')) }}" min="2000-01-01" max="2100-12-31" required
-                                    class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                                <x-admin.date-picker id="activity-date" name="activity_date" :value="old('activity_date', $activity->activity_date?->format('Y-m-d'))" min="2000-01-01" max="2100-12-31" required placeholder="Pilih tanggal" />
                                 @error('activity_date')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
                             </div>
                             <div>
@@ -83,9 +91,7 @@
                         </div>
                         <div x-show="status === 'scheduled'">
                             <label for="activity-published-at" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Jadwal tayang<span class="text-error-500">*</span></label>
-                            <input id="activity-published-at" name="published_at" type="datetime-local" value="{{ $publishedAt }}" @unless($isEditing) min="{{ now()->format('Y-m-d\TH:i') }}" @endunless
-                                x-bind:required="status === 'scheduled'"
-                                class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                            <x-admin.datetime-picker id="activity-published-at" name="published_at" :value="$publishedAt" :min="$isEditing ? '' : now()->format('Y-m-d\TH:i')" placeholder="Pilih tanggal & jam" />
                             @error('published_at')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
                         </div>
                     </div>

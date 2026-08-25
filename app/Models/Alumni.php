@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\AlumniFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'name',
@@ -17,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Alumni extends Model
 {
+    /** @use HasFactory<AlumniFactory> */
+    use HasFactory;
+
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_INACTIVE = 'inactive';
@@ -32,6 +39,26 @@ class Alumni extends Model
      * @var string
      */
     protected $table = 'alumni';
+
+    public function getPhotoExistsAttribute(): bool
+    {
+        if (blank($this->photo)) {
+            return false;
+        }
+
+        $key = 'alumni:photo_exists:'.$this->id.':'.md5((string) $this->photo);
+
+        return (bool) Cache::remember($key, 3600, fn (): bool => Storage::disk('public')->exists($this->photo));
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (! $this->photo_exists) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->photo);
+    }
 
     public function statusLabel(): string
     {

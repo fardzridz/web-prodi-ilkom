@@ -61,6 +61,8 @@ class UpdateHomeSectionRequest extends FormRequest
             ],
             'welcome_title' => ['required', 'string', 'max:255'],
             'welcome_description' => ['required', 'string', 'max:10000'],
+            'welcome_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'welcome_remove' => ['nullable', 'boolean'],
             'slides' => ['nullable', 'array', 'max:5'],
             'slides.*.existing_path' => ['nullable', 'string', 'max:255', Rule::in($existingPaths)],
             'slides.*.alt' => ['nullable', 'string', 'max:255'],
@@ -87,6 +89,9 @@ class UpdateHomeSectionRequest extends FormRequest
             'cta_link.regex' => 'Tujuan tombol harus berupa path internal atau URL HTTP/HTTPS yang valid.',
             'welcome_title.required' => 'Judul sambutan wajib diisi.',
             'welcome_description.required' => 'Isi sambutan wajib diisi.',
+            'welcome_image.image' => 'Berkas gambar sambutan harus berupa gambar.',
+            'welcome_image.mimes' => 'Gambar sambutan harus berformat JPG, PNG, atau WebP.',
+            'welcome_image.max' => 'Ukuran gambar sambutan maksimal 4 MB.',
             'slides.max' => 'Gambar hero maksimal 5 slide.',
             'slides.*.file.image' => 'Berkas slide harus berupa gambar.',
             'slides.*.file.mimes' => 'Gambar slide harus berformat JPG, PNG, atau WebP.',
@@ -125,7 +130,9 @@ class UpdateHomeSectionRequest extends FormRequest
 
                 // Verifikasi MIME asli agar file polyglot (gambar + script) tidak tersimpan.
                 foreach (['slides' => 'file', 'advantages' => 'image'] as $group => $field) {
-                    foreach ((array) $this->file($group, []) as $index => $file) {
+                    foreach ((array) $this->input($group, []) as $index => $item) {
+                        $file = $this->file("{$group}.{$index}.{$field}");
+
                         if (! $file) {
                             continue;
                         }
@@ -136,6 +143,14 @@ class UpdateHomeSectionRequest extends FormRequest
                             $label = $group === 'slides' ? 'Berkas slide' : 'Gambar keunggulan';
                             $validator->errors()->add("{$group}.{$index}.{$field}", "{$label} harus berupa gambar asli (JPG/PNG/WebP).");
                         }
+                    }
+                }
+
+                if ($welcomeImage = $this->file('welcome_image')) {
+                    $mime = strtolower((string) $welcomeImage->getMimeType());
+
+                    if (! in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+                        $validator->errors()->add('welcome_image', 'Gambar sambutan harus berupa gambar asli (JPG/PNG/WebP).');
                     }
                 }
             },
@@ -191,6 +206,7 @@ class UpdateHomeSectionRequest extends FormRequest
             'advantages_heading' => trim((string) $this->input('advantages_heading')) ?: HomeSection::DEFAULT_ADVANTAGE_HEADING,
             'slides' => $slides,
             'advantages' => $advantages,
+            'welcome_remove' => filter_var($this->input('welcome_remove'), FILTER_VALIDATE_BOOL),
         ]);
     }
 }

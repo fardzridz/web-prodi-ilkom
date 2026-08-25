@@ -1,8 +1,15 @@
-@props(['lecturer', 'dataCategory' => '', 'dataSearch' => ''])
+@props(['lecturer'])
 
-<article class="card-pill group relative flex h-full flex-col rounded-2xl border border-line bg-white p-6" data-category="{{ $dataCategory }}" data-search="{{ $dataSearch }}" data-reveal>
+<article class="card-pill group relative flex h-full flex-col rounded-2xl border border-line bg-white p-6" data-reveal>
     <div class="aspect-square w-full overflow-hidden rounded-xl bg-primary-light">
-        <img src="{{ $lecturer['image'] ?? asset('assets/images/hero/hero-1.jpeg') }}" alt="{{ $lecturer['name'] }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+        @if(!empty($lecturer['image']))
+            <img src="{{ $lecturer['image'] }}" @if(!empty($lecturer['image_srcset'])) srcset="{{ $lecturer['image_srcset'] }}" sizes="(max-width: 768px) 100vw, 400px" @endif alt="{{ $lecturer['name'] }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" width="400" height="400">
+        @else
+            <picture>
+                <source srcset="{{ asset('assets/images/hero/hero-1.webp') }}" type="image/webp">
+                <img src="{{ asset('assets/images/hero/hero-1.webp') }}" alt="{{ $lecturer['name'] }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" width="400" height="400">
+            </picture>
+        @endif
     </div>
 
     <div class="mt-5 flex flex-col gap-2.5 flex-1">

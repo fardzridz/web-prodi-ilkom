@@ -57,17 +57,17 @@
         @endforeach
     </div>
 
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3 mb-6">
+    <div class="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3 mb-6">
         <x-admin.component-card title="Kegiatan 6 Bulan Terakhir" desc="Jumlah kegiatan baru per bulan.">
-            <div id="chartOne" data-url="{{ route('admin.dashboard') }}" data-labels='@json($chartActivityMonthly['labels'])' data-counts='@json($chartActivityMonthly['counts'])' class="min-h-[310px]"></div>
+            <div id="chartOne" data-url="{{ route('admin.dashboard') }}" data-labels='@json($chartActivityMonthly['labels'])' data-counts='@json($chartActivityMonthly['counts'])' class="min-h-[280px] sm:min-h-[310px] overflow-x-auto"></div>
         </x-admin.component-card>
 
         <x-admin.component-card title="Distribusi Data" desc="Prosentase per kategori data.">
-            <div id="chartTwo" data-url="{{ route('admin.dashboard') }}" data-series='@json($chartStatusDistribution['series'])' data-labels='@json($chartStatusDistribution['labels'])' class="min-h-[310px]"></div>
+            <div id="chartTwo" data-url="{{ route('admin.dashboard') }}" data-series='@json($chartStatusDistribution['series'])' data-labels='@json($chartStatusDistribution['labels'])' class="min-h-[280px] sm:min-h-[310px]"></div>
         </x-admin.component-card>
 
         <x-admin.component-card title="Aktivitas & Alumni" desc="Tren kegiatan dan alumni bulanan.">
-            <div id="chartThree" data-url="{{ route('admin.dashboard') }}" data-series='@json($chartCombinedMonthly['series'])' data-labels='@json($chartCombinedMonthly['labels'])' class="min-h-[310px]"></div>
+            <div id="chartThree" data-url="{{ route('admin.dashboard') }}" data-series='@json($chartCombinedMonthly['series'])' data-labels='@json($chartCombinedMonthly['labels'])' class="min-h-[280px] sm:min-h-[310px] overflow-x-auto"></div>
         </x-admin.component-card>
     </div>
 
@@ -114,8 +114,12 @@
                                             <x-admin.badge :color="$badgeColor" size="sm">{{ $item['status_label'] }}</x-admin.badge>
                                         </td>
                                         <td class="py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                                            <time datetime="{{ $item['updated_at']->toIso8601String() }}">
-                                                {{ $item['updated_at']->locale('id')->diffForHumans() }}
+                                            @php
+                                                $rawUpdatedAt = $item['updated_at'];
+                                                $updatedAt = $rawUpdatedAt instanceof \Carbon\CarbonInterface ? $rawUpdatedAt : \Carbon\Carbon::parse((string) $rawUpdatedAt);
+                                            @endphp
+                                            <time datetime="{{ $updatedAt->toIso8601String() }}">
+                                                {{ $updatedAt->locale('id')->diffForHumans() }}
                                             </time>
                                         </td>
                                     </tr>
@@ -168,7 +172,7 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    const initCharts = () => {
         const chartOneEl = document.querySelector('#chartOne');
         if (chartOneEl) {
             const chartOneLabels = JSON.parse(chartOneEl.dataset.labels);
@@ -177,11 +181,13 @@
                 series: [{ name: 'Kegiatan', data: chartOneCounts }],
                 chart: { type: 'bar', height: 310, toolbar: { show: false }, fontFamily: 'Outfit, sans-serif' },
                 colors: ['#1B365D'],
-                plotOptions: { bar: { borderRadius: 4, columnWidth: '40%' } },
+                plotOptions: { bar: { borderRadius: 6, columnWidth: '38%', borderRadiusApplication: 'end' } },
                 dataLabels: { enabled: false },
-                xaxis: { categories: chartOneLabels, axisBorder: { show: false }, axisTicks: { show: false } },
+                xaxis: { categories: chartOneLabels, axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { fontSize: '12px', colors: '#667085' } } },
+                yaxis: { labels: { style: { fontSize: '12px', colors: '#667085' } } },
                 grid: { borderColor: '#E4E7EC', strokeDashArray: 4 },
                 tooltip: { theme: 'light', y: { formatter: (val) => val + ' kegiatan' } },
+                responsive: [{ breakpoint: 640, options: { chart: { height: 260 }, plotOptions: { bar: { columnWidth: '52%' } }, xaxis: { labels: { rotate: -30, style: { fontSize: '11px' } } } } }],
             }).render();
         }
 
@@ -191,12 +197,16 @@
             const chartTwoLabels = JSON.parse(chartTwoEl.dataset.labels);
             new ApexCharts(chartTwoEl, {
                 series: chartTwoSeries,
-                chart: { type: 'donut', height: 310, fontFamily: 'Outfit, sans-serif' },
+                chart: { type: 'donut', height: 310, fontFamily: 'Outfit, sans-serif', foreColor: '#FFFFFF', background: 'transparent' },
                 labels: chartTwoLabels,
-                colors: ['#1B365D', '#12B76A', '#F79009', '#F04438'],
-                legend: { position: 'bottom', fontSize: '14px' },
-                plotOptions: { pie: { donut: { size: '60%' } } },
-                tooltip: { theme: 'light' },
+                colors: ['#1B365D', '#12B76A', '#F59E0B', '#0BA5EC'],
+                legend: { position: 'bottom', fontSize: '13px', labels: { colors: '#344054' }, markers: { width: 10, height: 10, radius: 12 }, itemMargin: { horizontal: 10, vertical: 4 } },
+                plotOptions: { pie: { donut: { size: '62%', labels: { show: false } }, expandOnClick: false, dataLabels: { offset: 0, minAngleToShowLabel: 0 } } },
+                stroke: { width: 2, colors: ['#fff'] },
+                dataLabels: { enabled: true, formatter: (val) => Math.round(val) + '%', style: { fontSize: '11px', fontWeight: 700, colors: ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] }, background: { enabled: false }, dropShadow: { enabled: false } },
+                theme: { mode: 'dark' },
+                tooltip: { theme: 'dark', y: { formatter: (val) => val + ' data' } },
+                responsive: [{ breakpoint: 640, options: { chart: { height: 280 }, legend: { fontSize: '12px', position: 'bottom' }, plotOptions: { pie: { donut: { size: '58%' } } }, dataLabels: { style: { fontSize: '10px' } } } }],
             }).render();
         }
 
@@ -206,17 +216,26 @@
             const chartThreeLabels = JSON.parse(chartThreeEl.dataset.labels);
             new ApexCharts(chartThreeEl, {
                 series: chartThreeSeries,
-                chart: { type: 'area', height: 310, toolbar: { show: false }, fontFamily: 'Outfit, sans-serif' },
-                colors: ['#1B365D', '#F79009'],
-                stroke: { curve: 'smooth', width: 2 },
-                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 } },
+                chart: { type: 'area', height: 310, toolbar: { show: false }, fontFamily: 'Outfit, sans-serif', zoom: { enabled: false } },
+                colors: ['#1B365D', '#F59E0B'],
+                stroke: { curve: 'smooth', width: 2.5 },
+                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.32, opacityTo: 0.04, stops: [0, 90, 100] } },
                 dataLabels: { enabled: false },
-                xaxis: { categories: chartThreeLabels, axisBorder: { show: false }, axisTicks: { show: false } },
+                markers: { size: 0, hover: { size: 5 } },
+                xaxis: { categories: chartThreeLabels, axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { fontSize: '12px', colors: '#667085' }, rotate: 0 } },
+                yaxis: { labels: { style: { fontSize: '12px', colors: '#667085' } } },
                 grid: { borderColor: '#E4E7EC', strokeDashArray: 4 },
-                legend: { position: 'top', horizontalAlign: 'right' },
-                tooltip: { theme: 'light' },
+                legend: { position: 'top', horizontalAlign: 'right', fontSize: '13px', labels: { colors: '#344054' }, markers: { width: 10, height: 10, radius: 12 } },
+                tooltip: { theme: 'light', shared: true, intersect: false },
+                responsive: [{ breakpoint: 640, options: { chart: { height: 260 }, legend: { position: 'bottom', horizontalAlign: 'center', fontSize: '12px' }, xaxis: { labels: { rotate: -30, style: { fontSize: '11px' } } }, stroke: { width: 2 } } }],
             }).render();
         }
-    });
+    };
+
+    if (window.ApexCharts) {
+        initCharts();
+    } else {
+        window.addEventListener('apexcharts:ready', initCharts, { once: true });
+    }
 </script>
 @endpush

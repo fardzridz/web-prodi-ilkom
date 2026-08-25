@@ -24,6 +24,9 @@
         @if ($hasExisting)
             <img src="{{ $existingSrc }}" class="{{ $previewClass }}" alt="" />
             <span id="{{ $id }}-filename" class="text-gray-500 dark:text-gray-400 text-sm block mt-2">Klik untuk mengganti</span>
+            @if ($helpText)
+                <p class="font-normal text-sm text-gray-400 dark:text-gray-500 md:px-6 mt-1">{!! $helpText !!}</p>
+            @endif
         @else
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-700 dark:text-gray-400 mx-auto mb-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -69,8 +72,12 @@
                 }
 
                 function renderPreview(src, filename) {
-                    preview.querySelector('label').innerHTML = '<img src="' + src + '" class="' + previewClass + '" alt="Image preview" />'
+                    let html = '<img src="' + src + '" class="' + previewClass + '" alt="Image preview" />'
                         + '<span id="' + input.id + '-filename" class="text-gray-500 dark:text-gray-400 text-sm block mt-2">' + filename + '</span>';
+                    if (helpText) {
+                        html += '<p class="font-normal text-sm text-gray-400 dark:text-gray-500 md:px-6 mt-1">' + helpText + '</p>';
+                    }
+                    preview.querySelector('label').innerHTML = html;
                     preview.classList.remove('border-dashed', 'border-2', 'border-gray-400', 'dark:border-gray-600', 'p-6', 'bg-gray-100', 'dark:bg-gray-800');
                     preview.classList.add('border-0', 'bg-transparent', 'dark:bg-transparent', 'p-0');
                 }

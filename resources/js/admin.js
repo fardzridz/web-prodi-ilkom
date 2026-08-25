@@ -1,11 +1,6 @@
 import Alpine from 'alpinejs';
-import ApexCharts from 'apexcharts';
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
 
 window.Alpine = Alpine;
-window.ApexCharts = ApexCharts;
-window.flatpickr = flatpickr;
 
 Alpine.store('sidebar', {
     isExpanded: false,
@@ -46,14 +41,14 @@ Alpine.store('theme', {
 
 Alpine.start();
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (document.querySelector('#chartOne')) {
-        import('./components/chart-1').then(module => module.initChartOne());
-    }
-    if (document.querySelector('#chartTwo')) {
-        import('./components/chart-2').then(module => module.initChartTwo());
-    }
-    if (document.querySelector('#chartThree')) {
-        import('./components/chart-3').then(module => module.initChartThree());
-    }
-});
+const needsApexCharts = () =>
+    document.querySelector('#chartOne') ||
+    document.querySelector('#chartTwo') ||
+    document.querySelector('#chartThree');
+
+if (needsApexCharts()) {
+    import('apexcharts').then(({ default: ApexCharts }) => {
+        window.ApexCharts = ApexCharts;
+        window.dispatchEvent(new CustomEvent('apexcharts:ready'));
+    });
+}

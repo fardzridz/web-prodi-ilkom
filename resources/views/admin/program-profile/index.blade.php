@@ -3,6 +3,15 @@
 @section('title', 'Profil Prodi | Pengelola Situs Prodi')
 @section('page-heading', 'Profil Prodi')
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" crossorigin="anonymous">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" crossorigin="anonymous"></script>
+@vite('resources/js/quill-init.js')
+@endpush
+
 @section('content')
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -14,7 +23,7 @@
         @endif
     </div>
 
-    <form x-data="{ submitting: false }" @submit="submitting = true" action="{{ route('admin.profil.update') }}" method="post">
+    <form x-data="{ submitting: false }" @submit="submitting = true" action="{{ route('admin.profil.update') }}" method="post" enctype="multipart/form-data">
         @csrf @method('PUT')
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -61,6 +70,34 @@
             </div>
 
             <div class="space-y-6">
+                @php
+                    $imageFields = [
+                        ['key' => 'description_image', 'label' => 'Gambar Deskripsi', 'hint' => 'Tampil di bagian "Tentang" halaman Profil.', 'preview' => 'max-h-48 mx-auto rounded-lg object-cover aspect-square w-full'],
+                        ['key' => 'history_image', 'label' => 'Gambar Sejarah', 'hint' => 'Tampil di bagian "Sejarah" halaman Profil.', 'preview' => 'max-h-48 mx-auto rounded-lg object-cover aspect-square w-full'],
+                        ['key' => 'goals_image', 'label' => 'Gambar Tujuan', 'hint' => 'Tampil di bagian "Arah Pembelajaran" halaman Profil.', 'preview' => 'max-h-48 mx-auto rounded-lg object-cover aspect-square w-full'],
+                        ['key' => 'advantages_image', 'label' => 'Gambar Keunggulan', 'hint' => 'Tampil di bagian "Keunggulan" halaman Profil.', 'preview' => 'max-h-48 mx-auto rounded-lg object-cover aspect-square w-full'],
+                    ];
+                @endphp
+                @foreach ($imageFields as $imageField)
+                    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+                        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-800"><h4 class="text-base font-medium text-gray-800 dark:text-white/90">{{ $imageField['label'] }}</h4></div>
+                        <div class="p-6">
+                            <x-admin.image-upload id="profile-{{ $imageField['key'] }}" name="{{ $imageField['key'] }}"
+                                :existing-src="$programProfile->{$imageField['key']} ? asset('storage/'.$programProfile->{$imageField['key']}) : null"
+                                :label="$imageField['label']"
+                                :help-text="$imageField['hint'].' JPG, PNG, WebP — maks 4 MB.'"
+                                :preview-class="$imageField['preview']" />
+                            @if ($programProfile->{$imageField['key']})
+                                <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 cursor-pointer">
+                                    <input name="{{ $imageField['key'] }}_remove" type="checkbox" value="1" @checked(old($imageField['key'].'_remove')) class="rounded border-gray-300" />
+                                    Hapus gambar saat disimpan
+                                </label>
+                            @endif
+                            @error($imageField['key'])<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                @endforeach
+
                 <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
                     <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-800"><h4 class="text-base font-medium text-gray-800 dark:text-white/90">Akreditasi</h4></div>
                     <div class="p-6">

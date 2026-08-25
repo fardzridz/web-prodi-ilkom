@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class UpdateProgramProfileRequest extends FormRequest
 {
@@ -27,6 +28,14 @@ class UpdateProgramProfileRequest extends FormRequest
                 'regex:/^[\pL\pN\s\-\/\.,()]+$/u',
             ],
             'advantages' => ['required', 'string', 'max:50000'],
+            'description_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'history_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'goals_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'advantages_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'description_image_remove' => ['nullable', 'boolean'],
+            'history_image_remove' => ['nullable', 'boolean'],
+            'goals_image_remove' => ['nullable', 'boolean'],
+            'advantages_image_remove' => ['nullable', 'boolean'],
         ];
     }
 
@@ -44,6 +53,47 @@ class UpdateProgramProfileRequest extends FormRequest
             'vision.max' => 'Visi maksimal 5.000 karakter.',
             'accreditation.max' => 'Akreditasi maksimal 255 karakter.',
             'accreditation.regex' => 'Akreditasi hanya boleh berisi huruf, angka, dan tanda baca umum.',
+            'description_image.image' => 'Berkas gambar deskripsi harus berupa gambar.',
+            'description_image.mimes' => 'Gambar deskripsi harus berformat JPG, PNG, atau WebP.',
+            'description_image.max' => 'Ukuran gambar deskripsi maksimal 4 MB.',
+            'history_image.image' => 'Berkas gambar sejarah harus berupa gambar.',
+            'history_image.mimes' => 'Gambar sejarah harus berformat JPG, PNG, atau WebP.',
+            'history_image.max' => 'Ukuran gambar sejarah maksimal 4 MB.',
+            'goals_image.image' => 'Berkas gambar tujuan harus berupa gambar.',
+            'goals_image.mimes' => 'Gambar tujuan harus berformat JPG, PNG, atau WebP.',
+            'goals_image.max' => 'Ukuran gambar tujuan maksimal 4 MB.',
+            'advantages_image.image' => 'Berkas gambar keunggulan harus berupa gambar.',
+            'advantages_image.mimes' => 'Gambar keunggulan harus berformat JPG, PNG, atau WebP.',
+            'advantages_image.max' => 'Ukuran gambar keunggulan maksimal 4 MB.',
+        ];
+    }
+
+    /**
+     * Verifikasi MIME asli agar file polyglot (gambar + script) tidak tersimpan.
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                foreach ([
+                    'description_image' => 'Gambar deskripsi',
+                    'history_image' => 'Gambar sejarah',
+                    'goals_image' => 'Gambar tujuan',
+                    'advantages_image' => 'Gambar keunggulan',
+                ] as $field => $label) {
+                    $file = $this->file($field);
+
+                    if (! $file) {
+                        continue;
+                    }
+
+                    $mime = strtolower((string) $file->getMimeType());
+
+                    if (! in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+                        $validator->errors()->add($field, "{$label} harus berupa gambar asli (JPG/PNG/WebP).");
+                    }
+                }
+            },
         ];
     }
 
@@ -68,6 +118,10 @@ class UpdateProgramProfileRequest extends FormRequest
             'goals' => $stripControl(trim((string) $this->input('goals'))),
             'accreditation' => $stripControl(trim((string) $this->input('accreditation'))),
             'advantages' => $stripControl(trim((string) $this->input('advantages'))),
+            'description_image_remove' => filter_var($this->input('description_image_remove'), FILTER_VALIDATE_BOOL),
+            'history_image_remove' => filter_var($this->input('history_image_remove'), FILTER_VALIDATE_BOOL),
+            'goals_image_remove' => filter_var($this->input('goals_image_remove'), FILTER_VALIDATE_BOOL),
+            'advantages_image_remove' => filter_var($this->input('advantages_image_remove'), FILTER_VALIDATE_BOOL),
         ]);
     }
 }

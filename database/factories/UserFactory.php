@@ -42,4 +42,24 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Indicate that the user may access the admin panel.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'role' => User::ROLE_ADMIN,
+        ]);
+    }
+
+    /**
+     * Indicate that the user must be rejected by the admin panel.
+     */
+    public function nonAdmin(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'role' => 'user',
+        ]);
+    }
 }

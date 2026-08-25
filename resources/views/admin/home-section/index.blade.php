@@ -22,6 +22,7 @@
     $previewCta = old('cta_text', $homeSection->cta_text ?: 'Teks tombol');
     $previewWelcomeTitle = old('welcome_title', $homeSection->welcome_title ?: 'Judul sambutan');
     $previewWelcomeDescription = old('welcome_description', $homeSection->welcome_description ?: 'Isi sambutan beranda');
+    $welcomeImagePath = $homeSection->welcome_image;
 @endphp
 
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -84,7 +85,7 @@
                                 <div class="slide-item rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                                     <input type="hidden" name="slides[{{ $index }}][existing_path]" value="{{ $slide['existing_path'] ?? '' }}">
                                     @if (!empty($slide['existing_path']))
-                                        <img src="{{ asset('storage/'.$slide['existing_path']) }}" alt="" class="mb-3 h-32 w-full rounded object-cover" />
+                                        <img src="{{ asset('storage/'.$slide['existing_path']) }}" alt="" class="mb-3 aspect-video w-full max-w-sm rounded-lg object-cover" />
                                     @endif
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div>
@@ -123,6 +124,22 @@
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 resize-y">{{ old('welcome_description', $homeSection->welcome_description) }}</textarea>
                             @error('welcome_description')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
                         </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Gambar sambutan</label>
+                            <x-admin.image-upload id="home-welcome-image" name="welcome_image"
+                                :existing-src="$welcomeImagePath ? asset('storage/'.$welcomeImagePath) : null"
+                                label="Gambar sambutan"
+                                help-text="Gunakan PNG/WebP dengan latar transparan agar potongan orang tampil rapi. JPG, PNG, WebP — maks 4 MB."
+                                accept="image/jpeg,image/png,image/webp"
+                                preview-class="max-h-40 w-full rounded-lg object-contain" />
+                            @error('welcome_image')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
+                            @if (!empty($welcomeImagePath))
+                                <label class="mt-2 inline-flex cursor-pointer items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <input type="checkbox" name="welcome_remove" value="1" {{ old('welcome_remove') ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+                                    Hapus gambar sambutan
+                                </label>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -145,7 +162,7 @@
                                 <div class="advantage-item rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                                     <input type="hidden" name="advantages[{{ $index }}][existing_path]" value="{{ $advantage['existing_path'] ?? '' }}">
                                     @if (!empty($advantage['existing_path']))
-                                        <img src="{{ asset('storage/'.$advantage['existing_path']) }}" alt="" class="mb-3 h-24 w-full rounded object-cover" />
+                                        <img src="{{ asset('storage/'.$advantage['existing_path']) }}" alt="" class="mb-3 aspect-square w-14 rounded-lg object-cover" />
                                     @endif
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                                         <div>

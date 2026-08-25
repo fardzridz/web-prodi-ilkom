@@ -54,7 +54,6 @@
                     </thead>
                     <tbody>
                         @foreach ($documents as $document)
-                            @php($storedFileExists = Storage::disk('public')->exists($document->file))
                             <tr class="border-b border-gray-100 dark:border-gray-800 last:border-0">
                                 <td class="py-3 pr-4">
                                     <div class="flex items-center gap-3">
@@ -64,7 +63,7 @@
                                         <div>
                                             <a href="{{ route('admin.dokumen.edit', $document) }}" class="font-medium text-gray-800 hover:text-brand-500 dark:text-white/90 dark:hover:text-brand-400">{{ $document->title }}</a>
                                             <p class="text-xs text-gray-400 dark:text-gray-500">{{ Str::limit($document->description ?: 'Tanpa deskripsi', 50) }}</p>
-                                            @unless ($storedFileExists)<p class="text-xs text-error-500">Berkas tidak ditemukan</p>@endunless
+                                            @unless ($document->file_exists)<p class="text-xs text-error-500">Berkas tidak ditemukan</p>@endunless
                                         </div>
                                     </div>
                                 </td>
@@ -72,11 +71,7 @@
                                 <td class="py-3 pr-4"><span class="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-xs font-medium text-gray-700 dark:bg-white/5 dark:text-white/80">{{ $document->fileTypeLabel() }}</span></td>
                                 <td class="py-3 pr-4 text-gray-500 dark:text-gray-400">{{ $document->formattedFileSize() }}</td>
                                 <td class="py-3 pr-4">
-                                    @if ($document->status === 'published')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">Terbit</span>
-                                    @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-sm bg-warning-50 text-warning-600 dark:bg-warning-500/15 dark:text-orange-400">Draf</span>
-                                    @endif
+                                    <x-admin.badge variant="light" :color="$document->status === 'published' ? 'success' : 'light'" size="sm">{{ $document->status === 'published' ? 'Terbit' : 'Draf' }}</x-admin.badge>
                                 </td>
                                 <td class="py-3">
                                     <div class="flex flex-col gap-1 text-xs text-gray-500 dark:text-gray-400">
@@ -85,21 +80,19 @@
                                         @endif
                                         <div class="flex items-center gap-1 mt-1">
                                             @if ($document->file_exists)
-                                                <a href="{{ route('admin.dokumen.download', $document) }}" class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-gray-400 hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 transition" title="Unduh">
-                                                    <svg class="fill-current" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill=""/></svg>
+                                                <a href="{{ route('admin.dokumen.download', $document) }}" class="inline-flex items-center justify-center h-8 w-8 rounded-lg text-gray-400 hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 transition" title="Unduh">
+                                                    <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill=""/></svg>
                                                 </a>
                                             @endif
-                                            <a href="{{ route('admin.dokumen.edit', $document) }}" class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-gray-400 hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 transition" title="Edit">
-                                                <svg class="fill-current" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill=""/></svg>
+                                            <a href="{{ route('admin.dokumen.edit', $document) }}" class="inline-flex items-center justify-center h-8 w-8 rounded-lg text-gray-400 hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 transition" title="Edit">
+                                                <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill=""/></svg>
                                             </a>
                                             <form action="{{ route('admin.dokumen.status', $document) }}" method="post" class="inline">
                                                 @csrf @method('PATCH')
-                                                <button type="submit" class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-gray-400 hover:text-success-500 hover:bg-success-50 dark:hover:bg-success-500/10 transition" title="Toggle status">
-                                                    <svg class="fill-current" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill=""/></svg>
-                                                </button>
+                                                <x-admin.toggle :active="$document->status === 'published'" variant="switch" :labelActive="'Terbitkan ' . $document->title" :labelInactive="'Draftkan ' . $document->title" />
                                             </form>
-                                            <button type="button" onclick="if(confirm('Hapus {{ $document->title }}?')) document.getElementById('delete-doc-{{ $document->id }}').submit()" class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-gray-400 hover:text-error-500 hover:bg-error-50 dark:hover:bg-error-500/10 transition" title="Hapus">
-                                                <svg class="fill-current" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill=""/></svg>
+                                            <button type="button" onclick="if(confirm('Hapus {{ $document->title }}?')) document.getElementById('delete-doc-{{ $document->id }}').submit()" class="inline-flex items-center justify-center h-8 w-8 rounded-lg text-gray-400 hover:text-error-500 hover:bg-error-50 dark:hover:bg-error-500/10 transition" title="Hapus">
+                                                <svg class="fill-current" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill=""/></svg>
                                             </button>
                                             <form id="delete-doc-{{ $document->id }}" action="{{ route('admin.dokumen.destroy', $document) }}" method="post" hidden>@csrf @method('DELETE')</form>
                                         </div>

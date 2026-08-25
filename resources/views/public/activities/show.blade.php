@@ -1,10 +1,6 @@
 @extends('layouts.public')
 
-@section('title', ($activity['title'] ?? 'Detail Kegiatan') . ' — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
-@section('description', $activity['excerpt'] ?? '')
-
 @push('scripts')
-<script src="{{ asset('js/app.js') }}"></script>
 <script>
 document.getElementById('copy-link-btn')?.addEventListener('click', function () {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -24,7 +20,7 @@ document.getElementById('copy-link-btn')?.addEventListener('click', function () 
 @endpush
 
 @section('content')
-<x-hero title="{{ $activity['title'] }}" :breadcrumbs="['Kegiatan' => route('activities.index'), 'Detail Kegiatan' => null]" :image="asset('assets/images/hero-2.png')" />
+<x-hero title="{{ $activity['title'] }}" :breadcrumbs="['Kegiatan' => route('activities.index'), 'Detail Kegiatan' => null]" :image="asset('assets/images/hero/hero-2.webp')" />
 
 <section class="bg-line py-16 lg:py-24">
     <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">

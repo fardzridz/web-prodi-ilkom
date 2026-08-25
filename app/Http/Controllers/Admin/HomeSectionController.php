@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateHomeSectionRequest;
 use App\Models\HomeSection;
+use App\Services\DashboardCache;
+use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
@@ -36,6 +38,30 @@ class HomeSectionController extends Controller
         $pathsToDelete = [];
 
         try {
+            $optimizer = new ImageOptimizer;
+            $welcomeImage = $homeSection->welcome_image;
+
+            if (filter_var($request->input('welcome_remove'), FILTER_VALIDATE_BOOL)) {
+                if ($welcomeImage) {
+                    $pathsToDelete[] = $welcomeImage;
+                    $pathsToDelete[] = ImageOptimizer::thumbPath($welcomeImage);
+                }
+
+                $welcomeImage = null;
+            } elseif ($request->hasFile('welcome_image')) {
+                $result = $optimizer->optimize($request->file('welcome_image'), 'uploads/home');
+                $welcomeImage = $result['path'];
+                $storedPaths[] = $welcomeImage;
+                if ($result['thumb']) {
+                    $storedPaths[] = $result['thumb'];
+                }
+
+                if ($homeSection->welcome_image) {
+                    $pathsToDelete[] = $homeSection->welcome_image;
+                    $pathsToDelete[] = ImageOptimizer::thumbPath($homeSection->welcome_image);
+                }
+            }
+
             foreach ($submittedSlides as $slide) {
                 $existingPath = $slide['existing_path'] ?? null;
 
@@ -46,6 +72,7 @@ class HomeSectionController extends Controller
                 if (($slide['remove'] ?? false) === true) {
                     if ($existingPath) {
                         $pathsToDelete[] = $existingPath;
+                        $pathsToDelete[] = ImageOptimizer::thumbPath($existingPath);
                     }
 
                     continue;
@@ -54,11 +81,16 @@ class HomeSectionController extends Controller
                 $path = $existingPath;
 
                 if (isset($slide['file'])) {
-                    $path = $slide['file']->store('uploads/home', 'public');
+                    $result = $optimizer->optimize($slide['file'], 'uploads/home');
+                    $path = $result['path'];
                     $storedPaths[] = $path;
+                    if ($result['thumb']) {
+                        $storedPaths[] = $result['thumb'];
+                    }
 
                     if ($existingPath) {
                         $pathsToDelete[] = $existingPath;
+                        $pathsToDelete[] = ImageOptimizer::thumbPath($existingPath);
                     }
                 }
 
@@ -88,6 +120,7 @@ class HomeSectionController extends Controller
                 if (($advantage['remove'] ?? false) === true) {
                     if ($existingPath) {
                         $pathsToDelete[] = $existingPath;
+                        $pathsToDelete[] = ImageOptimizer::thumbPath($existingPath);
                     }
 
                     continue;
@@ -96,11 +129,16 @@ class HomeSectionController extends Controller
                 $imagePath = $existingPath;
 
                 if (isset($advantage['image'])) {
-                    $imagePath = $advantage['image']->store('uploads/home', 'public');
+                    $result = $optimizer->optimize($advantage['image'], 'uploads/home');
+                    $imagePath = $result['path'];
                     $storedPaths[] = $imagePath;
+                    if ($result['thumb']) {
+                        $storedPaths[] = $result['thumb'];
+                    }
 
                     if ($existingPath) {
                         $pathsToDelete[] = $existingPath;
+                        $pathsToDelete[] = ImageOptimizer::thumbPath($existingPath);
                     }
                 }
 
@@ -122,6 +160,7 @@ class HomeSectionController extends Controller
                 'welcome_description',
             ]));
             $homeSection->hero_slides = $slides;
+            $homeSection->welcome_image = $welcomeImage;
             $homeSection->advantages = ['heading' => $advantageHeading, 'items' => $advantages];
             $homeSection->save();
 
@@ -131,6 +170,8 @@ class HomeSectionController extends Controller
 
             throw $exception;
         }
+
+        DashboardCache::forgetReadiness();
 
         return redirect()
             ->route('admin.beranda')

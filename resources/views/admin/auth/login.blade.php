@@ -135,7 +135,7 @@
                 </div>
             </div>
 
-            <div class="bg-brand-950 relative hidden h-full w-full items-center lg:grid lg:w-1/2 dark:bg-white/5">
+            <div class="bg-brand-800 relative hidden h-full w-full items-center lg:grid lg:w-1/2 dark:bg-white/5">
                 <div class="z-1 flex items-center justify-center">
                     <svg class="absolute inset-0 h-full w-full opacity-15 dark:opacity-8" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -146,8 +146,8 @@
                         <rect width="100%" height="100%" fill="url(#grid)" />
                     </svg>
                     <div class="flex max-w-xs flex-col items-center">
-                        <a href="{{ route('home') }}" class="mb-4 block">
-                            <img src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo Prodi" class="h-14" />
+                        <a href="{{ route('home') }}" class="mb-4 inline-flex h-20 items-center justify-center rounded-2xl bg-cream px-6 ring-1 ring-gold/40">
+                            <img src="{{ $site?->logo ? asset('storage/'.$site->logo) : asset('assets/images/logo/logo-motion.gif') }}" alt="Logo Prodi" class="h-16 w-auto object-contain" />
                         </a>
                         <p class="text-center text-gray-400 dark:text-white/60">
                             Panel Pengelola — Program Studi Ilmu Komputer

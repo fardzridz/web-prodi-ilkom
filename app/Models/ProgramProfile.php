@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\Concerns\SanitizesHtml;
+use Database\Factories\ProgramProfileFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -14,9 +16,16 @@ use Illuminate\Database\Eloquent\Model;
     'goals',
     'accreditation',
     'advantages',
+    'description_image',
+    'history_image',
+    'goals_image',
+    'advantages_image',
 ])]
 class ProgramProfile extends Model
 {
+    /** @use HasFactory<ProgramProfileFactory> */
+    use HasFactory;
+
     use SanitizesHtml;
 
     private const ALLOWED_TAGS = [

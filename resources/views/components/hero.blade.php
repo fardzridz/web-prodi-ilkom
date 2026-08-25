@@ -1,8 +1,19 @@
-@props(['title', 'breadcrumbs' => [], 'image' => null])
+@props(['title', 'breadcrumbs' => [], 'image' => null, 'imageAlt' => null])
 
 <section class="relative overflow-hidden bg-badge text-cream" aria-label="Header halaman {{ $title }}">
     @if($image)
-    <img src="{{ $image }}" alt="" class="absolute inset-0 z-0 h-full w-full object-cover">
+        @php
+            $heroWebp = preg_match('/\.(jpe?g|png)$/i', $image) ? preg_replace('/\.(jpe?g|png)$/i', '.webp', $image) : null;
+            $heroAlt = $imageAlt ?? $title.' — S1 Ilmu Komputer UNIWARA Pasuruan';
+        @endphp
+        @if($heroWebp)
+            <picture>
+                <source srcset="{{ $heroWebp }}" type="image/webp">
+                <img src="{{ $image }}" alt="{{ $heroAlt }}" class="absolute inset-0 z-0 h-full w-full object-cover" loading="eager" decoding="async" fetchpriority="high" width="1920" height="600">
+            </picture>
+        @else
+            <img src="{{ $image }}" alt="{{ $heroAlt }}" class="absolute inset-0 z-0 h-full w-full object-cover" loading="eager" decoding="async" fetchpriority="high" width="1920" height="600">
+        @endif
     <div class="absolute inset-0 z-10 bg-gradient-to-r from-badge/90 via-badge/60 to-badge/25"></div>
     @endif
     <div class="relative z-20 mx-4 px-4 py-14 sm:mx-8 sm:px-8 sm:py-16 lg:mx-16 lg:px-20 lg:py-20">

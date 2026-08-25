@@ -1,14 +1,22 @@
 @extends('layouts.public')
 
-@section('title', 'Profil — ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer'))
-@section('description', 'Informasi lengkap tentang ' . ($site?->site_name ?: 'Program Studi Ilmu Komputer') . ' — sejarah, visi, misi, akreditasi, dan keunggulan.')
-
-@push('scripts')
-<script src="{{ asset('js/app.js') }}"></script>
-@endpush
-
 @section('content')
-<x-hero title="Profil" :breadcrumbs="['Profil' => null]" image="{{ asset('assets/images/hero/hero-1.jpeg') }}">
+@php
+    $profileImage = $programProfile->description_image
+        ? asset('storage/'.$programProfile->description_image)
+        : asset('assets/images/image.png');
+    $historyImage = $programProfile->history_image
+        ? asset('storage/'.$programProfile->history_image)
+        : 'https://placehold.co/800x1000/0B1A2F/FDC72F?text=SEJARAH+PRODI&font=roboto';
+    $goalsImage = $programProfile->goals_image
+        ? asset('storage/'.$programProfile->goals_image)
+        : 'https://placehold.co/800x1000/0B1A2F/FDC72F?text=TUJUAN+PEMBELAJARAN&font=roboto';
+    $advantagesImage = $programProfile->advantages_image
+        ? asset('storage/'.$programProfile->advantages_image)
+        : 'https://placehold.co/800x1000/1B365D/FDC72F?text=KEUNGGULAN+PRODI&font=roboto';
+@endphp
+
+<x-hero title="Profil" :breadcrumbs="['Profil' => null]" image="{{ asset('assets/images/hero/hero-1.webp') }}">
     Kenali lebih dekat {{ $site?->site_name ?: 'Program Studi Ilmu Komputer' }} — sejarah, visi, misi, akreditasi, dan keunggulan yang membentuk lulusan siap bersaing.
 </x-hero>
 
@@ -17,7 +25,7 @@
     <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
         <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,auto)_minmax(0,1fr)] md:gap-20">
             <div class="justify-self-center">
-                <img src="{{ asset('assets/images/image.png') }}" alt="Profil {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+                <img src="{{ $profileImage }}" alt="Profil {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy" decoding="async" width="512" height="512">
             </div>
             <div data-reveal class="anim-fade-up anim-delay-1">
                 <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold anim-fade-up anim-delay-1">
@@ -45,7 +53,7 @@
                 </div>
             </div>
             <div class="justify-self-center md:justify-self-end">
-                <img src="https://placehold.co/800x1000/0B1A2F/FDC72F?text=SEJARAH+PRODI&font=roboto" alt="Perjalanan Program Studi Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+                <img src="{{ $historyImage }}" alt="Perjalanan Program Studi Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy" decoding="async" width="512" height="512">
             </div>
         </div>
     </div>
@@ -107,7 +115,7 @@
                 </div>
             </div>
             <div class="justify-self-center md:justify-self-end">
-                <img src="https://placehold.co/800x1000/0B1A2F/FDC72F?text=TUJUAN+PEMBELAJARAN&font=roboto" alt="Tujuan pembelajaran Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+                <img src="{{ $goalsImage }}" alt="Tujuan pembelajaran Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy" decoding="async" width="512" height="512">
             </div>
         </div>
     </div>
@@ -120,7 +128,7 @@
     <div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-16 xl:px-0">
         <div class="grid max-w-6xl items-center gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] md:gap-20">
             <div class="justify-self-center md:justify-self-start">
-                <img src="https://placehold.co/800x1000/1B365D/FDC72F?text=KEUNGGULAN+PRODI&font=roboto" alt="Keunggulan Program Studi Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy">
+                <img src="{{ $advantagesImage }}" alt="Keunggulan Program Studi Ilmu Komputer" class="aspect-square w-full max-w-sm object-cover sm:max-w-md lg:max-w-lg" loading="lazy" decoding="async" width="512" height="512">
             </div>
             <div data-reveal class="anim-fade-up anim-delay-1">
                 <h3 class="inline-flex items-center gap-2.5 uppercase tracking-widest text-primary text-base font-semibold">

@@ -7,9 +7,13 @@ use App\Http\Requests\Admin\IndexActivityRequest;
 use App\Http\Requests\Admin\StoreActivityRequest;
 use App\Http\Requests\Admin\UpdateActivityRequest;
 use App\Models\Activity;
+use App\Services\DashboardCache;
+use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
@@ -18,6 +22,8 @@ class ActivityController extends Controller
 {
     public function index(IndexActivityRequest $request): View
     {
+        Gate::authorize('viewAny', Activity::class);
+
         $filters = $request->validated();
 
         $activities = Activity::query()
@@ -43,6 +49,8 @@ class ActivityController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('create', Activity::class);
+
         return view('admin.activities.create', [
             'activity' => new Activity(['status' => Activity::STATUS_DRAFT]),
         ]);
@@ -50,17 +58,23 @@ class ActivityController extends Controller
 
     public function store(StoreActivityRequest $request): RedirectResponse
     {
+        Gate::authorize('create', Activity::class);
+
         $data = $this->normalizePublication($request->validated());
         $data['user_id'] = $request->user()->getAuthIdentifier();
 
         $storedImage = null;
+        $storedThumb = null;
+        $optimizer = new ImageOptimizer;
 
         try {
-            $activity = DB::transaction(function () use ($request, $data, &$storedImage): Activity {
+            $activity = DB::transaction(function () use ($request, $data, &$storedImage, &$storedThumb, $optimizer): Activity {
                 $payload = $data;
 
                 if ($request->hasFile('image')) {
-                    $storedImage = $request->file('image')->store('activities', 'public');
+                    $result = $optimizer->optimize($request->file('image'), 'activities');
+                    $storedImage = $result['path'];
+                    $storedThumb = $result['thumb'];
                     $payload['image'] = $storedImage;
                 }
 
@@ -69,6 +83,9 @@ class ActivityController extends Controller
         } catch (Throwable $exception) {
             if ($storedImage !== null) {
                 Storage::disk('public')->delete($storedImage);
+            }
+            if ($storedThumb !== null) {
+                Storage::disk('public')->delete($storedThumb);
             }
 
             throw $exception;
@@ -83,6 +100,9 @@ class ActivityController extends Controller
             'ip' => $request->ip(),
         ]);
 
+        Cache::forget('public:activity_categories');
+        DashboardCache::forgetActivity();
+
         return redirect()
             ->route('admin.kegiatan.index')
             ->with('success', 'Kegiatan berhasil ditambahkan.');
@@ -90,6 +110,8 @@ class ActivityController extends Controller
 
     public function edit(Activity $activity): View
     {
+        Gate::authorize('update', $activity);
+
         return view('admin.activities.edit', [
             'activity' => $activity,
         ]);
@@ -97,16 +119,23 @@ class ActivityController extends Controller
 
     public function update(UpdateActivityRequest $request, Activity $activity): RedirectResponse
     {
+        Gate::authorize('update', $activity);
+
         $data = $this->normalizePublication($request->validated(), $activity);
         $oldImage = $activity->image;
+        $oldThumb = $oldImage ? ImageOptimizer::thumbPath($oldImage) : null;
         $storedImage = null;
+        $storedThumb = null;
+        $optimizer = new ImageOptimizer;
 
         try {
-            DB::transaction(function () use ($request, $activity, $data, &$storedImage): void {
+            DB::transaction(function () use ($request, $activity, $data, &$storedImage, &$storedThumb, $optimizer): void {
                 $payload = $data;
 
                 if ($request->hasFile('image')) {
-                    $storedImage = $request->file('image')->store('activities', 'public');
+                    $result = $optimizer->optimize($request->file('image'), 'activities');
+                    $storedImage = $result['path'];
+                    $storedThumb = $result['thumb'];
                     $payload['image'] = $storedImage;
                 }
 
@@ -116,12 +145,18 @@ class ActivityController extends Controller
             if ($storedImage !== null) {
                 Storage::disk('public')->delete($storedImage);
             }
+            if ($storedThumb !== null) {
+                Storage::disk('public')->delete($storedThumb);
+            }
 
             throw $exception;
         }
 
         if ($storedImage !== null && $oldImage !== null && $oldImage !== $storedImage) {
             Storage::disk('public')->delete($oldImage);
+            if ($oldThumb) {
+                Storage::disk('public')->delete($oldThumb);
+            }
         }
 
         Log::info('admin.activity.updated', [
@@ -134,6 +169,9 @@ class ActivityController extends Controller
             'ip' => $request->ip(),
         ]);
 
+        Cache::forget('public:activity_categories');
+        DashboardCache::forgetActivity();
+
         return redirect()
             ->route('admin.kegiatan.index')
             ->with('success', 'Kegiatan berhasil diperbarui.');
@@ -141,7 +179,10 @@ class ActivityController extends Controller
 
     public function destroy(Activity $activity): RedirectResponse
     {
+        Gate::authorize('delete', $activity);
+
         $image = $activity->image;
+        $thumb = $image ? ImageOptimizer::thumbPath($image) : null;
         $activityId = $activity->id;
         $activitySlug = $activity->slug;
         $activityTitle = $activity->title;
@@ -154,6 +195,9 @@ class ActivityController extends Controller
         if ($image) {
             Storage::disk('public')->delete($image);
         }
+        if ($thumb) {
+            Storage::disk('public')->delete($thumb);
+        }
 
         Log::info('admin.activity.deleted', [
             'activity_id' => $activityId,
@@ -162,6 +206,9 @@ class ActivityController extends Controller
             'title' => $activityTitle,
             'had_image' => $image !== null,
         ]);
+
+        Cache::forget('public:activity_categories');
+        DashboardCache::forgetActivity();
 
         return redirect()
             ->route('admin.kegiatan.index')

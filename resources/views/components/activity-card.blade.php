@@ -7,7 +7,7 @@
         <span class="mt-2 block h-3 w-28 rounded-full bg-line"></span>
     </div>
     <a href="{{ route('activities.show', $activity['slug']) }}" class="aspect-video overflow-hidden rounded-lg bg-primary-light">
-        <img src="{{ $activity['image'] }}" alt="{{ $activity['title'] }}" class="h-full w-full object-cover" loading="lazy">
+        <img src="{{ $activity['image'] }}" @if(!empty($activity['image_srcset'])) srcset="{{ $activity['image_srcset'] }}" sizes="(max-width: 768px) 100vw, 640px" @endif alt="{{ $activity['title'] }}" class="h-full w-full object-cover" loading="lazy" decoding="async" width="640" height="360">
     </a>
     <div class="mt-4 flex items-center gap-4">
         @if($activity['category'])

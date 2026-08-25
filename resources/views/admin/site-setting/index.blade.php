@@ -9,7 +9,7 @@
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Identitas Website</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pengaturan nama situs, logo, e-jurnal, dan footer.</p>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pengaturan nama situs, logo, e-jurnal, tautan pendaftaran, dan footer.</p>
             </div>
             @if ($siteSetting->exists && $siteSetting->updated_at)
                 <span class="shrink-0 text-xs text-gray-400 dark:text-gray-500">
@@ -69,6 +69,15 @@
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
                                 @error('journal_url')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
                             </div>
+                            <div>
+                                <label for="setting-registration-url" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Tautan Pendaftaran<span class="text-error-500">*</span>
+                                </label>
+                                <input id="setting-registration-url" name="registration_url" type="url" maxlength="2048"
+                                    value="{{ old('registration_url', $siteSetting->registration_url) }}" placeholder="https://admisi.example.ac.id" required
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
+                                @error('registration_url')<p class="mt-1.5 text-sm text-error-500">{{ $message }}</p>@enderror
+                            </div>
                         </div>
                     </div>
 
@@ -84,7 +93,7 @@
                                     <x-admin.image-upload id="setting-logo" name="logo"
                                         :existing-src="$siteSetting->logo ? asset('storage/'.$siteSetting->logo) : null"
                                         label="Upload logo"
-                                        help-text="JPG, PNG, WebP — maks 2 MB"
+                                        help-text="JPG, PNG, WebP — maks 2 MB &bull; GIF — maks 7 MB"
                                         preview-class="max-h-20 mx-auto object-contain" />
                                     @if ($siteSetting->logo)
                                         <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 cursor-pointer">

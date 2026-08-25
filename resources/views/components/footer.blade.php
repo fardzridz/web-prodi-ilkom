@@ -2,7 +2,14 @@
     <div class="grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div class="flex flex-col justify-between bg-white/5 px-4 py-12 sm:px-8 lg:px-16 lg:py-16 xl:pl-[calc((100vw-72rem)/2)]">
             <a href="{{ route('home') }}" class="inline-flex h-16 items-center justify-center rounded-2xl bg-cream ring-1 ring-gold/40 sm:h-20 lg:h-[6.5rem]">
-                <img src="{{ asset('assets/images/logo-ilkom-motion.gif') }}" alt="Logo {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="h-32 w-auto object-contain sm:h-40 lg:h-52">
+                @if($site?->logo)
+                    <img src="{{ asset('storage/'.$site->logo) }}" alt="Logo {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="h-32 w-auto max-w-[220px] object-contain sm:h-40 sm:max-w-[260px] lg:h-52 lg:max-w-[300px]" loading="lazy" decoding="async" width="300" height="64">
+                @else
+                    <picture>
+                        <source srcset="{{ asset('assets/images/logo/logo-motion.webp') }}" type="image/webp">
+                        <img src="{{ asset('assets/images/logo/logo-motion.gif') }}" alt="Logo {{ $site?->site_name ?: 'Ilmu Komputer' }}" class="h-32 w-auto max-w-[220px] object-contain sm:h-40 sm:max-w-[260px] lg:h-52 lg:max-w-[300px]" loading="lazy" decoding="async" width="300" height="64">
+                    </picture>
+                @endif
             </a>
 
             <div class="mt-8 space-y-5 sm:mt-10 lg:mt-14">
@@ -85,9 +92,39 @@
                 </div>
                 <div>
                     <h4 class="border-b border-white/20 pb-2 text-sm font-bold uppercase tracking-wide text-cream">Lokasi</h4>
-                    <div class="mt-3 overflow-hidden rounded-lg border border-white/20">
-                        <iframe src="https://maps.google.com/maps?q=Universitas%20PGRI%20Wiranegara%20Pasuruan&t=&z=14&ie=UTF8&iwloc=&output=embed" class="h-52 w-full sm:h-56 lg:h-60" style="border:0" title="Peta lokasi" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                    <div id="map-facade" class="mt-3 flex h-52 w-full cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-lg border border-white/20 bg-white/10 sm:h-56 lg:h-60" data-src="https://maps.google.com/maps?q=Universitas%20PGRI%20Wiranegara%20Pasuruan&t=&z=14&ie=UTF8&iwloc=&output=embed" role="button" tabindex="0" aria-label="Muat peta lokasi Universitas PGRI Wiranegara">
+                        <svg class="h-10 w-10 text-cream/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                        <span class="rounded-full bg-gold px-4 py-1.5 text-sm font-semibold text-primary">Lihat Peta</span>
+                        <span class="text-xs text-cream/60">Klik untuk memuat Google Maps</span>
                     </div>
+                    <script>
+                        (function () {
+                            var facade = document.getElementById('map-facade');
+                            if (!facade) return;
+                            var loaded = false;
+                            var loadMap = function () {
+                                if (loaded) return;
+                                loaded = true;
+                                var iframe = document.createElement('iframe');
+                                iframe.src = facade.dataset.src;
+                                iframe.title = 'Peta lokasi Universitas PGRI Wiranegara';
+                                iframe.loading = 'lazy';
+                                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                                iframe.allowFullscreen = true;
+                                iframe.style.border = '0';
+                                iframe.className = 'mt-3 h-52 w-full overflow-hidden rounded-lg border border-white/20 sm:h-56 lg:h-60';
+                                facade.replaceWith(iframe);
+                            };
+                            facade.addEventListener('click', loadMap, { once: true });
+                            facade.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadMap(); } });
+                            if ('IntersectionObserver' in window) {
+                                var io = new IntersectionObserver(function (entries, obs) {
+                                    if (entries[0].isIntersecting) { loadMap(); obs.disconnect(); }
+                                }, { rootMargin: '200px' });
+                                io.observe(facade);
+                            }
+                        })();
+                    </script>
                 </div>
             </div>
 

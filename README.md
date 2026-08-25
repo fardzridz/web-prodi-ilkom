@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/assets/images/logo/logo.png" alt="Logo Program Studi Ilmu Komputer" width="340"/>
+<img src="public/assets/images/logo/logo.webp" alt="Logo Program Studi Ilmu Komputer" width="340"/>
 
 # Website Profil Program Studi Ilmu Komputer
 
@@ -11,9 +11,10 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 ![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Pest](https://img.shields.io/badge/Pest-4-2a2a40?style=for-the-badge&logo=pest&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-%E2%9C%93%20passed-2ea44f?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-162%20passed-2ea44f?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 </div>
@@ -24,12 +25,15 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 
 - [Fitur](#fitur)
 - [Teknologi](#teknologi)
+- [Arsitektur](#arsitektur)
 - [Instalasi](#instalasi)
 - [Screenshot](#screenshot)
 - [Akun Admin Awal](#akun-admin-awal)
 - [Perintah Artisan Tambahan](#perintah-artisan-tambahan)
 - [Testing](#testing)
 - [Struktur Aset](#struktur-aset)
+- [Deployment](#deployment)
+- [Dokumentasi Audit](#dokumentasi-audit)
 - [Lisensi](#lisensi)
 
 ---
@@ -48,6 +52,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 | ✉️ Kontak            | Info kontak + form pesan                                       |
 | 🔗 E-jurnal          | Redirect ke portal jurnal                                      |
 | 📃 Halaman Statis    | Kebijakan Privasi, Aksesibilitas                               |
+| 🔍 SEO               | `sitemap.xml` dinamis, canonical per halaman, JSON-LD, favicon lengkap + web manifest |
 
 ### 🔐 Panel Pengelola (`/komi-panel`)
 
@@ -62,14 +67,48 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 ## 🛠 Teknologi
 
 - **Laravel 13** / PHP 8.3
-- **MySQL** (InnoDB, `utf8mb4`)
-- **Blade murni** (server-side rendering) + **Tailwind CSS v4** (via Vite)
+- **MySQL** (InnoDB, `utf8mb4_unicode_ci`)
+- **Blade murni** (server-side rendering) + **Tailwind CSS v4** via **Vite 6**
+- **Alpine.js** untuk interaksi ringan, **ApexCharts** (lazy-load, khusus dashboard), **Flatpickr** untuk date picker
+- **Intervention Image** untuk konversi & thumbnail WebP otomatis
+- **Pest 4** untuk pengujian
+
+---
+
+## 🏗 Arsitektur
+
+Ringkas: controller tipis, logika di service, cache di satu tempat.
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Public/          # 8 controller per domain (Home, Profile, Activity, ...)
+│   │   ├── Admin/           # panel pengelola
+│   │   └── SitemapController.php
+│   ├── Requests/Public/     # validasi query string tiap halaman publik
+│   └── Middleware/          # SecurityHeaders (CSP), CacheHeaders
+├── Services/
+│   ├── Public/              # SiteService, PublicDataService, ImageService
+│   ├── DashboardCache.php   # satu pintu invalidasi cache
+│   └── ImageOptimizer.php   # konversi WebP + thumbnail
+├── Policies/                # otorisasi per model
+└── View/Composers/          # SiteComposer: bagikan $site & $contactInfo
+```
+
+Beberapa keputusan yang perlu diketahui sebelum menyentuh kode:
+
+- **Cache punya satu pintu.** Semua invalidasi lewat `App\Services\DashboardCache`. Kalau menambah data yang tampil di dashboard atau `sitemap.xml`, daftarkan kuncinya di sana — jangan `Cache::forget()` tersebar.
+- **`$site` dan `$contactInfo` sudah tersedia di semua view** lewat `SiteComposer`, tidak perlu dikirim dari controller.
+- **Metadata SEO** diambil dari `config/seo.php`; tiap controller publik mengirim `seoTitle`, `seoDesc`, dan `canonical`. `canonical` sengaja tidak memakai `url()->current()` supaya `?page=2` tidak terbaca sebagai halaman berbeda.
+- **Satu `<h1>` per halaman** — heading section memakai `<h2>`. Ada tes yang menjaga aturan ini.
+- **Gambar** diunggah lewat `ImageOptimizer` yang otomatis membuat versi WebP + thumbnail 400w.
 
 ---
 
 ## 🚀 Instalasi
 
-**Persyaratan:** PHP ≥ 8.3, Composer, MySQL. (Opsional: CLI `mysqldump` / `mysql` untuk backup & restore.)
+**Persyaratan:** PHP ≥ 8.3, Composer, MySQL, Node.js ≥ 20 (hanya bila ingin mengubah CSS/JS). (Opsional: CLI `mysqldump` / `mysql` untuk backup & restore.)
 
 ```bash
 # 1. Install dependensi
@@ -93,9 +132,19 @@ php artisan storage:link
 php artisan serve
 ```
 
+Aset hasil build sudah ikut di repo (`public/build/`), jadi aplikasi langsung jalan tanpa Node.js. Bila ingin mengubah CSS/JS:
+
+```bash
+npm install
+npm run dev     # mode pengembangan (hot reload)
+npm run build   # build produksi — commit hasilnya
+```
+
 ---
 
 ## 📸 Screenshot
+
+> 📌 Berkas di `screenshots/` masih placeholder. Ganti `screenshots/home.png` dan `screenshots/admin-dashboard.png` dengan tangkapan layar asli (mis. **Win+Shift+S**) setelah aplikasi berjalan, lalu gambar di bawah akan muncul sendiri.
 
 ### Situs Publik
 
@@ -104,8 +153,6 @@ php artisan serve
 ### Panel Pengelola (`/komi-panel`)
 
 ![Dashboard Admin](screenshots/admin-dashboard.png)
-
-> 📌 Screenshot akan tersedia di folder `screenshots/`. Belum sempat ambil? Bisa pakai tool apa saja (mis. **Win+Shift+S** di Windows) setelah aplikasi berjalan.
 
 ---
 
@@ -144,10 +191,14 @@ Di server, tambahkan cron: `* * * * * php artisan schedule:run`
 ## 🧪 Testing
 
 ```bash
-php artisan test
+php artisan test              # seluruh suite
+php artisan test --compact    # ringkas
+vendor/bin/pint --dirty       # format kode yang berubah
 ```
 
-Suite test menggunakan database terpisah (`db_prodi_test`, lihat `phpunit.xml`).
+Saat ini **162 test / 382 assertion** hijau. Suite memakai database terpisah (`db_prodi_test`, lihat `phpunit.xml`) dan `RefreshDatabase`, jadi data pengembangan tidak tersentuh.
+
+Cakupan yang perlu diketahui: akses panel admin, keamanan berkas dokumen, halaman publik, cache pengaturan situs, `sitemap.xml`, metadata SEO (canonical, JSON-LD, satu `<h1>`), favicon & manifest, serta halaman galat.
 
 ---
 
@@ -160,19 +211,53 @@ resources/
 └── views/        # Blade templates
 public/
 ├── build/        # Hasil build Vite (di-commit, siap deploy)
-└── assets/       # Font, logo, dan gambar statis
+├── assets/       # Logo & gambar statis (WebP)
+└── favicon.*     # Ikon situs + site.webmanifest
+storage/app/
+├── private/      # Berkas dokumen (tidak dapat diakses langsung)
+└── backups/      # Hasil `migrate:safe` / sumber `db:restore`
 ```
+
+Dokumen sengaja disimpan di disk privat dan disajikan lewat route ber-throttle, bukan dari `public/`.
+
+---
+
+## 🚢 Deployment
+
+```bash
+git pull
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force
+php artisan storage:link
+php artisan optimize          # cache config, route, view
+```
+
+Beberapa hal yang perlu disiapkan:
+
+- Pakai `.env.production.example` sebagai acuan `.env` produksi. Isi `APP_KEY` (`php artisan key:generate`), kredensial DB, dan `INITIAL_ADMIN_PASSWORD` yang kuat — seeder menolak nilai `password` saat `APP_ENV=production`.
+- Set `APP_DEBUG=false` dan `APP_URL` ke domain final. `canonical` dan `sitemap.xml` mengikuti nilai ini.
+- Tambahkan cron scheduler: `* * * * * php artisan schedule:run`
+- `GA4_ID` opsional — bila kosong, skrip analitik tidak disuntikkan.
+- Submit `sitemap.xml` ke Google Search Console setelah domain aktif.
+
+Node.js tidak dibutuhkan di server karena `public/build/` sudah ikut repo.
+
+---
+
+## 📚 Dokumentasi Audit
+
+Folder `docs/` memuat catatan audit performa dan SEO beserta perbaikannya — berguna bila ingin menelusuri alasan di balik sebuah keputusan teknis. Mulai dari [`docs/README.md`](docs/README.md).
 
 ---
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT).
+Proyek ini dilisensikan di bawah [MIT License](LICENSE).
 
 ---
 
 <div align="center">
 
-Dibuat dengan ❤️ oleh **Ridz** ([@fardzridz](https://github.com/fardzridz)) untuk **Program Studi Ilmu Komputer** — Universitas PGRI Wiranegara
+Dibuat oleh **Mochamad Farid** ([@fardzridz](https://github.com/fardzridz)) untuk **Program Studi Ilmu Komputer** — Universitas PGRI Wiranegara
 
 </div>

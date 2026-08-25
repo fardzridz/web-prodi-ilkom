@@ -35,6 +35,7 @@
             gtag('config', '{{ config('seo.ga4_id') }}');
         </script>
     @endif
+    @include('components.seo-jsonld')
     @stack('head')
 </head>
 <body class="overflow-x-hidden bg-line text-ink font-sans text-base leading-normal antialiased">

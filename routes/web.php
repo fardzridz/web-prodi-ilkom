@@ -24,6 +24,8 @@ use App\Http\Controllers\Public\ProfileController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+
 Route::middleware('public.security')->group(function (): void {
     Route::get('/', HomeController::class)->name('home');
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');

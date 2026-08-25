@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /dokumen/*/download
+Disallow: /dokumen/*/view
+
+Sitemap: https://compscience.uniwara.ac.id/sitemap.xml

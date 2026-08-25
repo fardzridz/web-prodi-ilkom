@@ -14,7 +14,7 @@ Situs publik + panel pengelola (admin) dalam satu aplikasi **Laravel**.
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Pest](https://img.shields.io/badge/Pest-4-2a2a40?style=for-the-badge&logo=pest&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-162%20passed-2ea44f?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-174%20passed-2ea44f?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 </div>
@@ -178,13 +178,15 @@ Login di **`/komi-panel/login`**. Di production, jangan biarkan password tetap `
 | `php artisan db:restore {file}`               | Restore backup MySQL dari `storage/app/backups` — contoh: `php artisan db:restore db_prodi_20260803_093000.sql` |
 | `php artisan activities:publish-scheduled`    | Terbitkan kegiatan terjadwal yang waktunya tiba                                                                 |
 
-Perintah `activities:publish-scheduled` terdaftar di `routes/console.php` dan berjalan **tiap menit**. Jalankan scheduler lokal dengan:
+Perintah `activities:publish-scheduled` terdaftar di `routes/console.php`, berjalan **tiap menit**, dan memakai `withoutOverlapping()` agar tidak tumpang tindih. Jalankan scheduler lokal dengan:
 
 ```bash
 php artisan schedule:work
 ```
 
 Di server, tambahkan cron: `* * * * * php artisan schedule:run`
+
+> ⚠️ Tanpa cron ini, kegiatan berstatus **Terjadwal** tidak akan pernah terbit sendiri. Pastikan juga `APP_TIMEZONE` di server sama dengan zona waktu yang dipakai saat mengisi jadwal tayang (`Asia/Jakarta`), sebab perbandingan waktunya memakai zona aplikasi.
 
 ---
 
@@ -196,9 +198,9 @@ php artisan test --compact    # ringkas
 vendor/bin/pint --dirty       # format kode yang berubah
 ```
 
-Saat ini **162 test / 382 assertion** hijau. Suite memakai database terpisah (`db_prodi_test`, lihat `phpunit.xml`) dan `RefreshDatabase`, jadi data pengembangan tidak tersentuh.
+Saat ini **174 test / 417 assertion** hijau. Suite memakai database terpisah (`db_prodi_test`, lihat `phpunit.xml`) dan `RefreshDatabase`, jadi data pengembangan tidak tersentuh.
 
-Cakupan yang perlu diketahui: akses panel admin, keamanan berkas dokumen, halaman publik, cache pengaturan situs, `sitemap.xml`, metadata SEO (canonical, JSON-LD, satu `<h1>`), favicon & manifest, serta halaman galat.
+Cakupan yang perlu diketahui: akses panel admin, keamanan berkas dokumen, halaman publik, cache pengaturan situs, penerbitan kegiatan terjadwal, `sitemap.xml`, metadata SEO (canonical, JSON-LD, satu `<h1>`), favicon & manifest, serta halaman galat.
 
 ---
 

@@ -144,7 +144,7 @@ npm run build   # build produksi — commit hasilnya
 
 ## 📸 Screenshot
 
-> 📌 Berkas di `screenshots/` masih placeholder. Ganti `screenshots/home.png` dan `screenshots/admin-dashboard.png` dengan tangkapan layar asli (mis. **Win+Shift+S**) setelah aplikasi berjalan, lalu gambar di bawah akan muncul sendiri.
+> 📌 `screenshots/home.png` masih placeholder. Ganti dengan tangkapan layar beranda (mis. **Win+Shift+S**) setelah aplikasi berjalan, lalu gambar di bawah akan muncul sendiri.
 
 ### Situs Publik
 

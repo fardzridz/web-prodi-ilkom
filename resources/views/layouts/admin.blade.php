@@ -9,6 +9,8 @@
 
     <title>@yield('title', 'Pengelola Situs Prodi')</title>
 
+    @include('components.favicon')
+
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
 
     @stack('styles')

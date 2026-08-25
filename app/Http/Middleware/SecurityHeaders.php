@@ -37,6 +37,7 @@ class SecurityHeaders
             ."style-src {$styleSrc} 'unsafe-inline'; "
             ."img-src 'self' data: https:; "
             ."font-src {$fontSrc}; "
+            ."manifest-src 'self'; "
             ."frame-src 'self' https://www.google.com https://maps.google.com; "
             ."connect-src {$connectSrc}; "
             ."frame-ancestors 'self'; "

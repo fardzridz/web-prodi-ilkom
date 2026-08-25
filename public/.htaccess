@@ -24,6 +24,11 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+    AddType image/vnd.microsoft.icon .ico
+</IfModule>
+
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresDefault "access plus 1 month"
@@ -42,6 +47,7 @@
     ExpiresByType image/svg+xml "access plus 1 year"
     ExpiresByType video/mp4 "access plus 1 year"
     ExpiresByType video/webm "access plus 1 year"
+    ExpiresByType application/manifest+json "access plus 1 week"
 </IfModule>
 
 <IfModule mod_headers.c>
@@ -50,6 +56,11 @@
     </FilesMatch>
     <FilesMatch "\.(html|htm)$">
         Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+    # Ikon situs & manifest tidak memakai hash pada namanya, jadi jangan
+    # ditandai immutable agar pergantian logo tidak tertahan cache setahun.
+    <FilesMatch "^(favicon\.(ico|svg)|favicon-96x96\.png|apple-touch-icon\.png|web-app-manifest-\d+x\d+\.png|site\.webmanifest)$">
+        Header set Cache-Control "public, max-age=604800"
     </FilesMatch>
 </IfModule>
 

@@ -18,7 +18,7 @@
     <meta property="og:image" content="{{ $site?->logo ? asset('storage/'.$site->logo) : asset('assets/images/logo/logo.webp') }}">
     @endif
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" href="{{ $site?->favicon ? asset('storage/'.$site->favicon) : asset('assets/images/logo/logo.webp') }}">
+    @include('components.favicon')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">

@@ -15,23 +15,29 @@ class ProgramProfileSeeder extends Seeder
         ProgramProfile::query()->firstOrCreate(
             ['id' => 1],
             [
-                'history' => 'Sejarah prodi ditulis sebagai narasi akademik yang menjelaskan perkembangan Ilmu Komputer di lingkungan Universitas PGRI Wiranegara.',
-                'description' => 'Program Studi Ilmu Komputer Universitas PGRI Wiranegara menyiapkan lulusan yang memiliki kompetensi teknologi informasi dan komputer, berjiwa wirausaha, mampu bekerja sama, serta siap berkontribusi di tingkat nasional maupun internasional.',
-                'vision' => 'Mengembangkan ilmu pengetahuan teknologi informasi dan komputer melalui pendidikan, penelitian, pengabdian, dan kerja sama, dengan tetap menjunjung moral, etika, dan kebermanfaatan bagi masyarakat.',
-                'mission' => implode(PHP_EOL, [
-                    '1. Menyelenggarakan pendidikan Ilmu Komputer yang adaptif dan relevan dengan kebutuhan masyarakat.',
-                    '2. Mengembangkan penelitian terapan di bidang teknologi informasi dan komputer.',
-                    '3. Melaksanakan pengabdian masyarakat berbasis solusi teknologi.',
-                ]),
-                'goals' => implode(PHP_EOL, [
-                    '1. Menghasilkan lulusan yang kompeten dalam pengembangan perangkat lunak, jaringan komputer, data, multimedia, dan solusi teknologi.',
-                    '2. Mendorong lulusan agar mampu bekerja sama, berwirausaha, dan berkontribusi bagi masyarakat.',
-                ]),
+                'history' => <<<'HTML'
+                    <h1>Perjalanan Program Studi</h1><p>Program Studi Ilmu Komputer berkembang sebagai ruang akademik yang menjawab kebutuhan tenaga teknologi informasi di Pasuruan dan sekitarnya. Kurikulum, aktivitas mahasiswa, dan kerja sama terus disesuaikan dengan kebutuhan dunia digital.</p><blockquote><strong>Perjalanan prodi dibangun melalui pendidikan, riset, pengabdian, dan kolaborasi yang dekat dengan kebutuhan masyarakat.</strong></blockquote><p>Penguatan laboratorium, kegiatan praktikum, dan pembelajaran berbasis proyek menjadi bagian dari perkembangan prodi untuk menyiapkan mahasiswa menghadapi perubahan teknologi.</p>
+                    HTML,
+                'history_image' => 'uploads/profile/hero-2-x5P5IT.webp',
+                'description' => <<<'HTML'
+                    <h1>Pelajari, Ciptakan, Wujudkan</h1><p>Program Studi Ilmu Komputer menyiapkan lulusan yang memiliki kompetensi teknologi informasi dan komputer, berjiwa entrepreneur, dapat dipercaya, mampu bekerja sama, dan siap berkontribusi secara nasional maupun internasional.</p><p>Pembelajaran diarahkan pada pengembangan ilmu komputer melalui pendidikan, penelitian, pengabdian, kerja sama, serta penerapan teknologi informasi yang bermanfaat bagi masyarakat.</p>
+                    HTML,
+                'description_image' => 'uploads/profile/hero-2-qtyOjV.webp',
+                'vision' => <<<'HTML'
+                    <h2>Visi</h2><p><strong><em>&ldquo;Menjadi Program Studi Ilmu Komputer yang unggul dalam pengembangan teknologi informasi, berjiwa entrepreneur, dan berkontribusi bagi masyarakat.&rdquo;</em></strong></p><p>Visi ini menjadi arah pengembangan akademik, riset, pengabdian, dan kerja sama prodi dalam membentuk lulusan yang adaptif terhadap perkembangan teknologi.</p>
+                    HTML,
+                'mission' => <<<'HTML'
+                    <h2>Misi</h2><ul><li><strong>Lulusan Kompeten &amp; Berjiwa Entrepreneur - </strong>Menghasilkan lulusan yang memiliki kompetensi teknologi informasi dan komputer, berjiwa entrepreneur, dapat dipercaya, dan mampu bekerja sama.</li><li><strong>Pengembangan Ilmu &amp; Tridarma - </strong>Mengembangkan ilmu pengetahuan teknologi informasi dan komputer melalui tridarma perguruan tinggi.</li><li><strong>Pelayanan untuk Civitas &amp; Masyarakat - </strong>Memberikan pelayanan kepada civitas akademika dan masyarakat melalui pendidikan, penelitian, dan pengabdian.</li><li><strong>Kerja Sama &amp; Inovasi - </strong>Menjalin kerja sama serta menghasilkan produk inovasi dan kreasi di bidang teknologi informasi dan komputer.</li></ul>
+                    HTML,
+                'goals' => <<<'HTML'
+                    <h1>Tujuan Pembelajaran</h1><ol><li>Menghasilkan lulusan berjiwa Pancasila, berintegritas, dan memiliki jiwa entrepreneurship.</li><li>Membekali mahasiswa dengan pengetahuan dan keterampilan teknologi sesuai bidang keahliannya.</li><li>Mendorong penelitian, pengabdian kepada masyarakat, dan kerja sama yang memberi manfaat nyata.</li><li>Tujuan prodi diterjemahkan dalam pembelajaran terapan, kegiatan akademik, dan penguatan portofolio mahasiswa.</li></ol>
+                    HTML,
+                'goals_image' => 'uploads/profile/hero-2-OsVR4O.webp',
                 'accreditation' => 'Baik Sekali',
-                'advantages' => implode(PHP_EOL, [
-                    'Keunggulan prodi mencakup pembelajaran berbasis proyek, pilihan rumpun peminatan Komputer Berbasis Jaringan, Komputasi Cerdas dan Visualisasi, Rekayasa Perangkat Lunak, serta Multimedia dan Game.',
-                    'Program unggulan mendukung portofolio kompetensi mahasiswa melalui sertifikasi, pelatihan, bimbingan, dan pengalaman lapangan.',
-                ]),
+                'advantages' => <<<'HTML'
+                    <h1>Keunggulan Program Studi</h1><h2>Kompetensi Sesuai Kebutuhan Industri</h2><p>Pembelajaran diarahkan pada penguatan kompetensi teknologi informasi dan komputer yang relevan dengan kebutuhan industri.</p><h2>Portofolio &amp; Kemampuan Memecahkan Masalah</h2><p>Mahasiswa didorong memiliki portofolio, pengalaman kerja sama, dan kemampuan menyelesaikan masalah berbasis teknologi.</p>
+                    HTML,
+                'advantages_image' => 'uploads/profile/hero-2-sbaONU.webp',
             ],
         );
     }

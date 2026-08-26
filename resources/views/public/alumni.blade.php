@@ -18,16 +18,12 @@
 
         <form method="GET" action="{{ route('alumni') }}" class="mt-10">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-                <label class="relative block w-full max-w-xl" for="alumni-search">
-                    <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-cream/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-                    <input id="alumni-search" name="q" value="{{ $filters['q'] ?? '' }}" type="search" placeholder="Cari nama, posisi, atau perusahaan..." maxlength="100" class="h-12 w-full rounded-full border border-white/20 bg-white/10 pl-12 pr-4 text-sm text-cream placeholder:text-cream/40 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-shadow">
-                </label>
+                <x-public.search-bar for="alumni-search" :value="$filters['q'] ?? ''" placeholder="Cari nama, posisi, atau perusahaan..." dark/>
                 <div class="flex items-center gap-2">
                     <p class="inline-flex h-12 shrink-0 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 text-sm font-medium text-cream/70">
                         <svg class="h-4 w-4 shrink-0 text-gold/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
                         <span>{{ $alumni->total() }} alumni ditemukan</span>
                     </p>
-                    <button type="submit" class="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-gold px-6 text-sm font-semibold text-primary hover:bg-gold/90 transition-colors">Cari</button>
                     @if(!empty($filters['q']) || !empty($filters['job']))
                         <a href="{{ route('alumni') }}" class="inline-flex h-12 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 text-sm font-medium text-cream hover:bg-white/20 transition-colors">Reset</a>
                     @endif

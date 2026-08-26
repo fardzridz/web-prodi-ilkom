@@ -120,16 +120,12 @@
 
         <form method="GET" action="{{ route('documents') }}" class="mt-10">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-                <label class="relative block w-full max-w-xl" for="dokumen-search">
-                    <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-                    <input id="dokumen-search" name="q" value="{{ $filters['q'] ?? '' }}" type="search" placeholder="Cari nama dokumen..." maxlength="100" class="h-12 w-full rounded-full border border-line bg-white pl-12 pr-4 text-sm text-ink placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-shadow">
-                </label>
+                <x-public.search-bar for="dokumen-search" :value="$filters['q'] ?? ''" placeholder="Cari nama dokumen..."/>
                 <div class="flex items-center gap-3">
                     <p class="inline-flex h-12 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-5 text-sm font-medium text-muted">
                         <svg class="h-4 w-4 shrink-0 text-primary/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
                         <span>{{ $documents->total() }} dokumen ditemukan</span>
                     </p>
-                    <button type="submit" class="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">Cari</button>
                     @if(!empty($filters['q']) || !empty($filters['category']))
                         <a href="{{ route('documents') }}" class="inline-flex h-12 shrink-0 items-center justify-center rounded-full border border-line bg-white px-6 text-sm font-medium text-muted hover:bg-line transition-colors">Reset</a>
                     @endif

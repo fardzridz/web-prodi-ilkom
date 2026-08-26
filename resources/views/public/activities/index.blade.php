@@ -20,16 +20,12 @@
 
         <form method="GET" action="{{ route('activities.index') }}" class="mt-10">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-                <label class="relative block w-full max-w-xl" for="kegiatan-search">
-                    <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-                    <input id="kegiatan-search" name="q" value="{{ $filters['q'] ?? '' }}" type="search" placeholder="Cari judul, lokasi, atau kategori kegiatan..." maxlength="100" class="h-12 w-full rounded-full border border-line bg-white pl-12 pr-4 text-sm text-ink placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-shadow">
-                </label>
+                <x-public.search-bar for="kegiatan-search" :value="$filters['q'] ?? ''" placeholder="Cari judul, lokasi, atau kategori kegiatan..."/>
                 <div class="flex items-center gap-2">
                     <p class="inline-flex h-12 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-5 text-sm font-medium text-muted">
                         <svg class="h-4 w-4 shrink-0 text-primary/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008v-.008Z"/></svg>
                         <span>{{ $activities->total() }} kegiatan ditemukan</span>
                     </p>
-                    <button type="submit" class="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">Cari</button>
                     @if(!empty($filters['q']) || !empty($filters['category']))
                         <a href="{{ route('activities.index') }}" class="inline-flex h-12 shrink-0 items-center justify-center rounded-full border border-line bg-white px-6 text-sm font-medium text-muted hover:bg-line transition-colors">Reset</a>
                     @endif

@@ -20,8 +20,8 @@ class SiteSettingSeeder extends Seeder
                 'faculty_name' => 'Fakultas Teknologi dan Sains',
                 'logo' => null,
                 'favicon' => null,
-                'journal_url' => 'https://ejurnal.uniwara.ac.id',
-                'registration_url' => 'https://admisi.uniwara.ac.id',
+                'journal_url' => 'https://wirajurnal.uniwara.ac.id/index.php/JoICIS',
+                'registration_url' => 'https://wiraadmisi.uniwara.ac.id',
                 'footer_text' => '© 2026 Program Studi Ilmu Komputer.',
                 'footer_academic_links' => [
                     [

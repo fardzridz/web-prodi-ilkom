@@ -168,23 +168,23 @@
 @endif
 
 {{-- Marquee --}}
-<section class="relative z-10 overflow-hidden bg-primary py-3 select-none" aria-hidden="true">
+<section class="relative z-10 -mt-px overflow-hidden bg-primary py-4 sm:py-5 lg:py-6 select-none" aria-hidden="true">
     <div class="marquee-track flex w-max items-center">
         <div class="flex shrink-0 items-center gap-10 pr-10">
-            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Ilmu Komputer</span>
-            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-10 sm:h-12 lg:h-16" loading="lazy" decoding="async" width="64" height="64">
-            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-gold sm:text-5xl lg:text-7xl">Uniwara</span>
-            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-10 sm:h-12 lg:h-16" loading="lazy" decoding="async" width="64" height="64">
-            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Compscience</span>
-            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-10 sm:h-12 lg:h-16" loading="lazy" decoding="async" width="64" height="64">
+            <span class="font-sans text-5xl font-bold uppercase tracking-wide leading-none text-cream sm:text-6xl lg:text-7xl">Ilmu Komputer</span>
+            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-12 w-auto sm:h-16" loading="lazy" decoding="async" width="277" height="277">
+            <span class="font-sans text-5xl font-bold uppercase tracking-wide leading-none text-gold sm:text-6xl lg:text-7xl">Uniwara</span>
+            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-12 w-auto sm:h-16" loading="lazy" decoding="async" width="277" height="277">
+            <span class="font-sans text-5xl font-bold uppercase tracking-wide leading-none text-cream sm:text-6xl lg:text-7xl">Compscience</span>
+            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-12 w-auto sm:h-16" loading="lazy" decoding="async" width="277" height="277">
         </div>
         <div class="flex shrink-0 items-center gap-10 pr-10">
-            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Ilmu Komputer</span>
-            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-10 sm:h-12 lg:h-16" loading="lazy" decoding="async" width="64" height="64">
-            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-gold sm:text-5xl lg:text-7xl">Uniwara</span>
-            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-10 sm:h-12 lg:h-16" loading="lazy" decoding="async" width="64" height="64">
-            <span class="font-sans text-4xl font-bold uppercase tracking-wide leading-none text-cream sm:text-5xl lg:text-7xl">Compscience</span>
-            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-10 sm:h-12 lg:h-16" loading="lazy" decoding="async" width="64" height="64">
+            <span class="font-sans text-5xl font-bold uppercase tracking-wide leading-none text-cream sm:text-6xl lg:text-7xl">Ilmu Komputer</span>
+            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-12 w-auto sm:h-16" loading="lazy" decoding="async" width="277" height="277">
+            <span class="font-sans text-5xl font-bold uppercase tracking-wide leading-none text-gold sm:text-6xl lg:text-7xl">Uniwara</span>
+            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-12 w-auto sm:h-16" loading="lazy" decoding="async" width="277" height="277">
+            <span class="font-sans text-5xl font-bold uppercase tracking-wide leading-none text-cream sm:text-6xl lg:text-7xl">Compscience</span>
+            <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="" class="h-12 w-auto sm:h-16" loading="lazy" decoding="async" width="277" height="277">
         </div>
     </div>
 </section>
